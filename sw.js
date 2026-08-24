@@ -1,7 +1,7 @@
 /* Service worker de la Bitácora de Vuelo Dron.
    Cambiá el número de versión cada vez que subas una versión nueva del index.html
    para forzar la actualización en los teléfonos. */
-const CACHE = 'bvd-v8';
+const CACHE = 'bvd-v11';
 const ASSETS = [
   './',
   './index.html',

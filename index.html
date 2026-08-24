@@ -138,10 +138,16 @@ textarea{resize:vertical;min-height:56px}
 .meter{height:12px;background:#e2e8f0;border-radius:8px;overflow:hidden;border:1px solid var(--line)}
 .meterfill{height:100%;background:linear-gradient(90deg,var(--grn),var(--grn-dk))}
 
-nav{position:fixed;bottom:0;left:0;right:0;background:#fff;border-top:1px solid var(--line);display:flex;padding:6px 1px calc(6px + env(safe-area-inset-bottom));z-index:50;overflow-x:auto}
-nav button{flex:0 0 auto;min-width:62px;background:none;border:none;padding:7px 1px;display:flex;flex-direction:column;align-items:center;gap:2px;color:var(--muted);font-size:10.5px;font-weight:600;border-radius:9px;white-space:nowrap}
-nav button.active{color:var(--grn-dk)}nav button.active svg{stroke:var(--grn-dk)}
-nav svg{stroke:var(--muted);stroke-width:2;fill:none;width:22px;height:22px}
+#navBackdrop{position:fixed;inset:0;background:rgba(0,0,0,.28);z-index:50;opacity:0;pointer-events:none;transition:opacity .2s}
+#navBar{position:fixed;bottom:0;left:0;right:0;background:#fff;border-top:1px solid var(--line);padding:8px 12px calc(8px + env(safe-area-inset-bottom));z-index:52;display:flex;justify-content:center}
+#navToggle{background:var(--grn-dk);color:#fff;border:none;border-radius:12px;padding:11px 18px;font-size:15px;font-weight:700;display:flex;align-items:center;gap:10px;width:100%;max-width:520px;justify-content:center}
+#navToggle .ic{font-size:16px;line-height:1}
+nav#navGrid{position:fixed;left:0;right:0;bottom:calc(66px + env(safe-area-inset-bottom));background:#fff;border-top:1px solid var(--line);box-shadow:0 -10px 30px rgba(0,0,0,.14);z-index:51;display:grid;grid-template-columns:repeat(4,1fr);gap:4px;padding:10px 8px;transition:transform .22s ease,opacity .22s ease}
+nav#navGrid.collapsed{transform:translateY(140%);opacity:0;pointer-events:none}
+nav#navGrid button{background:none;border:none;padding:12px 2px;display:flex;flex-direction:column;align-items:center;gap:5px;color:var(--muted);font-size:11px;font-weight:600;border-radius:11px;white-space:normal;text-align:center;line-height:1.15}
+nav#navGrid button.active{color:var(--grn-dk);background:#eaf7ef}
+nav#navGrid svg{stroke:var(--muted);stroke-width:2;fill:none;width:24px;height:24px}
+nav#navGrid button.active svg{stroke:var(--grn-dk)}
 
 .consol{width:100%;border-collapse:collapse;font-size:14px}
 .consol th{text-align:left;font-size:11px;text-transform:uppercase;letter-spacing:.4px;color:var(--muted);padding:6px 6px;border-bottom:2px solid var(--line)}
@@ -382,16 +388,18 @@ nav svg{stroke:var(--muted);stroke-width:2;fill:none;width:22px;height:22px}
 
 </main>
 
-<nav>
+<div id="navBackdrop" onclick="closeNav()"></div>
+<nav id="navGrid" class="collapsed">
   <button class="active" data-view="hist" onclick="nav('hist')"><svg width="20" height="20" viewBox="0 0 24 24"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>Proyectos</button>
-  <button data-view="bitacora" onclick="nav('bitacora')"><svg width="20" height="20" viewBox="0 0 24 24"><path d="M5 20V10M12 20V4M19 20v-7"/></svg>Bitácora</button>
-  <button data-view="libro" onclick="nav('libro')"><svg width="20" height="20" viewBox="0 0 24 24"><path d="M4 5a2 2 0 0 1 2-2h13v16H6a2 2 0 0 0-2 2z"/><path d="M9 3v14"/></svg>Libro</button>
   <button data-view="oper" onclick="nav('oper')"><svg width="20" height="20" viewBox="0 0 24 24"><path d="M4 5h16M4 12h16M4 19h10"/></svg>Operaciones</button>
   <button data-view="vuelos" onclick="nav('vuelos')"><svg width="20" height="20" viewBox="0 0 24 24"><path d="M2 12l20-8-7.5 20-3-8.5L2 12z"/></svg>Vuelos</button>
+  <button data-view="bitacora" onclick="nav('bitacora')"><svg width="20" height="20" viewBox="0 0 24 24"><path d="M5 20V10M12 20V4M19 20v-7"/></svg>Bitácora</button>
+  <button data-view="libro" onclick="nav('libro')"><svg width="20" height="20" viewBox="0 0 24 24"><path d="M4 5a2 2 0 0 1 2-2h13v16H6a2 2 0 0 0-2 2z"/><path d="M9 3v14"/></svg>Libro de vuelo</button>
   <button data-view="flota" onclick="nav('flota')"><svg width="20" height="20" viewBox="0 0 24 24"><circle cx="12" cy="12" r="2.5"/><circle cx="6" cy="6" r="2"/><circle cx="18" cy="6" r="2"/><circle cx="6" cy="18" r="2"/><circle cx="18" cy="18" r="2"/></svg>Flota</button>
   <button data-view="pilotos" onclick="nav('pilotos')"><svg width="20" height="20" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 4-6 8-6s8 2 8 6"/></svg>Pilotos</button>
   <button data-view="datos" onclick="nav('datos')"><svg width="20" height="20" viewBox="0 0 24 24"><path d="M12 3v14m0 0l-4-4m4 4l4-4M5 21h14"/></svg>Datos</button>
 </nav>
+<div id="navBar"><button id="navToggle" onclick="toggleNav()"><span class="ic" id="navToggleIcon">☰</span><span id="navToggleLabel">Menú</span></button></div>
 <div class="toast" id="toast"></div>
 
 <script>
@@ -484,7 +492,11 @@ function nav(v){document.querySelectorAll('.view').forEach(x=>x.classList.remove
   const tab=(v==='nueva')?'oper':v;
   document.querySelectorAll('nav button').forEach(b=>b.classList.toggle('active',b.dataset.view===tab));window.scrollTo(0,0);
   if(v==='nueva')prepNueva();if(v==='oper')renderOper();if(v==='vuelos')renderVuelos();if(v==='flota')renderFleet();if(v==='pilotos')renderPilots();if(v==='hist')renderHistory();
-  if(v==='bitacora')renderConsolPilotos();if(v==='libro')renderConsolDrones();if(v==='datos')renderStorage();}
+  if(v==='bitacora')renderConsolPilotos();if(v==='libro')renderConsolDrones();if(v==='datos')renderStorage();
+  closeNav();}
+function toggleNav(){$('navGrid').classList.toggle('collapsed');syncNav();}
+function closeNav(){const g=$('navGrid');if(g)g.classList.add('collapsed');syncNav();}
+function syncNav(){const g=$('navGrid');if(!g)return;const open=!g.classList.contains('collapsed');const i=$('navToggleIcon');if(i)i.textContent=open?'✕':'☰';const bd=$('navBackdrop');if(bd){bd.style.opacity=open?'1':'0';bd.style.pointerEvents=open?'auto':'none';}}
 
 /* ---------- pilotos ---------- */
 function cipuLabel(c){return (c.tipo||c)==='Nocturno'?'Nocturno':(c.tipo||c)==='BVLOS'?'BVLOS':'Piloto';}
