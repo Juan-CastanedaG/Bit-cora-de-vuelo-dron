@@ -1,7 +1,7 @@
 /* Service worker de la Bitácora de Vuelo Dron.
    Cambiá el número de versión cada vez que subas una versión nueva del index.html
    para forzar la actualización en los teléfonos. */
-const CACHE = 'bvd-v11';
+const CACHE = 'bvd-v12';
 const ASSETS = [
   './',
   './index.html',
@@ -14,7 +14,7 @@ const ASSETS = [
 
 self.addEventListener('install', e => {
   e.waitUntil(
-    caches.open(CACHE).then(c => c.addAll(ASSETS)).then(() => self.skipWaiting())
+    caches.open(CACHE).then(c => Promise.allSettled(ASSETS.map(u => c.add(u)))).then(() => self.skipWaiting())
   );
 });
 
