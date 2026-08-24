@@ -5,30 +5,31 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>Bitácora de Vuelo Dron — EPM · RAC 100</title>
 <link rel="manifest" href="manifest.json">
-<meta name="theme-color" content="#0d3b2e">
+<meta name="theme-color" content="#007934">
 <link rel="apple-touch-icon" href="icon-192.png">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<script src="pdf.min.js"></script>
 <style>
 :root{
-  --bg:#0d3b2e;--bg2:#12503c;--grn:#00a651;--grn-dk:#00843f;--sky-dk:#00843f;
+  --bg:#007934;--bg2:#0a6234;--grn:#7AD400;--grn-dk:#007934;--sky-dk:#007934;
   --surface:#fff;--panel:#f1f5f4;--ink:#0f172a;--muted:#5b6b66;--line:#cbd8d2;--line-dk:#94a8a0;
   --verde:#16a34a;--verde-bg:#dcfce7;--amarillo:#d97706;--amarillo-bg:#fef3c7;--rojo:#dc2626;--rojo-bg:#fee2e2;
-  --mono:ui-monospace,"SF Mono",Menlo,Consolas,monospace;--sans:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+  --mono:ui-monospace,"SF Mono",Menlo,Consolas,monospace;--sans:"Trebuchet MS","Segoe UI",system-ui,-apple-system,Roboto,sans-serif;
 }
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 html,body{margin:0;padding:0}
-body{font-family:var(--sans);background:var(--panel);color:var(--ink);font-size:16px;line-height:1.45;padding-bottom:88px}
+body{font-family:var(--sans);background:var(--panel);color:var(--ink);font-size:17px;line-height:1.45;padding-bottom:88px}
 h1,h2,h3{margin:0;font-weight:700;line-height:1.2}
 button{font-family:inherit;font-size:inherit;cursor:pointer}
-input,select,textarea{font-family:inherit;font-size:16px}
+input,select,textarea{font-family:inherit;font-size:17px}
 
 header{background:var(--bg);color:#fff;padding:14px 16px calc(14px + env(safe-area-inset-top)) 16px;position:relative}
 header::after{content:"";position:absolute;left:0;right:0;bottom:0;height:3px;background:linear-gradient(90deg,var(--grn-dk),var(--grn))}
 .brand{display:flex;align-items:center;gap:11px}
-.logoEPM{background:#fff;color:var(--grn-dk);font-weight:900;font-size:20px;letter-spacing:-.5px;padding:5px 9px;border-radius:8px;line-height:1;flex:0 0 auto}
-.brand h1{font-size:17px;letter-spacing:.2px}
+.logoEPM{background:#fff;padding:7px 11px;border-radius:10px;height:46px;box-sizing:border-box;flex:0 0 auto}
+.brand h1{font-size:18px;letter-spacing:.2px}
 .brand .sub{font-size:10px;color:#8fd3b0;font-family:var(--mono);letter-spacing:.5px;text-transform:uppercase}
 .dash{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:14px}
 .chip{background:var(--bg2);border:1px solid #1c6349;border-radius:12px;padding:9px 6px;text-align:center}
@@ -39,30 +40,30 @@ header::after{content:"";position:absolute;left:0;right:0;bottom:0;height:3px;ba
 main{max-width:760px;margin:0 auto;padding:16px}
 .view{display:none}.view.active{display:block}
 .card{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:16px;margin-bottom:14px}
-.card>h2{font-size:14px;text-transform:uppercase;letter-spacing:.5px;color:var(--muted);margin-bottom:12px;display:flex;align-items:center;gap:8px}
+.card>h2{font-size:15px;text-transform:uppercase;letter-spacing:.5px;color:var(--muted);margin-bottom:12px;display:flex;align-items:center;gap:8px}
 .card>h2 .step{background:var(--grn-dk);color:#fff;width:22px;height:22px;border-radius:7px;display:inline-flex;align-items:center;justify-content:center;font-size:12px;font-weight:800;flex:0 0 auto}
 .card>h2 .tag{margin-left:auto;font-size:10px;background:var(--panel);color:var(--muted);padding:3px 8px;border-radius:20px}
 
 .field{margin-bottom:12px}.field:last-child{margin-bottom:0}
-label{display:block;font-size:12px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.4px;margin-bottom:5px}
+label{display:block;font-size:13px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.4px;margin-bottom:5px}
 input[type=text],input[type=number],input[type=date],input[type=time],input[type=datetime-local],select,textarea{
   width:100%;padding:12px 13px;border:1.5px solid var(--line);border-radius:11px;background:#fff;color:var(--ink);outline:none}
 input:focus,select:focus,textarea:focus{border-color:var(--grn-dk)}
 textarea{resize:vertical;min-height:56px}
 .mono{font-family:var(--mono)}
 .row2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-.hint{font-size:11.5px;color:var(--muted);margin-top:5px}
-.sectlabel{font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.6px;color:var(--grn-dk);margin:16px 0 10px}
+.hint{font-size:12.5px;color:var(--muted);margin-top:5px}
+.sectlabel{font-size:11.5px;font-weight:800;text-transform:uppercase;letter-spacing:.6px;color:var(--grn-dk);margin:16px 0 10px}
 .divider{height:1px;background:var(--line);margin:14px 0}
 
 .pillwrap{display:flex;flex-wrap:wrap;gap:8px}
-.pill{display:inline-flex;align-items:center;gap:7px;padding:9px 13px;border:1.5px solid var(--line);border-radius:24px;background:#fff;font-size:14px;font-weight:600;color:var(--ink);user-select:none}
+.pill{display:inline-flex;align-items:center;gap:7px;padding:9px 13px;border:1.5px solid var(--line);border-radius:24px;background:#fff;font-size:15px;font-weight:600;color:var(--ink);user-select:none}
 .pill .dot{width:15px;height:15px;border-radius:50%;border:2px solid var(--line-dk);flex:0 0 auto}
 .pill.on{border-color:var(--grn-dk);background:#e3f6ec;color:var(--grn-dk)}
 .pill.on .dot{background:var(--grn-dk);border-color:var(--grn-dk)}
 
 .sino{padding:9px 0;border-bottom:1px solid #eef2f1}.sino:last-child{border-bottom:none}
-.sino .q{font-size:14px;margin-bottom:7px}
+.sino .q{font-size:15px;margin-bottom:7px}
 .sino .btns{display:flex;gap:8px}
 .sino .b{flex:1;padding:9px;border:1.5px solid var(--line);border-radius:10px;background:#fff;font-weight:700;font-size:14px;color:var(--muted)}
 .sino .b.si.on{background:var(--verde-bg);border-color:var(--verde);color:var(--verde)}
@@ -102,7 +103,7 @@ textarea{resize:vertical;min-height:56px}
 .verdict ul{text-align:left;margin:12px 0 0;padding:12px 12px 12px 28px;background:rgba(0,0,0,.18);border-radius:12px;font-size:12.5px}
 .verdict li{margin:3px 0}
 
-.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;width:100%;padding:14px;border:none;border-radius:13px;background:var(--grn-dk);color:#fff;font-weight:700;font-size:16px}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;width:100%;padding:14px;border:none;border-radius:13px;background:var(--grn-dk);color:#fff;font-weight:700;font-size:17px}
 .btn:active{transform:translateY(1px)}
 .btn.sec{background:var(--panel);color:var(--ink);border:1.5px solid var(--line)}
 .btn.dark{background:var(--bg)}.btn.danger{background:var(--rojo)}
@@ -137,10 +138,10 @@ textarea{resize:vertical;min-height:56px}
 .meter{height:12px;background:#e2e8f0;border-radius:8px;overflow:hidden;border:1px solid var(--line)}
 .meterfill{height:100%;background:linear-gradient(90deg,var(--grn),var(--grn-dk))}
 
-nav{position:fixed;bottom:0;left:0;right:0;background:#fff;border-top:1px solid var(--line);display:flex;padding:6px 1px calc(6px + env(safe-area-inset-bottom));z-index:50}
-nav button{flex:1;background:none;border:none;padding:7px 1px;display:flex;flex-direction:column;align-items:center;gap:2px;color:var(--muted);font-size:9px;font-weight:600;border-radius:9px;white-space:nowrap}
+nav{position:fixed;bottom:0;left:0;right:0;background:#fff;border-top:1px solid var(--line);display:flex;padding:6px 1px calc(6px + env(safe-area-inset-bottom));z-index:50;overflow-x:auto}
+nav button{flex:0 0 auto;min-width:62px;background:none;border:none;padding:7px 1px;display:flex;flex-direction:column;align-items:center;gap:2px;color:var(--muted);font-size:10.5px;font-weight:600;border-radius:9px;white-space:nowrap}
 nav button.active{color:var(--grn-dk)}nav button.active svg{stroke:var(--grn-dk)}
-nav svg{stroke:var(--muted);stroke-width:2;fill:none}
+nav svg{stroke:var(--muted);stroke-width:2;fill:none;width:22px;height:22px}
 
 .consol{width:100%;border-collapse:collapse;font-size:14px}
 .consol th{text-align:left;font-size:11px;text-transform:uppercase;letter-spacing:.4px;color:var(--muted);padding:6px 6px;border-bottom:2px solid var(--line)}
@@ -161,7 +162,7 @@ nav svg{stroke:var(--muted);stroke-width:2;fill:none}
 
 <header>
   <div class="brand">
-    <span class="logoEPM">EPM</span>
+    <img class="logoEPM" id="epmLogo" alt="EPM">
     <div><h1>Bitácora de Vuelo Dron</h1><div class="sub">F-EPM-03 · RAC 100</div></div>
   </div>
   <div class="dash">
@@ -202,6 +203,16 @@ nav svg{stroke:var(--muted);stroke-width:2;fill:none}
     <select id="dronConsol" onchange="renderConsolDrones()"></select>
   </div>
   <div id="consolDrones"></div>
+</section>
+
+<!-- ===== OPERACIONES ===== -->
+<section class="view" id="v-oper">
+  <div id="operList"></div>
+</section>
+
+<!-- ===== VUELOS (registro por vuelo) ===== -->
+<section class="view" id="v-vuelos">
+  <div id="vuelosList"></div>
 </section>
 
 <!-- ===== NUEVA OPERACIÓN ===== -->
@@ -258,9 +269,20 @@ nav svg{stroke:var(--muted);stroke-width:2;fill:none}
     <h2><span class="step">4</span>Chequeo pre-vuelo</h2>
     <div class="field"><label>Inicio de la operación</label><input type="datetime-local" id="p_inicio" oninput="verdict();saveDraft()"></div>
     <div id="chkPrevuelo"></div>
-    <div class="sectlabel">Aptitud psicofísica — IMSAFE</div>
-    <div class="alert info"><span>🩺</span><div><b>IMSAFE</b>: Illness, Medication, Stress, Alcohol, Fatigue, Emotion. Autoevaluación de aptitud del piloto tomada de la aviación (FAA).</div></div>
+    <div class="sectlabel">Análisis de riesgo</div>
+    <div class="alert info"><span>📋</span><div><b>Análisis de riesgo</b>: respondé cada punto. La app calcula internamente la calificación de seguridad para la operación UAS.</div></div>
     <div id="hfBlock"></div>
+    <div class="sectlabel">Registros obligatorios</div>
+    <div class="field"><label>Foto del dron / puerto (obligatoria)</label>
+      <div class="btnrow noprint"><button class="btn sec sm" onclick="document.getElementById('camDron').click()">📷 Cámara</button><button class="btn sec sm" onclick="document.getElementById('galDron').click()">🖼️ Galería</button></div>
+      <input type="file" id="camDron" accept="image/*" capture="environment" style="display:none" onchange="addNamedPhoto(event,'fotoDron')">
+      <input type="file" id="galDron" accept="image/*" style="display:none" onchange="addNamedPhoto(event,'fotoDron')">
+      <div id="row_fotoDron"></div></div>
+    <div class="field"><label>Foto de la app de meteorología (obligatoria)</label>
+      <div class="btnrow noprint"><button class="btn sec sm" onclick="document.getElementById('camMeteo').click()">📷 Cámara</button><button class="btn sec sm" onclick="document.getElementById('galMeteo').click()">🖼️ Galería</button></div>
+      <input type="file" id="camMeteo" accept="image/*" capture="environment" style="display:none" onchange="addNamedPhoto(event,'fotoMeteo')">
+      <input type="file" id="galMeteo" accept="image/*" style="display:none" onchange="addNamedPhoto(event,'fotoMeteo')">
+      <div id="row_fotoMeteo"></div></div>
     <div class="field" style="margin-top:6px"><label>Observaciones pre-vuelo</label><textarea id="p_obs" oninput="saveDraft()"></textarea></div>
     <div class="field"><label>Fotografías pre-vuelo</label>
       <div class="btnrow noprint"><button class="btn sec sm" onclick="document.getElementById('cam1').click()">📷 Cámara</button><button class="btn sec sm" onclick="document.getElementById('gal1').click()">🖼️ Galería</button></div>
@@ -272,7 +294,7 @@ nav svg{stroke:var(--muted);stroke-width:2;fill:none}
 
   <div class="card">
     <div class="verdict pend" id="verdictBox"><div class="light" id="vLight">•</div><div class="word" id="vWord">—</div><div class="desc" id="vDesc">Completá los chequeos críticos</div><ul id="vReasons" style="display:none"></ul></div>
-    <div class="hint" style="margin-top:8px">● = ítem crítico. Un "No" crítico, IMSAFE en rojo, autorización/póliza/examen médico vencidos, o una habilitación faltante (nocturno/BVLOS) fuerzan <b>NO-GO</b>. Los críticos sin responder dejan la operación en <b>PENDIENTE</b>.</div>
+    <div class="hint" style="margin-top:8px">● = ítem crítico. Un "No" crítico, un análisis de riesgo <b>INSEGURO</b>, autorización/póliza/examen médico vencidos, o una habilitación faltante (nocturno/BVLOS) fuerzan <b>NO-GO</b>. Los ítems críticos sin responder dejan la operación en <b>PENDIENTE</b>.</div>
   </div>
 
   <div class="card"><h2><span class="step">5</span>Registro durante la operación</h2><div id="sortieList"></div><button class="btn sec" onclick="addSortie()">＋ Agregar vuelo</button></div>
@@ -282,7 +304,7 @@ nav svg{stroke:var(--muted);stroke-width:2;fill:none}
     <div id="chkPosvuelo"></div>
     <div class="field" style="margin-top:10px"><label>Fin de la operación</label><input type="datetime-local" id="q_fin" oninput="saveDraft()"></div>
     <div class="sectlabel">Ocurrencias de seguridad</div>
-    <div class="hint" style="margin:-4px 0 10px">Un "Sí" marca una ocurrencia y activa el aviso de MOR.</div>
+    <div class="hint" style="margin:-4px 0 10px">Marcá "Sí" si el evento ocurrió durante la operación.</div>
     <div id="ocurrList"></div><div id="morFlag"></div>
     <div class="field" style="margin-top:10px"><label>Observaciones pos-vuelo</label><textarea id="q_obs" oninput="saveDraft()"></textarea></div>
     <div class="field"><label>Fotografías pos-vuelo</label>
@@ -293,7 +315,7 @@ nav svg{stroke:var(--muted);stroke-width:2;fill:none}
     </div>
   </div>
 
-  <button class="btn" onclick="saveOp()">Guardar operación</button>
+  <button class="btn" id="saveOpBtn" onclick="saveOp()">Guardar operación</button>
   <div style="height:10px"></div>
   <button class="btn sec" onclick="resetForm(true)">Limpiar formulario</button>
 </section>
@@ -356,7 +378,6 @@ nav svg{stroke:var(--muted);stroke-width:2;fill:none}
       <input type="file" id="restoreIn" accept="application/json,.json" style="display:none" onchange="importJSON(event)"></div>
   </div>
   <div class="card"><h2>Almacenamiento</h2><div id="storageInfo"><div class="hint">Cargando…</div></div></div>
-  <div class="card"><h2>Zona de riesgo</h2><button class="btn danger" onclick="wipeAll()">Borrar todos los datos</button></div>
 </section>
 
 </main>
@@ -365,7 +386,8 @@ nav svg{stroke:var(--muted);stroke-width:2;fill:none}
   <button class="active" data-view="hist" onclick="nav('hist')"><svg width="20" height="20" viewBox="0 0 24 24"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>Proyectos</button>
   <button data-view="bitacora" onclick="nav('bitacora')"><svg width="20" height="20" viewBox="0 0 24 24"><path d="M5 20V10M12 20V4M19 20v-7"/></svg>Bitácora</button>
   <button data-view="libro" onclick="nav('libro')"><svg width="20" height="20" viewBox="0 0 24 24"><path d="M4 5a2 2 0 0 1 2-2h13v16H6a2 2 0 0 0-2 2z"/><path d="M9 3v14"/></svg>Libro</button>
-  <button data-view="nueva" onclick="nav('nueva')"><svg width="20" height="20" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 8v8M8 12h8"/></svg>Nueva</button>
+  <button data-view="oper" onclick="nav('oper')"><svg width="20" height="20" viewBox="0 0 24 24"><path d="M4 5h16M4 12h16M4 19h10"/></svg>Operaciones</button>
+  <button data-view="vuelos" onclick="nav('vuelos')"><svg width="20" height="20" viewBox="0 0 24 24"><path d="M2 12l20-8-7.5 20-3-8.5L2 12z"/></svg>Vuelos</button>
   <button data-view="flota" onclick="nav('flota')"><svg width="20" height="20" viewBox="0 0 24 24"><circle cx="12" cy="12" r="2.5"/><circle cx="6" cy="6" r="2"/><circle cx="18" cy="6" r="2"/><circle cx="6" cy="18" r="2"/><circle cx="18" cy="18" r="2"/></svg>Flota</button>
   <button data-view="pilotos" onclick="nav('pilotos')"><svg width="20" height="20" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 4-6 8-6s8 2 8 6"/></svg>Pilotos</button>
   <button data-view="datos" onclick="nav('datos')"><svg width="20" height="20" viewBox="0 0 24 24"><path d="M12 3v14m0 0l-4-4m4 4l4-4M5 21h14"/></svg>Datos</button>
@@ -374,23 +396,23 @@ nav svg{stroke:var(--muted);stroke-width:2;fill:none}
 
 <script>
 "use strict";
+const EPM_LOGO="data:image/png;base64,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";
 const CHK_OFICINA=[['plan','¿El plan de vuelo está detallado y actualizado?',true],['apps','¿Las aplicaciones actualizadas y cargadas en el dispositivo móvil?',false],['firmware','¿El firmware de la aeronave está actualizado?',true],['gcs','¿El software del radiocontrol/GCS está actualizado?',false],['baterias','¿Las baterías de la aeronave enumeradas y cargadas al 100%?',true],['batMovil','¿La batería del dispositivo móvil está cargada?',false],['cables','¿Cables y accesorios revisados, en buen estado y empacados?',false],['aeronave','¿Aeronave, hélices, estructura y motores en buen estado y empacados?',true],['comObs','¿Equipos de comunicación con el observador en buen estado y empacados?',false],['demarcacion','¿Accesorios para demarcación de la zona de seguridad completos y empacados?',false],['extintor','¿Extintor, botiquín y herramientas básicas completas y empacadas?',false]];
-const CHK_PREVUELO=[['aeronavegable','¿La aeronave y sus componentes están en condiciones aeronavegables?',true],['batAjustada','¿La batería de la aeronave está ajustada y con carga?',true],['batRadio','¿La batería del radiocontrol y dispositivos móviles están cargados?',false],['areaDespejada','¿El área de trabajo está despejada y delimitada?',true],['accesorios','¿Los accesorios y equipos de trabajo instalados y en buen estado?',false],['c2','¿La conexión de enlace C2 funciona correctamente?',true],['sonidos','¿Los sonidos de alerta del radiocontrol en volumen audible?',false],['meteo','¿Las condiciones meteorológicas son aceptables para el vuelo?',true],['satelital','¿La recepción satelital es aceptable para el vuelo?',true],['kp','¿El índice Kp es aceptable para el vuelo? (menor a 4.0)',true],['comObsF','¿El equipo de comunicación con el observador está funcionando?',false],['botiquin','¿El botiquín y extintor ubicados para fácil acceso?',false],['areaSegura','¿El área de operación es segura para el despegue y aterrizaje?',true],['pesoBalance','¿Verificó el peso y balance de la UA?',true],['funcionamiento','¿Evaluó el funcionamiento de la UA?',true],['coordino','¿Coordinó las funciones con el personal operativo UAS?',true]];
+const CHK_PREVUELO=[['aeronavegable','¿La aeronave y sus componentes están en condiciones aeronavegables?',true],['batAjustada','¿La batería de la aeronave está ajustada y con carga?',true],['batRadio','¿La batería del radiocontrol y dispositivos móviles están cargados?',false],['areaDespejada','¿El área de trabajo está despejada y delimitada?',true],['accesorios','¿Los accesorios y equipos de trabajo instalados y en buen estado?',false],['c2','¿La conexión de enlace C2 funciona correctamente?',true],['sonidos','¿Los sonidos de alerta del radiocontrol en volumen audible?',false],['meteo','¿Las condiciones meteorológicas son aceptables para el vuelo?',true],['satelital','¿La recepción satelital es aceptable para el vuelo?',true],['kp','¿El índice Kp es aceptable para el vuelo? (menor a 4.0)',true],['comObsF','¿El equipo de comunicación con el observador está funcionando?',false],['botiquin','¿El botiquín y extintor ubicados para fácil acceso?',false],['areaSegura','¿El área de operación es segura para el despegue y aterrizaje?',true]];
 const CHK_POSVUELO=[['limpios','¿La aeronave, accesorios y equipos están limpios y empacados?',false],['senal','¿Los elementos de señalización y seguridad recogidos y empacados?',false],['zonaLimpia','¿La zona de operación limpia y libre de desechos/basura?',false]];
 const OCURRENCIAS=[['aterrizoOtro','¿La aeronave aterrizó en un punto diferente al autorizado o planificado?'],['sepTripulada','¿Pérdida de separación o proximidad peligrosa con aeronave tripulada?'],['aves','¿Acercamiento peligroso o maniobra evasiva por aves u otra fauna?'],['otroUA','¿Proximidad no controlada con otro UA que generara riesgo de impacto?'],['obstaculo','¿Maniobra evasiva para evitar infraestructura u obstáculos fijos?'],['bateria','¿Descarga abrupta, caída de voltaje, sobrecalentamiento o degradación de la batería?'],['dano','¿Golpe, lesión leve o daño menor a personas o bienes de terceros?'],['perdControl','¿Pérdida total o parcial del control con riesgo severo?'],['impacto','¿La aeronave perdió el control y terminó impactando el terreno?'],['enlaceC2','¿Deterioro significativo o pérdida total del enlace C2?'],['meteoNoPrev','¿La UA estuvo expuesta a condiciones meteorológicas no previstas?'],['meteoAdversa','¿La pérdida de control estuvo asociada a meteo adversa?'],['visual','¿En VLOS o EVLOS se perdió el contacto visual requerido con la UA?']];
-// IMSAFE calificado: cada opción lleva [valor, texto, calificativo, puntaje]. puntaje 9 = No apto (bloqueo).
-const IMSAFE=[
- {k:'illness',letra:'I',q:'Illness — Enfermedad',opts:[['sano','Sano, sin síntomas','Óptimo',0],['leve','Síntomas leves (molestia, resfriado)','Marginal',2],['enfermo','Enfermo, con fiebre o dolor','No apto',9]]},
- {k:'medication',letra:'M',q:'Medication — Medicación',opts:[['ninguna','Ninguna','Óptimo',0],['otc','Sin efectos secundarios','Aceptable',1],['sedante','Con efectos / sedante','No apto',9]]},
- {k:'stress',letra:'S',q:'Stress — Estrés',opts:[['bajo','Bajo','Óptimo',0],['moderado','Moderado','Marginal',2],['alto','Alto','No apto',9]]},
- {k:'alcohol',letra:'A',q:'Alcohol',opts:[['ninguno','Ninguno en las últimas 8 h','Óptimo',0],['reciente','Consumo en menos de 8 h','No apto',9]]},
- {k:'fatigue',letra:'F',q:'Fatigue — Fatiga',opts:[['descansado','Descansado, dormí bien','Óptimo',0],['algo','Algo cansado','Marginal',2],['fatigado','Fatigado / dormí menos de 8 h','No apto',9]]},
- {k:'emotion',letra:'E',q:'Emotion — Emoción',opts:[['estable','Estable','Óptimo',0],['alterado','Algo alterado','Marginal',2],['muy','Muy alterado (ira, duelo, ansiedad)','No apto',9]]}
-];
-const COND=[
- {k:'meteoCond',q:'Condición meteorológica',opts:[['ok','Visibilidad > 8 km y techo operacional de 1 km',false],['marginal','5 km de visibilidad y 300 m de techo (menos de 8 km / 1 km)','warn']]},
- {k:'vueloEs',q:'El vuelo es…',opts:[['dia','De día',false],['noche','De noche',false]]},
- {k:'planeacion',q:'Planeación del vuelo',opts:[['software','Despego usando el software de planificación del UAS',false],['sinAfan','No estoy afanado por despegar',false]]}
+// Análisis de riesgo (EPM): cada opción lleva [valor, texto, puntaje]. La app suma internamente y solo muestra la calificación.
+const RIESGO=[
+ {k:'sueno',q:'¿Cómo durmió?',opts:[['bien','Dormí bien',0],['mal','No dormí bien o dormí menos de 8 horas',2]]},
+ {k:'siente',q:'¿Cómo se siente?',opts:[['bien','Me siento bien',0],['decaido','Me siento decaído',2],['enfermo','Estoy resfriado o enfermo',4]]},
+ {k:'meteo',q:'Condición meteorológica',opts:[['vis8','Visibilidad horizontal superior a 8 km y techo operacional de 1 km',1],['vis5','Al menos 5 km de visibilidad y 300 m de techo, pero menos de 8 km / 1 km',3],['imc','Condiciones meteorológicas por instrumentos (IMC)',4]]},
+ {k:'dia',q:'¿Cómo va su día?',opts:[['bueno','Tengo un buen día',0],['complicado','Tengo un día complicado (llegué tarde, cometí errores)',3]]},
+ {k:'vuelo',q:'El vuelo es',opts:[['dia','De día',1],['noche','De noche',3]]},
+ {k:'planeacion',q:'Planeación del despegue',opts:[['software','Despego usando el software de planificación del UAS',0],['sinAfan','No estoy afanado por despegar',1],['afanado','Estoy afanado por despegar',3]]},
+ {k:'programa',q:'¿Se utilizó un programa informático para toda la planificación?',opts:[['si','Sí',0],['no','No',3]]},
+ {k:'pesoBalance',q:'¿Verificó el peso y balance de la UA?',opts:[['si','Sí',0],['no','No',3]]},
+ {k:'funcionamiento',q:'¿Evaluó el funcionamiento de la UA?',opts:[['si','Sí',0],['no','No',3]]},
+ {k:'coordino',q:'¿Coordinó las funciones con el personal operativo UAS?',opts:[['si','Sí',0],['no','No',3]]}
 ];
 
 const K={fl:'bvd_flota',pilots:'bvd_pilotos',proj:'bvd_proyectos',ops:'bvd_operaciones',draft:'bvd_draft'};
@@ -399,6 +421,7 @@ const save=(k,v)=>{try{localStorage.setItem(k,JSON.stringify(v));return true}cat
 let flota=load(K.fl,[]),pilotos=load(K.pilots,[]),proyectos=load(K.proj,[]),operaciones=load(K.ops,[]);
 let editDroneId=null,editPilotId=null,editProjId=null,pendingCipus=[];
 let expandedProj=new Set();
+let editingOpId=null;
 // Migración: operaciones antiguas con proyecto (texto) → crea entidad proyecto y enlaza
 function migrateProjects(){let ch=false;
   operaciones.forEach(o=>{if(!o.proyectoId){const nm=o.proyecto||'Sin proyecto';let p=proyectos.find(x=>x.nombre===nm);
@@ -428,7 +451,7 @@ const Assets={readyP:null,useIDB:false,db:null,cache:{},
 function isDataURL(v){return typeof v==='string'&&v.slice(0,5)==='data:'}
 function assetSrc(v){return isDataURL(v)?v:(Assets.cache[v]||'')}
 async function preloadAssets(ids){for(const v of (ids||[])){if(v&&!isDataURL(v))await Assets.get(v);}}
-function opAssetIds(o){return[].concat(o.fotosPre||[],o.fotosPos||[],(o.aut&&o.aut.pdf&&o.aut.pdf.id)?[o.aut.pdf.id]:[])}
+function opAssetIds(o){return[].concat(o.fotosPre||[],o.fotosPos||[],o.fotoDron?[o.fotoDron]:[],o.fotoMeteo?[o.fotoMeteo]:[],(o.aut&&o.aut.pdf&&o.aut.pdf.id)?[o.aut.pdf.id]:[])}
 // Migra binarios embebidos (dataURL) de operaciones antiguas a Assets, dejando ids en localStorage
 async function migrateAssets(){let ch=false;
   for(const o of operaciones){
@@ -442,7 +465,7 @@ async function storageInfo(){let idb=0,quota=0;
   return{idb,quota,ls,mode:Assets.useIDB?'IndexedDB':'localStorage'};}
 function fmtMB(b){return (b/1048576).toFixed(1)+' MB'}
 let st=blankState();
-function blankState(){return{oficina:{},prevuelo:{},posvuelo:{},ocurr:{},hf:{},sorties:[],fotosPre:[],fotosPos:[],autPdf:null}}
+function blankState(){return{oficina:{},prevuelo:{},posvuelo:{},ocurr:{},hf:{},sorties:[],fotosPre:[],fotosPos:[],fotoDron:null,fotoMeteo:null,autPdf:null}}
 
 const $=id=>document.getElementById(id);
 const uid=()=>Date.now().toString(36)+Math.random().toString(36).slice(2,6);
@@ -458,8 +481,9 @@ function projName(o){const p=proyectoById(o.proyectoId);return p?p.nombre:(o.pro
 function hasCert(p,tipo){return !!(p&&p.cipus&&p.cipus.some(c=>(c.tipo||c)===tipo))}
 
 function nav(v){document.querySelectorAll('.view').forEach(x=>x.classList.remove('active'));$('v-'+v).classList.add('active');
-  document.querySelectorAll('nav button').forEach(b=>b.classList.toggle('active',b.dataset.view===v));window.scrollTo(0,0);
-  if(v==='nueva')prepNueva();if(v==='flota')renderFleet();if(v==='pilotos')renderPilots();if(v==='hist')renderHistory();
+  const tab=(v==='nueva')?'oper':v;
+  document.querySelectorAll('nav button').forEach(b=>b.classList.toggle('active',b.dataset.view===tab));window.scrollTo(0,0);
+  if(v==='nueva')prepNueva();if(v==='oper')renderOper();if(v==='vuelos')renderVuelos();if(v==='flota')renderFleet();if(v==='pilotos')renderPilots();if(v==='hist')renderHistory();
   if(v==='bitacora')renderConsolPilotos();if(v==='libro')renderConsolDrones();if(v==='datos')renderStorage();}
 
 /* ---------- pilotos ---------- */
@@ -530,28 +554,21 @@ function renderOcurr(){$('ocurrList').innerHTML=OCURRENCIAS.map(([k,q])=>{const 
   return `<div class="sino inv"><div class="q">${q}</div><div class="btns">
     <button type="button" class="b si ${v==='si'?'on':''}" onclick="setSN('ocurr','${k}','si')">Sí</button>
     <button type="button" class="b no ${v==='no'?'on':''}" onclick="setSN('ocurr','${k}','no')">No</button></div></div>`}).join('');}
-function imsafeResult(){let sum=0,block=false,answered=0;
-  IMSAFE.forEach(f=>{const o=f.opts.find(x=>x[0]===st.hf[f.k]);if(o){answered++;if(o[3]>=9)block=true;else sum+=o[3];}});
-  let calif,cls;
-  if(block){calif='NO APTO';cls='noapto';}
-  else if(answered<IMSAFE.length){calif='INCOMPLETO';cls='prec';}
-  else if(sum>=5){calif='NO APTO';cls='noapto';}
-  else if(sum>=1){calif='PRECAUCIÓN';cls='prec';}
-  else{calif='APTO';cls='apto';}
-  return{sum,block,answered,calif,cls};}
+function riesgoResult(){let sum=0,answered=0;
+  RIESGO.forEach(f=>{const o=f.opts.find(x=>x[0]===st.hf[f.k]);if(o){answered++;sum+=o[2];}});
+  const complete=answered===RIESGO.length;let calif,cls;
+  if(!complete){calif='INCOMPLETO';cls='prec';}
+  else if(sum<=20){calif='SEGURO';cls='apto';}
+  else{calif='INSEGURO';cls='noapto';}
+  return{sum,answered,total:RIESGO.length,complete,calif,cls};}
 function renderHF(){
-  const ims=IMSAFE.map(f=>{const v=st.hf[f.k];
-    return `<div class="choice"><div class="q"><span class="letra">${f.letra}</span>${f.q}</div><div class="opts">
-    ${f.opts.map(([ok,txt,cal,sc])=>{const on=v===ok;const cc=sc>=9?'c9':sc>=1?'c1':'c0';
-      return `<div class="copt ${on?'on':''} ${on&&sc>=9?'red':''}" onclick="setHF('${f.k}','${ok}')"><span>${txt}</span><span class="calif ${cc}">${cal}</span></div>`}).join('')}</div></div>`}).join('');
-  const r=imsafeResult();
-  const label=r.calif==='APTO'?'✓ APTO PARA VOLAR':r.calif==='NO APTO'?'✕ NO APTO PARA VOLAR':r.calif==='PRECAUCIÓN'?'⚠ PRECAUCIÓN':'IMSAFE incompleto';
-  const res=`<div class="imsafeRes ${r.cls}">${label}<span class="sc">Puntaje ${r.sum}${r.answered<IMSAFE.length?' · faltan '+(IMSAFE.length-r.answered)+' factor(es)':''}</span></div>`;
-  const cond=COND.map(f=>`<div class="choice"><div class="q">${f.q}</div><div class="opts">
-    ${f.opts.map(([ok,txt,red])=>{const on=st.hf[f.k]===ok;const rc=(red==='warn'&&on)?'red':'';return `<div class="copt ${on?'on':''} ${rc}" onclick="setHF('${f.k}','${ok}')"><span>${txt}</span></div>`}).join('')}</div></div>`).join('');
-  $('hfBlock').innerHTML=ims+res+'<div class="sectlabel">Condiciones operativas</div>'+cond;}
+  const q=RIESGO.map(f=>`<div class="choice"><div class="q">${esc(f.q)}</div><div class="opts">${f.opts.map(o=>`<div class="copt ${st.hf[f.k]===o[0]?'on':''}" onclick="setHF('${f.k}','${o[0]}')"><span>${esc(o[1])}</span></div>`).join('')}</div></div>`).join('');
+  const r=riesgoResult();
+  const label=r.calif==='SEGURO'?'✓ SEGURO PARA OPERACIÓN UAS':r.calif==='INSEGURO'?'✕ INSEGURO PARA OPERACIÓN UAS — Reevalúe su operación':'Análisis de riesgo incompleto';
+  const res=`<div class="imsafeRes ${r.cls}">${label}${r.complete?'':`<span class="sc">faltan ${r.total-r.answered} respuesta(s)</span>`}</div>`;
+  $('hfBlock').innerHTML=q+res;}
 function setHF(k,v){st.hf[k]=(st.hf[k]===v?null:v);renderHF();verdict();saveDraft();}
-function morCheck(){const any=OCURRENCIAS.some(([k])=>st.ocurr[k]==='si');$('morFlag').innerHTML=any?'<div class="alert bad"><span>⚠️</span><div>Ocurrencias marcadas: se requiere diligenciar el <b>MOR (F-EPM-03)</b> por fuera de esta app.</div></div>':'';}
+function morCheck(){const el=$('morFlag');if(el)el.innerHTML='';}
 
 /* ---------- sorties ---------- */
 function addSortie(d){st.sorties.push(d||{fecha:($('p_inicio').value||'').slice(0,10),inicio:'',fin:'',pilotoId:$('g_pilotoId').value||'',observadorId:'',batDesp:'',batAter:'',obs:''});renderSorties();saveDraft();}
@@ -602,11 +619,9 @@ function verdict(){const box=$('verdictBox'),word=$('vWord'),desc=$('vDesc'),lig
     if(bv&&!d.habBVLOS)block.push('Dron no habilitado para BVLOS');}
   CHK_OFICINA.forEach(([k,q,c])=>{if(c){if(st.oficina[k]==='no')block.push('Oficina: '+shortQ(q));else if(!st.oficina[k])pend.push('Oficina: '+shortQ(q));}});
   CHK_PREVUELO.forEach(([k,q,c])=>{if(c){if(st.prevuelo[k]==='no')block.push('Pre-vuelo: '+shortQ(q));else if(!st.prevuelo[k])pend.push('Pre-vuelo: '+shortQ(q));}});
-  const ir=imsafeResult();
-  if(ir.calif==='NO APTO')block.push('IMSAFE: piloto no apto para volar (puntaje '+ir.sum+')');
-  else if(ir.calif==='PRECAUCIÓN')warn.push('IMSAFE: precaución (puntaje '+ir.sum+')');
-  else if(ir.calif==='INCOMPLETO')warn.push('IMSAFE sin completar');
-  COND.forEach(f=>{const o=f.opts.find(x=>x[0]===st.hf[f.k]);if(o&&o[2]==='warn')warn.push('Condición: '+o[1]);});
+  const ir=riesgoResult();
+  if(ir.calif==='INSEGURO')block.push('Análisis de riesgo: INSEGURO para operación UAS');
+  else if(ir.calif==='INCOMPLETO')pend.push('Análisis de riesgo sin completar');
   let cls,w,dtxt,ic;
   if(block.length){cls='nogo';w='NO-GO';ic='✕';dtxt=block.length+' condición(es) de bloqueo';}
   else if(pend.length){cls='pend';w='PENDIENTE';ic='!';dtxt=pend.length+' verificación(es) crítica(s) sin responder';}
@@ -627,6 +642,17 @@ function addPhotos(e,tipo){const files=[...e.target.files];e.target.value='';
 function renderPhotos(tipo){const arr=tipo==='pre'?st.fotosPre:st.fotosPos;$('grid_'+tipo).innerHTML=arr.map((v,i)=>`<div class="ph"><img src="${assetSrc(v)}"><button onclick="rmPhoto('${tipo}',${i})">×</button></div>`).join('');}
 function rmPhoto(tipo,i){const arr=(tipo==='pre'?st.fotosPre:st.fotosPos);const v=arr[i];arr.splice(i,1);if(v&&!isDataURL(v))Assets.del(v);renderPhotos(tipo);saveDraft();}
 
+function addNamedPhoto(e,slot){const f=e.target.files[0];e.target.value='';if(!f)return;
+  const r=new FileReader();r.onload=ev=>{const img=new Image();img.onload=async()=>{
+    const max=1280,sc=Math.min(1,max/Math.max(img.width,img.height));const c=document.createElement('canvas');
+    c.width=img.width*sc;c.height=img.height*sc;c.getContext('2d').drawImage(img,0,0,c.width,c.height);
+    const id=uid();const ok=await Assets.put(id,c.toDataURL('image/jpeg',0.6));if(!ok){toast('Sin espacio para la foto');return;}
+    if(st[slot]&&!isDataURL(st[slot]))Assets.del(st[slot]);
+    st[slot]=id;renderNamedPhoto(slot);saveDraft();};img.src=ev.target.result;};r.readAsDataURL(f);}
+function renderNamedPhoto(slot){const el=$('row_'+slot);if(!el)return;const v=st[slot];
+  el.innerHTML=v?`<div class="photos"><div class="ph"><img src="${assetSrc(v)}"><button onclick="rmNamedPhoto('${slot}')">×</button></div></div>`:'<div class="hint" style="color:var(--rojo)">Obligatoria — aún sin foto.</div>';}
+function rmNamedPhoto(slot){const v=st[slot];if(v&&!isDataURL(v))Assets.del(v);st[slot]=null;renderNamedPhoto(slot);saveDraft();}
+
 /* ---------- borrador (autoguardado) ---------- */
 function collectForm(){return{proyId:$('g_proyId').value,pilotoId:$('g_pilotoId').value,
   tipoOp:{diurna:isOp('diurna'),nocturna:isOp('nocturna'),vlos:isOp('vlos'),evlos:isOp('evlos'),bvlos:isOp('bvlos')},
@@ -640,12 +666,14 @@ async function loadDraft(){const d=load(K.draft,null);if(!d)return false;
   $('p_inicio').value=d.pInicio||'';$('q_fin').value=d.qFin||'';$('p_obs').value=d.pObs||'';$('q_obs').value=d.qObs||'';
   st=Object.assign(blankState(),d.st||{});
   Object.entries(d.tipoOp||{}).forEach(([k,val])=>{const el=document.querySelector(`#v-nueva [data-op="${k}"]`);if(el){el.checked=val;el.closest('.pill').classList.toggle('on',val)}});
-  await preloadAssets([].concat(st.fotosPre||[],st.fotosPos||[],(st.autPdf&&st.autPdf.id)?[st.autPdf.id]:[]));
-  renderPhotos('pre');renderPhotos('pos');renderPdfRow();
+  renderSiNo('chkOficina',CHK_OFICINA,'oficina');renderSiNo('chkPrevuelo',CHK_PREVUELO,'prevuelo');renderSiNo('chkPosvuelo',CHK_POSVUELO,'posvuelo');
+  renderHF();renderOcurr();renderSorties();
+  await preloadAssets([].concat(st.fotosPre||[],st.fotosPos||[],st.fotoDron?[st.fotoDron]:[],st.fotoMeteo?[st.fotoMeteo]:[],(st.autPdf&&st.autPdf.id)?[st.autPdf.id]:[]));
+  renderPhotos('pre');renderPhotos('pos');renderNamedPhoto('fotoDron');renderNamedPhoto('fotoMeteo');renderPdfRow();
   setTimeout(()=>{if(d.proyId)$('g_proyId').value=d.proyId;if(d.pilotoId)$('g_pilotoId').value=d.pilotoId;if(d.dron)$('g_dron').value=d.dron;verdict();},0);
   return true;}
 function discardDraft(){if(!confirm('¿Descartar el borrador en curso?'))return;
-  const ids=[].concat(st.fotosPre||[],st.fotosPos||[],(st.autPdf&&st.autPdf.id)?[st.autPdf.id]:[]);
+  const ids=[].concat(st.fotosPre||[],st.fotosPos||[],st.fotoDron?[st.fotoDron]:[],st.fotoMeteo?[st.fotoMeteo]:[],(st.autPdf&&st.autPdf.id)?[st.autPdf.id]:[]);
   const used=new Set();operaciones.forEach(o=>opAssetIds(o).forEach(a=>used.add(a)));
   ids.forEach(a=>{if(a&&!isDataURL(a)&&!used.has(a))Assets.del(a);});
   localStorage.removeItem(K.draft);resetForm(true);$('draftBar').innerHTML='';toast('Borrador descartado');}
@@ -656,9 +684,10 @@ function prepNueva(){
   $('g_pilotoId').innerHTML=pilotOptions('');
   $('g_proyId').innerHTML=proyectos.length?'<option value="">— proyecto —</option>'+proyectos.map(p=>`<option value="${p.id}">${esc(p.nombre)}</option>`).join(''):'<option value="">— sin proyectos —</option>';
   renderSiNo('chkOficina',CHK_OFICINA,'oficina');renderSiNo('chkPrevuelo',CHK_PREVUELO,'prevuelo');renderSiNo('chkPosvuelo',CHK_POSVUELO,'posvuelo');
-  renderHF();renderOcurr();renderSorties();renderPhotos('pre');renderPhotos('pos');renderPdfRow();morCheck();
-  const hasDraft=localStorage.getItem(K.draft);
-  $('draftBar').innerHTML=hasDraft?'<div class="alert info"><span>💾</span><div>Borrador en curso (autoguardado). <a href="#" onclick="discardDraft();return false" style="color:#065f46;font-weight:700">Descartar</a></div></div>':'';
+  renderHF();renderOcurr();renderSorties();renderPhotos('pre');renderPhotos('pos');renderNamedPhoto('fotoDron');renderNamedPhoto('fotoMeteo');renderPdfRow();morCheck();
+  const hasDraft=localStorage.getItem(K.draft);const sb=$('saveOpBtn');
+  if(editingOpId){$('draftBar').innerHTML='<div class="alert info"><span>✏️</span><div>Editando una operación guardada. <a href="#" onclick="cancelEdit();return false" style="color:#065f46;font-weight:700">Cancelar edición</a></div></div>';if(sb)sb.textContent='Guardar cambios';}
+  else{$('draftBar').innerHTML=hasDraft?'<div class="alert info"><span>💾</span><div>Borrador en curso (autoguardado). <a href="#" onclick="discardDraft();return false" style="color:#065f46;font-weight:700">Descartar</a></div></div>':'';if(sb)sb.textContent='Guardar operación';}
   if(hasDraft)loadDraft();
   let w='';if(!proyectos.length)w+='<div class="alert warn"><span>⚠️</span><div>No hay <b>proyectos</b>. Creá uno en la pestaña Proyectos para asociarle la operación.</div></div>';
   if(!pilotos.length)w+='<div class="alert warn"><span>⚠️</span><div>No hay <b>pilotos</b> cargados. Agregá al menos uno.</div></div>';
@@ -667,6 +696,7 @@ function prepNueva(){
 
 /* ---------- guardar operación ---------- */
 function saveOp(){const pr=proyectoById($('g_proyId').value);if(!pr){toast('Seleccioná o creá un proyecto');nav('nueva');return;}
+  if(!st.fotoDron||!st.fotoMeteo){toast('Faltan las fotos obligatorias: dron/puerto y app de meteorología');nav('nueva');return;}
   const v=verdict();
   const d=dronById($('g_dron').value);const pp=pilotById($('g_pilotoId').value);
   const nm=id=>{const p=pilotById(id);return p?p.nombre:''};
@@ -677,28 +707,70 @@ function saveOp(){const pr=proyectoById($('g_proyId').value);if(!pr){toast('Sele
     aut:{radicado:$('a_rad').value.trim(),id:$('a_id').value.trim(),ini:$('a_ini').value,fin:$('a_fin').value,pdf:st.autPdf},
     inicioOp:$('p_inicio').value,finOp:$('q_fin').value,
     oficina:{...st.oficina},prevuelo:{...st.prevuelo},posvuelo:{...st.posvuelo},hf:{...st.hf},ocurr:{...st.ocurr},
-    imsafe:imsafeResult(),
+    riesgo:riesgoResult(),
     obsPre:$('p_obs').value.trim(),obsPos:$('q_obs').value.trim(),
     sorties:st.sorties.map(s=>({...s,piloto:nm(s.pilotoId),observador:nm(s.observadorId),dur:sortieDur(s)})),
-    fotosPre:st.fotosPre.slice(),fotosPos:st.fotosPos.slice(),
-    verdict:v.verdict,block:v.block,pend:v.pend,warn:v.warn,requiereMOR:OCURRENCIAS.some(([k])=>st.ocurr[k]==='si'),
+    fotosPre:st.fotosPre.slice(),fotosPos:st.fotosPos.slice(),fotoDron:st.fotoDron||null,fotoMeteo:st.fotoMeteo||null,
+    verdict:v.verdict,block:v.block,pend:v.pend,warn:v.warn,requiereMOR:false,
     operadorPiloto:pp?{cedula:pp.cedula,cipus:pp.cipus,med:pp.med}:null};
+  if(editingOpId){const i=operaciones.findIndex(x=>x.id===editingOpId);
+    if(i>=0){rec.id=editingOpId;rec.ts=operaciones[i].ts;operaciones[i]=rec;}else operaciones.unshift(rec);
+    if(!save(K.ops,operaciones)){toast('Sin espacio: quitá fotos o el PDF adjunto');return;}
+    editingOpId=null;localStorage.removeItem(K.draft);toast('Cambios guardados ('+v.verdict+')');resetForm(false);nav('oper');return;}
   operaciones.unshift(rec);
   if(!save(K.ops,operaciones)){operaciones.shift();toast('Sin espacio: quitá fotos o el PDF adjunto');return;}
-  localStorage.removeItem(K.draft);toast('Operación guardada ('+v.verdict+')');resetForm(false);nav('hist');}
+  localStorage.removeItem(K.draft);toast('Operación guardada ('+v.verdict+')');resetForm(false);nav('oper');}
 function resetForm(clearAll){st=blankState();
   ['g_muni','g_depto','g_lat','g_lon','a_rad','a_id','a_ini','a_fin','p_inicio','q_fin','p_obs','q_obs'].forEach(i=>$(i).value='');
   if(clearAll){$('g_proyId').value='';$('g_pilotoId').value='';localStorage.removeItem(K.draft);$('draftBar').innerHTML='';}
   document.querySelectorAll('#v-nueva .pill').forEach(p=>{p.classList.remove('on');const c=p.querySelector('input');if(c)c.checked=false;});
   renderSiNo('chkOficina',CHK_OFICINA,'oficina');renderSiNo('chkPrevuelo',CHK_PREVUELO,'prevuelo');renderSiNo('chkPosvuelo',CHK_POSVUELO,'posvuelo');
-  renderHF();renderOcurr();renderSorties();renderPhotos('pre');renderPhotos('pos');renderPdfRow();morCheck();verdict();}
+  renderHF();renderOcurr();renderSorties();renderPhotos('pre');renderPhotos('pos');renderNamedPhoto('fotoDron');renderNamedPhoto('fotoMeteo');renderPdfRow();morCheck();verdict();}
 
 /* ---------- duplicar ---------- */
-function dupOp(id){const o=operaciones.find(x=>x.id===id);if(!o)return;
+function dupOp(id){const o=operaciones.find(x=>x.id===id);if(!o)return;editingOpId=null;
   const dr={proyId:o.proyectoId,pilotoId:o.pilotoId,tipoOp:o.tipoOp,muni:o.municipio,depto:o.departamento,lat:o.lat,lon:o.lon,dron:o.dronId,
     rad:o.aut&&o.aut.radicado,aid:o.aut&&o.aut.id,ini:o.aut&&o.aut.ini,fin:o.aut&&o.aut.fin,
     pInicio:'',qFin:'',pObs:'',qObs:'',st:Object.assign(blankState(),{autPdf:o.aut&&o.aut.pdf||null})};
   save(K.draft,dr);nav('nueva');toast('Datos copiados a una nueva operación');}
+
+/* ---------- vuelos (operaciones) ---------- */
+function renderOper(){updateDash();const cont=$('operList');if(!cont)return;const hasDraft=localStorage.getItem(K.draft);
+  let html='<button class="btn" onclick="nuevaOperacion()">＋ Nueva operación</button>';
+  if(hasDraft&&!editingOpId)html+='<div class="alert info" style="margin-top:10px"><span>💾</span><div>Tenés un <b>borrador en curso</b>. <a href="#" onclick="nav(\'nueva\');return false" style="color:#065f46;font-weight:700">Retomar</a> &nbsp;·&nbsp; <a href="#" onclick="discardDraft();renderOper();return false" style="color:#991b1b;font-weight:700">Descartar</a></div></div>';
+  const list=operaciones.slice().sort((a,b)=>(b.ts||0)-(a.ts||0));
+  if(!list.length){cont.innerHTML=html+'<div class="card empty" style="margin-top:12px">Todavía no hay operaciones. Tocá "＋ Nueva operación" para empezar.</div>';return;}
+  html+='<div style="margin-top:12px">'+list.map(o=>{const cls=o.verdict==='GO'?'go':o.verdict==='NO-GO'?'nogo':'pend';const m=totalMins(o.sorties);
+    return `<div class="card"><div style="display:flex;align-items:center;gap:10px"><span class="badge ${cls}">${o.verdict}</span>
+      <div style="flex:1"><div class="name" style="font-weight:700">${esc(projName(o))}</div>
+      <div class="meta">${esc(o.dronModelo||'Sin dron')} · ${fmtDate(o.inicioOp)||'sin fecha'}${o.sorties&&o.sorties.length?' · '+o.sorties.length+' vuelo(s) · '+(m/60).toFixed(1)+' h':''}</div></div></div>
+      <div class="btnrow" style="margin-top:10px;flex-wrap:wrap">
+        <button class="btn sec sm" onclick="editOp('${o.id}')">✎ Editar</button>
+        <button class="btn sec sm" onclick="viewOp('${o.id}')">👁 Ver</button>
+        <button class="btn sec sm" onclick="dupOp('${o.id}')">⧉ Duplicar</button>
+        <button class="btn sec sm" style="color:var(--rojo)" onclick="delOp('${o.id}')">🗑 Eliminar</button>
+      </div></div>`}).join('')+'</div>';
+  cont.innerHTML=html;}
+function nuevaOperacion(){if(localStorage.getItem(K.draft)&&!editingOpId&&!confirm('Hay un borrador en curso. Si empezás una nueva se descarta ese borrador. ¿Continuar?'))return;
+  editingOpId=null;localStorage.removeItem(K.draft);resetForm(true);nav('nueva');}
+function editOp(id){const o=operaciones.find(x=>x.id===id);if(!o)return;
+  const dr={proyId:o.proyectoId,pilotoId:o.pilotoId,tipoOp:o.tipoOp||{},muni:o.municipio,depto:o.departamento,lat:o.lat,lon:o.lon,dron:o.dronId,
+    rad:o.aut&&o.aut.radicado,aid:o.aut&&o.aut.id,ini:o.aut&&o.aut.ini,fin:o.aut&&o.aut.fin,
+    pInicio:o.inicioOp,qFin:o.finOp,pObs:o.obsPre,qObs:o.obsPos,
+    st:{oficina:{...(o.oficina||{})},prevuelo:{...(o.prevuelo||{})},posvuelo:{...(o.posvuelo||{})},ocurr:{...(o.ocurr||{})},hf:{...(o.hf||{})},
+        sorties:(o.sorties||[]).map(s=>({...s})),fotosPre:(o.fotosPre||[]).slice(),fotosPos:(o.fotosPos||[]).slice(),
+        fotoDron:o.fotoDron||null,fotoMeteo:o.fotoMeteo||null,autPdf:(o.aut&&o.aut.pdf)||null}};
+  editingOpId=id;save(K.draft,dr);nav('nueva');toast('Editando operación');}
+function cancelEdit(){editingOpId=null;localStorage.removeItem(K.draft);resetForm(true);nav('oper');}
+function renderVuelos(){const cont=$('vuelosList');if(!cont)return;
+  const rows=[];operaciones.forEach(o=>{(o.sorties||[]).forEach((s,i)=>rows.push({o,s,i}));});
+  rows.sort((a,b)=>(b.o.ts||0)-(a.o.ts||0));
+  if(!rows.length){cont.innerHTML='<div class="card empty">Aún no hay vuelos registrados.<br>Los vuelos se cargan dentro de una operación (Operaciones → Nueva o Editar → "＋ Agregar vuelo").</div>';return;}
+  cont.innerHTML='<div class="card"><h2>Registro de vuelos</h2><div class="hint">Cada vuelo individual con su operación y proyecto. Para modificarlo, editá su operación.</div></div>'+
+    rows.map(({o,s,i})=>`<div class="card"><div class="name" style="font-weight:700">${esc(projName(o))} · vuelo #${i+1}</div>
+      <div class="meta">${fmtDate(o.inicioOp)} · ${esc(o.dronModelo||'Sin dron')} · piloto ${esc(s.piloto||'—')}${s.observador?' · obs '+esc(s.observador):''}</div>
+      <div class="meta">${s.inicio||'?'}–${s.fin||'?'} · ${s.dur!=null?s.dur+' min':''} · bat ${s.batDesp||'?'}→${s.batAter||'?'}%</div>
+      <div class="btnrow" style="margin-top:8px"><button class="btn sec sm" onclick="editOp('${o.id}')">✎ Editar operación</button></div></div>`).join('');}
 
 /* ---------- historial ---------- */
 /* ---------- proyectos ---------- */
@@ -716,7 +788,7 @@ function delProject(id){const opsIn=operaciones.filter(o=>o.proyectoId===id);
   proyectos=proyectos.filter(x=>x.id!==id);operaciones=operaciones.filter(o=>o.proyectoId!==id);
   save(K.proj,proyectos);save(K.ops,operaciones);renderHistory();}
 function toggleProj(id){if(expandedProj.has(id))expandedProj.delete(id);else expandedProj.add(id);renderHistory();}
-function nuevaOpEnProyecto(pid){save(K.draft,{proyId:pid,st:blankState()});nav('nueva');toast('Nueva operación en el proyecto');}
+function nuevaOpEnProyecto(pid){editingOpId=null;save(K.draft,{proyId:pid,st:blankState()});nav('nueva');toast('Nueva operación en el proyecto');}
 
 function renderHistory(){updateDash();const cont=$('projList');
   if(!proyectos.length){cont.innerHTML='<div class="card empty">No hay proyectos todavía.<br>Creá el primero arriba (por ejemplo, una LT completa) y después agregale operaciones.</div>';return}
@@ -726,7 +798,7 @@ function renderHistory(){updateDash();const cont=$('projList');
     const mins=ops.reduce((a,o)=>a+totalMins(o.sorties),0);const vuelos=ops.reduce((a,o)=>a+((o.sorties||[]).length),0);const open=expandedProj.has(pr.id);
     const opItems=ops.map(o=>{const cls=o.verdict==='GO'?'go':o.verdict==='NO-GO'?'nogo':'pend';const m=totalMins(o.sorties);
       return `<div class="item"><div class="top"><span class="badge ${cls}">${o.verdict}</span>
-      <div><div class="name">${esc(o.dronModelo||'Sin dron')} · ${(o.inicioOp||'').slice(0,10)||''}</div>
+      <div><div class="name">${esc(o.dronModelo||'Sin dron')} · ${fmtDate(o.inicioOp)}</div>
       <div class="meta">${esc(o.municipio||'')}${o.sorties&&o.sorties.length?' · '+o.sorties.length+' vuelo(s) · '+(m/60).toFixed(1)+' h':''}${o.requiereMOR?' · MOR':''}</div></div>
       <div class="acts"><button class="icon-btn" onclick="dupOp('${o.id}')">⧉</button><button class="icon-btn" onclick="viewOp('${o.id}')">👁</button><button class="icon-btn del" onclick="delOp('${o.id}')">🗑</button></div></div></div>`}).join('')||'<div class="empty" style="padding:14px">Sin operaciones aún.</div>';
     return `<div class="card"><div style="display:flex;align-items:center;gap:10px;cursor:pointer" onclick="toggleProj('${pr.id}')">
@@ -741,7 +813,7 @@ function renderHistory(){updateDash();const cont=$('projList');
           <button class="icon-btn" onclick="editProject('${pr.id}')">✎</button>
           <button class="icon-btn del" onclick="delProject('${pr.id}')">🗑</button>
         </div></div>`:''}</div>`}).join('');}
-function delOp(id){if(!confirm('¿Eliminar esta operación?'))return;const o=operaciones.find(x=>x.id===id);if(o)opAssetIds(o).forEach(a=>Assets.del(a));operaciones=operaciones.filter(x=>x.id!==id);save(K.ops,operaciones);renderHistory();}
+function delOp(id){if(!confirm('¿Eliminar esta operación?'))return;const o=operaciones.find(x=>x.id===id);if(o)opAssetIds(o).forEach(a=>Assets.del(a));operaciones=operaciones.filter(x=>x.id!==id);save(K.ops,operaciones);renderHistory();renderOper();}
 function viewOp(id){const o=operaciones.find(x=>x.id===id);if(o)printReport([o],projName(o));}
 function updateDash(){$('dTot').textContent=operaciones.length;$('dGo').textContent=operaciones.filter(o=>o.verdict==='GO').length;
   $('dNogo').textContent=operaciones.filter(o=>o.verdict==='NO-GO').length;
@@ -772,7 +844,7 @@ function renderConsolPilotos(){const sel=$('pilotConsol');const cur=sel.value;
   const opsList=operaciones.filter(o=>o.pilotoId===sel.value||(o.sorties||[]).some(x=>x.pilotoId===sel.value||x.observadorId===sel.value));
   const detail=opsList.map(o=>{const mine=(o.sorties||[]).filter(x=>x.pilotoId===sel.value);const mins=mine.reduce((a,x)=>a+(x.dur||0),0);
     const obs=(o.sorties||[]).filter(x=>x.observadorId===sel.value).length;
-    return `<div class="item"><div class="top"><div><div class="name">${esc(projName(o))} · ${(o.inicioOp||'').slice(0,10)}</div>
+    return `<div class="item"><div class="top"><div><div class="name">${esc(projName(o))} · ${fmtDate(o.inicioOp)}</div>
     <div class="meta">${esc(o.dronModelo||'')} · ${mine.length} PIC · ${(mins/60).toFixed(1)} h${obs?' · '+obs+' obs':''}</div></div></div></div>`}).join('');
   cont.innerHTML=`<div class="card"><h2>${esc(p.nombre)}</h2>${statGrid(s.ops,s.vuelos,s.horas.toFixed(1),'Operaciones','Vuelos (PIC)','Horas')}
     ${s.obs?`<div class="hint" style="margin-top:10px">Además, ${s.obs} vuelo(s) como observador.</div>`:''}</div>
@@ -791,7 +863,7 @@ function renderConsolDrones(){const sel=$('dronConsol');const cur=sel.value;
   const d=dronById(sel.value);const s=droneStats(sel.value);
   const opsList=operaciones.filter(o=>o.dronId===sel.value);
   const detail=opsList.map(o=>{const mins=totalMins(o.sorties);
-    return `<div class="item"><div class="top"><div><div class="name">${esc(projName(o))} · ${(o.inicioOp||'').slice(0,10)}</div>
+    return `<div class="item"><div class="top"><div><div class="name">${esc(projName(o))} · ${fmtDate(o.inicioOp)}</div>
     <div class="meta">${esc(o.piloto||'')} · ${(o.sorties||[]).length} vuelo(s) · ${(mins/60).toFixed(1)} h</div></div></div></div>`}).join('');
   cont.innerHTML=`<div class="card"><h2>${esc(d.modelo)}</h2><div class="hint" style="margin:-6px 0 12px">Serial ${esc(d.serial||'—')} · RUAS ${esc(d.ruas||'—')} · Máximo ${esc(d.maximo||'—')}</div>
     ${statGrid(s.ops,s.vuelos,s.horas.toFixed(1),'Operaciones','Vuelos','Horas')}</div>
@@ -800,11 +872,23 @@ function renderConsolDrones(){const sel=$('dronConsol');const cur=sel.value;
 /* ---------- exportes ---------- */
 function exportPDF(){if(!operaciones.length){toast('No hay operaciones');return}printReport(operaciones,'Todas las operaciones');}
 function exportProjectPDF(pid){const list=operaciones.filter(o=>o.proyectoId===pid);if(!list.length){toast('El proyecto no tiene operaciones');return}printReport(list,(proyectoById(pid)||{}).nombre||'Proyecto');}
-function siNoTable(cfg,state){return `<table>${cfg.map(([k,q])=>`<tr><td class="k">${esc(q)}</td><td class="v ${state[k]==='no'?'no':state[k]==='si'?'si':''}">${state[k]?state[k].toUpperCase():'—'}</td></tr>`).join('')}</table>`;}
+function siNoTable(cfg,state,invert){return `<table>${cfg.map(([k,q])=>{const val=state[k];const cls=val?(invert?(val==='si'?'no':'si'):val):'';return `<tr><td class="k">${esc(q)}</td><td class="v ${cls}">${val?val.toUpperCase():'—'}</td></tr>`}).join('')}</table>`;}
+function fmtDate(s){if(!s)return '';const m=String(s).match(/^(\d{4})-(\d{2})-(\d{2})/);return m?`${m[3]}-${m[2]}-${m[1]}`:s;}
+function fmtDT(s){if(!s)return '';const m=String(s).match(/^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2})/);if(m)return `${m[3]}-${m[2]}-${m[1]} ${m[4]}:${m[5]}`;return fmtDate(s);}
+async function pdfToImages(dataURL,scale){if(typeof pdfjsLib==='undefined')throw new Error('LIB');
+  if(pdfjsLib.GlobalWorkerOptions&&!pdfjsLib.GlobalWorkerOptions.workerSrc){const sc=document.querySelector('script[src*="pdf.min.js"]');pdfjsLib.GlobalWorkerOptions.workerSrc=sc?sc.src.replace(/pdf\.min\.js.*$/,'pdf.worker.min.js'):'pdf.worker.min.js';}
+  const raw=atob(dataURL.split(',')[1]);const u=new Uint8Array(raw.length);for(let i=0;i<raw.length;i++)u[i]=raw.charCodeAt(i);
+  const pdf=await pdfjsLib.getDocument({data:u}).promise;const out=[];const n=Math.min(pdf.numPages,25);
+  for(let p=1;p<=n;p++){const page=await pdf.getPage(p);const vp=page.getViewport({scale:scale||1.6});
+    const c=document.createElement('canvas');c.width=vp.width;c.height=vp.height;
+    await page.render({canvasContext:c.getContext('2d'),viewport:vp}).promise;out.push(c.toDataURL('image/jpeg',0.85));}
+  return out;}
 async function printReport(list,titulo){const w=window.open('','_blank');if(w)w.document.write('<p style="font-family:sans-serif;padding:20px">Preparando reporte…</p>');
   for(const o of list)await preloadAssets(opAssetIds(o));
   if(!w){toast('Permití ventanas emergentes para ver el PDF');return;}
   const body=list.map(o=>opBlock(o)).join('<div style="page-break-after:always"></div>');
+  let annex='';
+  for(const o of list){if(o.aut&&o.aut.pdf&&o.aut.pdf.id){const data=await Assets.get(o.aut.pdf.id);if(data){try{const imgs=await pdfToImages(data);if(imgs.length)annex+='<div style="page-break-before:always"></div><h2 style="font-size:15px;color:#007934;border-bottom:2px solid #007934;padding-bottom:4px">Anexo — Autorización · '+esc(projName(o))+' · '+fmtDT(o.inicioOp)+'</h2>'+imgs.map(im=>'<img src="'+im+'" style="width:100%;display:block;margin:8px 0;border:1px solid #cbd5e1">').join('');}catch(e){const msg=(e&&e.message==='LIB')?'La librería pdf.js no está cargada: subí <b>pdf.min.js</b> y <b>pdf.worker.min.js</b> al repositorio (junto a index.html) y abrí la app instalada, no como archivo local.':('Detalle técnico: '+esc(e&&e.message||''));annex+='<p style="color:#b45309;border:1px solid #fcd34d;background:#fffbeb;padding:8px 10px;border-radius:8px">No se pudo incrustar el PDF adjunto <b>'+esc((o.aut.pdf.name)||'')+'</b>. '+msg+'</p>';}}}}
   w.document.open();
   w.document.write(`<!DOCTYPE html><html><head><meta charset="utf-8"><title>Bitácora — ${esc(titulo)}</title><style>
   *{font-family:system-ui,sans-serif;color:#111}body{margin:0;padding:26px;background:#fff}
@@ -820,34 +904,35 @@ async function printReport(list,titulo){const w=window.open('','_blank');if(w)w.
   .rz{background:#fee2e2;border-radius:8px;padding:8px 12px;margin-top:8px;font-size:11.5px;color:#991b1b}
   .imgs{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}.imgs img{width:110px;height:110px;object-fit:cover;border-radius:6px}
   @media print{.blk{page-break-inside:avoid}}</style></head><body>
-  <div class="hd"><span class="lg">EPM</span><div><h1>Bitácora de Vuelo Dron</h1><div class="s">F-EPM-03 · RAC 100 · ${esc(titulo)}</div></div></div>
-  ${body}<p style="font-size:10px;color:#999;margin-top:18px">Generado ${new Date().toLocaleString('es-CO')} · Documento de soporte operacional</p></body></html>`);
+  <div class="hd"><img src="${EPM_LOGO}" style="height:44px;display:block"><div><h1>Bitácora de Vuelo Dron</h1><div class="s">F-EPM-03 · RAC 100 · ${esc(titulo)}</div></div></div>
+  ${body}${annex}<p style="font-size:10px;color:#999;margin-top:18px">Generado ${(function(){const n=new Date(),p=x=>String(x).padStart(2,'0');return p(n.getDate())+'-'+p(n.getMonth()+1)+'-'+n.getFullYear()+' '+p(n.getHours())+':'+p(n.getMinutes());})()} · Documento de soporte operacional</p></body></html>`);
   w.document.close();setTimeout(()=>w.print(),400);}
 function opBlock(o){const kv=(k,val)=>val?`<tr><td class="k">${k}</td><td>${esc(String(val))}</td></tr>`:'';
   const tipos=Object.entries(o.tipoOp||{}).filter(([,x])=>x).map(([k])=>k.toUpperCase()).join(', ');const mins=totalMins(o.sorties);
   const cipu=o.operadorPiloto&&o.operadorPiloto.cipus?o.operadorPiloto.cipus.map(c=>(c.num||c)+' ('+(c.tipo||'Piloto')+')').join(', '):'';
   const ced=o.operadorPiloto?o.operadorPiloto.cedula:'';
   const sr=(o.sorties||[]).map((s,i)=>`<tr><td class="k">#${i+1} — ${esc(s.piloto||'')}${s.observador?' / obs '+esc(s.observador):''}${s.obs?' · '+esc(s.obs):''}</td><td>${s.inicio||'?'}–${s.fin||'?'} · ${s.dur!=null?s.dur+' min':''} · bat ${s.batDesp||'?'}→${s.batAter||'?'}%</td></tr>`).join('');
-  return `<div class="blk"><div><span class="vd ${o.verdict==='GO'?'GO':o.verdict==='NO-GO'?'NOGO':'PEND'}">${o.verdict}</span>${o.requiereMOR?' <span class="vd" style="background:#b45309">MOR REQUERIDO</span>':''}</div>
+  return `<div class="blk"><div><span class="vd ${o.verdict==='GO'?'GO':o.verdict==='NO-GO'?'NOGO':'PEND'}">${o.verdict}</span></div>
   <h3>Datos generales</h3><table class="kv">${kv('Explotador','EPM')}${kv('Proyecto',projName(o))}${kv('Piloto principal',o.piloto)}${kv('Cédula',ced)}${kv('CIPU',cipu)}${kv('Tipo',tipos)}${kv('Ubicación',[o.municipio,o.departamento].filter(Boolean).join(', '))}${o.lat||o.lon?kv('Coordenadas',o.lat+', '+o.lon):''}${kv('Dron',o.dronModelo)}${kv('Serial',o.dronSerial)}${kv('RUAS',o.dronRuas)}${kv('Código Máximo',o.dronMaximo)}</table>
   <h3>Autorización</h3><table class="kv">${kv('Radicado',o.aut&&o.aut.radicado)}${kv('ID',o.aut&&o.aut.id)}${kv('Vigencia',o.aut?(o.aut.ini||'?')+' a '+(o.aut.fin||'?'):'')}${o.aut&&o.aut.pdf?kv('Certificado',o.aut.pdf.name):''}</table>
   <h3>Chequeo en oficina</h3>${siNoTable(CHK_OFICINA,o.oficina||{})}
-  <h3>Chequeo pre-vuelo</h3>${kv('Inicio operación',o.inicioOp)}${siNoTable(CHK_PREVUELO,o.prevuelo||{})}<h3>Aptitud psicofísica (IMSAFE)</h3>${hfTable(o)}${o.obsPre?`<table class="kv">${kv('Obs. pre-vuelo',o.obsPre)}</table>`:''}
+  <h3>Chequeo pre-vuelo</h3>${kv('Inicio operación',fmtDT(o.inicioOp))}${siNoTable(CHK_PREVUELO,o.prevuelo||{})}<h3>Análisis de riesgo</h3>${riesgoTable(o)}${o.obsPre?`<table class="kv">${kv('Obs. pre-vuelo',o.obsPre)}</table>`:''}
   <h3>Registro durante la operación</h3><table>${sr||'<tr><td class="k">Sin vuelos</td><td></td></tr>'}<tr><td class="k"><b>Total</b></td><td><b>${(o.sorties||[]).length} vuelo(s) · ${(mins/60).toFixed(1)} h</b></td></tr></table>
-  <h3>Chequeo pos-vuelo</h3>${siNoTable(CHK_POSVUELO,o.posvuelo||{})}${kv('Fin operación',o.finOp)}
-  <h3>Ocurrencias</h3>${siNoTable(OCURRENCIAS,o.ocurr||{})}${o.obsPos?`<table class="kv">${kv('Obs. pos-vuelo',o.obsPos)}</table>`:''}
+  <h3>Chequeo pos-vuelo</h3>${siNoTable(CHK_POSVUELO,o.posvuelo||{})}${kv('Fin operación',fmtDT(o.finOp))}
+  <h3>Ocurrencias</h3>${siNoTable(OCURRENCIAS,o.ocurr||{},true)}${o.obsPos?`<table class="kv">${kv('Obs. pos-vuelo',o.obsPos)}</table>`:''}
   ${o.block&&o.block.length?`<div class="rz"><b>NO-GO:</b> ${o.block.map(esc).join(' · ')}</div>`:''}
+  ${(o.fotoDron||o.fotoMeteo)?'<h3>Registros obligatorios</h3><div class="imgs">'+(o.fotoDron?'<img src="'+assetSrc(o.fotoDron)+'" title="Dron/puerto">':'')+(o.fotoMeteo?'<img src="'+assetSrc(o.fotoMeteo)+'" title="Meteorología">':'')+'</div>':''}
   ${(function(){const src=(o.fotosPre||[]).concat(o.fotosPos||[]).map(assetSrc).filter(Boolean);return src.length?`<div class="imgs">${src.map(d=>`<img src="${d}">`).join('')}</div>`:''})()}</div>`;}
-function hfTable(o){const hf=o.hf||{};
-  const ims=IMSAFE.map(f=>{const opt=f.opts.find(x=>x[0]===hf[f.k]);return opt?`<tr><td class="k">${f.letra} · ${esc(f.q)}</td><td>${esc(opt[1])} — ${esc(opt[2])}</td></tr>`:''}).filter(Boolean).join('');
-  const ir=o.imsafe||{};const res=ir.calif?`<tr><td class="k"><b>Resultado IMSAFE</b></td><td><b>${esc(ir.calif)} (puntaje ${ir.sum||0})</b></td></tr>`:'';
-  const cond=COND.map(f=>{const opt=f.opts.find(x=>x[0]===hf[f.k]);return opt?`<tr><td class="k">${esc(f.q)}</td><td>${esc(opt[1])}</td></tr>`:''}).filter(Boolean).join('');
-  const all=ims+res+cond;return all?`<table class="kv">${all}</table>`:'';}
+function riesgoTable(o){const hf=o.hf||{};
+  const rows=RIESGO.map(f=>{const opt=f.opts.find(x=>x[0]===hf[f.k]);return opt?`<tr><td class="k">${esc(f.q)}</td><td>${esc(opt[1])}</td></tr>`:''}).filter(Boolean).join('');
+  const rr=o.riesgo||{};const calif=rr.calif==='SEGURO'?'SEGURO PARA OPERACIÓN UAS':rr.calif==='INSEGURO'?'INSEGURO PARA OPERACIÓN UAS — Reevalúe':(rr.calif||'');
+  const res=calif?`<tr><td class="k"><b>Calificación</b></td><td><b>${esc(calif)}</b></td></tr>`:'';
+  const all=rows+res;return all?`<table class="kv">${all}</table>`:'';}
 function buildCSV(list){
-  const cols=['fecha_op','proyecto','operacion_id','municipio','departamento','tipo_op','piloto_principal','dron','dron_serial','ruas','codigo_maximo','radicado','id_aut','vig_ini','vig_fin','lat','lon','verdict','imsafe','requiere_mor','vuelo_n','piloto_vuelo','observador','obs_vuelo','inicio','fin','duracion_min','bat_despegue','bat_aterrizaje'];
+  const cols=['fecha_op','proyecto','operacion_id','municipio','departamento','tipo_op','piloto_principal','dron','dron_serial','ruas','codigo_maximo','radicado','id_aut','vig_ini','vig_fin','lat','lon','verdict','riesgo','requiere_mor','vuelo_n','piloto_vuelo','observador','obs_vuelo','inicio','fin','duracion_min','bat_despegue','bat_aterrizaje'];
   const e2=s=>{s=(s==null?'':String(s)).replace(/"/g,'""');return /[",;\n]/.test(s)?'"'+s+'"':s};
   const rows=[];list.forEach(o=>{const tipos=Object.entries(o.tipoOp||{}).filter(([,x])=>x).map(([k])=>k).join('|');
-    const base=[(o.inicioOp||'').slice(0,10),projName(o),o.id,o.municipio,o.departamento,tipos,o.piloto,o.dronModelo,o.dronSerial,o.dronRuas,o.dronMaximo,o.aut&&o.aut.radicado,o.aut&&o.aut.id,o.aut&&o.aut.ini,o.aut&&o.aut.fin,o.lat,o.lon,o.verdict,(o.imsafe&&o.imsafe.calif)||'',o.requiereMOR?'Sí':'No'];
+    const base=[(o.inicioOp||'').slice(0,10),projName(o),o.id,o.municipio,o.departamento,tipos,o.piloto,o.dronModelo,o.dronSerial,o.dronRuas,o.dronMaximo,o.aut&&o.aut.radicado,o.aut&&o.aut.id,o.aut&&o.aut.ini,o.aut&&o.aut.fin,o.lat,o.lon,o.verdict,(o.riesgo&&o.riesgo.calif)||(o.imsafe&&o.imsafe.calif)||'',o.requiereMOR?'Sí':'No'];
     if(o.sorties&&o.sorties.length)o.sorties.forEach((s,i)=>rows.push(base.concat([i+1,s.piloto,s.observador,s.obs,s.inicio,s.fin,s.dur,s.batDesp,s.batAter]).map(e2).join(',')));
     else rows.push(base.concat(['','','','','','','','','']).map(e2).join(','));});
   return '\ufeff'+cols.join(',')+'\n'+rows.join('\n');}
@@ -896,6 +981,7 @@ function capturarGPS(){const h=$('gpsHint');
 if('serviceWorker' in navigator){window.addEventListener('load',()=>navigator.serviceWorker.register('sw.js').catch(()=>{}));}
 
 Assets.init().then(async()=>{await migrateAssets();});
+var _el=document.getElementById("epmLogo");if(_el)_el.src=EPM_LOGO;
 migrateProjects();
 renderHistory();
 </script>

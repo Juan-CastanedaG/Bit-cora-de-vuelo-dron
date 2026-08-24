@@ -1,13 +1,15 @@
 /* Service worker de la Bitácora de Vuelo Dron.
    Cambiá el número de versión cada vez que subas una versión nueva del index.html
    para forzar la actualización en los teléfonos. */
-const CACHE = 'bvd-v7';
+const CACHE = 'bvd-v8';
 const ASSETS = [
   './',
   './index.html',
   './manifest.json',
   './icon-192.png',
-  './icon-512.png'
+  './icon-512.png',
+  './pdf.min.js',
+  './pdf.worker.min.js'
 ];
 
 self.addEventListener('install', e => {
