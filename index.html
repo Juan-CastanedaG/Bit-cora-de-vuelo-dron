@@ -1,0 +1,903 @@
+<!DOCTYPE html>
+<html lang="es-CO">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Bitácora de Vuelo Dron — EPM · RAC 100</title>
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#0d3b2e">
+<link rel="apple-touch-icon" href="icon-192.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<style>
+:root{
+  --bg:#0d3b2e;--bg2:#12503c;--grn:#00a651;--grn-dk:#00843f;--sky-dk:#00843f;
+  --surface:#fff;--panel:#f1f5f4;--ink:#0f172a;--muted:#5b6b66;--line:#cbd8d2;--line-dk:#94a8a0;
+  --verde:#16a34a;--verde-bg:#dcfce7;--amarillo:#d97706;--amarillo-bg:#fef3c7;--rojo:#dc2626;--rojo-bg:#fee2e2;
+  --mono:ui-monospace,"SF Mono",Menlo,Consolas,monospace;--sans:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;padding:0}
+body{font-family:var(--sans);background:var(--panel);color:var(--ink);font-size:16px;line-height:1.45;padding-bottom:88px}
+h1,h2,h3{margin:0;font-weight:700;line-height:1.2}
+button{font-family:inherit;font-size:inherit;cursor:pointer}
+input,select,textarea{font-family:inherit;font-size:16px}
+
+header{background:var(--bg);color:#fff;padding:14px 16px calc(14px + env(safe-area-inset-top)) 16px;position:relative}
+header::after{content:"";position:absolute;left:0;right:0;bottom:0;height:3px;background:linear-gradient(90deg,var(--grn-dk),var(--grn))}
+.brand{display:flex;align-items:center;gap:11px}
+.logoEPM{background:#fff;color:var(--grn-dk);font-weight:900;font-size:20px;letter-spacing:-.5px;padding:5px 9px;border-radius:8px;line-height:1;flex:0 0 auto}
+.brand h1{font-size:17px;letter-spacing:.2px}
+.brand .sub{font-size:10px;color:#8fd3b0;font-family:var(--mono);letter-spacing:.5px;text-transform:uppercase}
+.dash{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:14px}
+.chip{background:var(--bg2);border:1px solid #1c6349;border-radius:12px;padding:9px 6px;text-align:center}
+.chip .n{font-size:19px;font-weight:800;font-family:var(--mono);line-height:1}
+.chip .l{font-size:9.5px;color:#8fd3b0;text-transform:uppercase;letter-spacing:.4px;margin-top:4px}
+.chip.go .n{color:#4ade80}.chip.nogo .n{color:#f87171}.chip.hrs .n{color:#7ee7b0}
+
+main{max-width:760px;margin:0 auto;padding:16px}
+.view{display:none}.view.active{display:block}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:16px;margin-bottom:14px}
+.card>h2{font-size:14px;text-transform:uppercase;letter-spacing:.5px;color:var(--muted);margin-bottom:12px;display:flex;align-items:center;gap:8px}
+.card>h2 .step{background:var(--grn-dk);color:#fff;width:22px;height:22px;border-radius:7px;display:inline-flex;align-items:center;justify-content:center;font-size:12px;font-weight:800;flex:0 0 auto}
+.card>h2 .tag{margin-left:auto;font-size:10px;background:var(--panel);color:var(--muted);padding:3px 8px;border-radius:20px}
+
+.field{margin-bottom:12px}.field:last-child{margin-bottom:0}
+label{display:block;font-size:12px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.4px;margin-bottom:5px}
+input[type=text],input[type=number],input[type=date],input[type=time],input[type=datetime-local],select,textarea{
+  width:100%;padding:12px 13px;border:1.5px solid var(--line);border-radius:11px;background:#fff;color:var(--ink);outline:none}
+input:focus,select:focus,textarea:focus{border-color:var(--grn-dk)}
+textarea{resize:vertical;min-height:56px}
+.mono{font-family:var(--mono)}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.hint{font-size:11.5px;color:var(--muted);margin-top:5px}
+.sectlabel{font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.6px;color:var(--grn-dk);margin:16px 0 10px}
+.divider{height:1px;background:var(--line);margin:14px 0}
+
+.pillwrap{display:flex;flex-wrap:wrap;gap:8px}
+.pill{display:inline-flex;align-items:center;gap:7px;padding:9px 13px;border:1.5px solid var(--line);border-radius:24px;background:#fff;font-size:14px;font-weight:600;color:var(--ink);user-select:none}
+.pill .dot{width:15px;height:15px;border-radius:50%;border:2px solid var(--line-dk);flex:0 0 auto}
+.pill.on{border-color:var(--grn-dk);background:#e3f6ec;color:var(--grn-dk)}
+.pill.on .dot{background:var(--grn-dk);border-color:var(--grn-dk)}
+
+.sino{padding:9px 0;border-bottom:1px solid #eef2f1}.sino:last-child{border-bottom:none}
+.sino .q{font-size:14px;margin-bottom:7px}
+.sino .btns{display:flex;gap:8px}
+.sino .b{flex:1;padding:9px;border:1.5px solid var(--line);border-radius:10px;background:#fff;font-weight:700;font-size:14px;color:var(--muted)}
+.sino .b.si.on{background:var(--verde-bg);border-color:var(--verde);color:var(--verde)}
+.sino .b.no.on{background:var(--rojo-bg);border-color:var(--rojo);color:var(--rojo)}
+.sino.crit .q::after{content:" ●";color:var(--grn-dk);font-size:11px}
+.sino.inv .b.si.on{background:var(--rojo-bg);border-color:var(--rojo);color:var(--rojo)}
+.sino.inv .b.no.on{background:var(--verde-bg);border-color:var(--verde);color:var(--verde)}
+.calif{margin-left:auto;font-size:10px;font-weight:800;padding:2px 8px;border-radius:20px;letter-spacing:.3px}
+.calif.c0{background:var(--verde-bg);color:var(--verde)}.calif.c1{background:var(--amarillo-bg);color:var(--amarillo)}.calif.c9{background:var(--rojo-bg);color:var(--rojo)}
+.copt{display:flex;align-items:center;gap:8px}
+.imsafeRes{border-radius:12px;padding:12px 14px;margin-top:6px;text-align:center;font-weight:800}
+.imsafeRes.apto{background:var(--verde-bg);color:var(--verde)}
+.imsafeRes.prec{background:var(--amarillo-bg);color:var(--amarillo)}
+.imsafeRes.noapto{background:var(--rojo-bg);color:var(--rojo)}
+.imsafeRes .sc{font-size:11px;font-weight:600;opacity:.8;display:block;margin-top:2px}
+.letra{display:inline-flex;align-items:center;justify-content:center;width:20px;height:20px;border-radius:6px;background:var(--bg);color:#fff;font-size:11px;font-weight:800;margin-right:7px;flex:0 0 auto}
+
+.choice{margin-bottom:12px}.choice .q{font-size:13px;font-weight:600;margin-bottom:7px}
+.choice .opts{display:flex;flex-direction:column;gap:6px}
+.copt{padding:10px 12px;border:1.5px solid var(--line);border-radius:10px;font-size:13.5px;background:#fff}
+.copt.on{border-color:var(--grn-dk);background:#e3f6ec}
+.copt.on.red{border-color:var(--rojo);background:var(--rojo-bg);color:#991b1b}
+
+.sortie{border:1.5px solid var(--line);border-radius:13px;padding:13px;margin-bottom:10px;background:#fbfdfc}
+.sortie .sh{display:flex;align-items:center;gap:8px;margin-bottom:10px}
+.sortie .sh .n{font-weight:800;color:var(--grn-dk)}
+.sortie .sh .dur{margin-left:auto;font-family:var(--mono);font-size:12px;color:var(--muted)}
+.sortie .rm{border:1.5px solid #fecaca;color:var(--rojo);background:#fff;border-radius:8px;padding:5px 9px;font-size:12px}
+
+.verdict{border-radius:18px;padding:18px;text-align:center;color:#fff;box-shadow:0 6px 20px -8px rgba(0,0,0,.4)}
+.verdict.go{background:linear-gradient(135deg,#15803d,#22c55e)}
+.verdict.nogo{background:linear-gradient(135deg,#b91c1c,#ef4444)}
+.verdict.pend{background:linear-gradient(135deg,#b45309,#f59e0b)}
+.verdict .light{width:52px;height:52px;border-radius:50%;margin:0 auto 8px;background:rgba(255,255,255,.22);display:flex;align-items:center;justify-content:center;font-size:26px;box-shadow:inset 0 0 0 3px rgba(255,255,255,.45)}
+.verdict .word{font-size:30px;font-weight:900;letter-spacing:2px}
+.verdict .desc{font-size:12.5px;opacity:.92;margin-top:2px}
+.verdict ul{text-align:left;margin:12px 0 0;padding:12px 12px 12px 28px;background:rgba(0,0,0,.18);border-radius:12px;font-size:12.5px}
+.verdict li{margin:3px 0}
+
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;width:100%;padding:14px;border:none;border-radius:13px;background:var(--grn-dk);color:#fff;font-weight:700;font-size:16px}
+.btn:active{transform:translateY(1px)}
+.btn.sec{background:var(--panel);color:var(--ink);border:1.5px solid var(--line)}
+.btn.dark{background:var(--bg)}.btn.danger{background:var(--rojo)}
+.btn.sm{width:auto;padding:9px 14px;font-size:14px;border-radius:10px}
+.btnrow{display:flex;gap:10px}.btnrow .btn{width:auto;flex:1}
+
+.item{border:1.5px solid var(--line);border-radius:13px;padding:13px;margin-bottom:10px;background:#fff}
+.item .top{display:flex;align-items:center;gap:10px}
+.item .name{font-weight:700}.item .meta{font-size:12px;color:var(--muted);font-family:var(--mono);margin-top:3px}
+.item .acts{margin-left:auto;display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end}
+.icon-btn{border:1.5px solid var(--line);background:#fff;border-radius:9px;padding:7px 9px;font-size:13px;color:var(--muted)}
+.icon-btn.del{color:var(--rojo);border-color:#fecaca}
+.badge{font-size:10px;font-weight:800;padding:3px 8px;border-radius:20px;text-transform:uppercase;letter-spacing:.4px}
+.badge.go{background:var(--verde-bg);color:var(--verde)}.badge.nogo{background:var(--rojo-bg);color:var(--rojo)}.badge.pend{background:var(--amarillo-bg);color:var(--amarillo)}
+.chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px}
+.chipx{display:inline-flex;align-items:center;gap:6px;background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:5px 10px;font-size:13px;font-family:var(--mono)}
+.chipx button{border:none;background:none;color:var(--rojo);font-size:15px;line-height:1}
+
+.alert{border-radius:12px;padding:11px 13px;font-size:13.5px;margin-bottom:12px;display:flex;gap:9px;align-items:flex-start}
+.alert.warn{background:var(--amarillo-bg);color:#92400e;border:1px solid #fcd34d}
+.alert.bad{background:var(--rojo-bg);color:#991b1b;border:1px solid #fca5a5}
+.alert.info{background:#e3f6ec;color:#065f46;border:1px solid #86efac}
+.alert b{font-weight:800}
+.empty{text-align:center;color:var(--muted);padding:34px 16px;font-size:14px}
+
+.photos{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:10px}
+.photos .ph{position:relative;aspect-ratio:1;border-radius:10px;overflow:hidden;border:1px solid var(--line)}
+.photos .ph img{width:100%;height:100%;object-fit:cover;display:block}
+.photos .ph button{position:absolute;top:3px;right:3px;background:rgba(220,38,38,.92);color:#fff;border:none;border-radius:50%;width:22px;height:22px;font-size:13px}
+.filerow{display:flex;align-items:center;gap:8px;background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:9px 11px;font-size:13px;margin-top:8px}
+.filerow .nm{flex:1;font-family:var(--mono);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.meter{height:12px;background:#e2e8f0;border-radius:8px;overflow:hidden;border:1px solid var(--line)}
+.meterfill{height:100%;background:linear-gradient(90deg,var(--grn),var(--grn-dk))}
+
+nav{position:fixed;bottom:0;left:0;right:0;background:#fff;border-top:1px solid var(--line);display:flex;padding:6px 1px calc(6px + env(safe-area-inset-bottom));z-index:50}
+nav button{flex:1;background:none;border:none;padding:7px 1px;display:flex;flex-direction:column;align-items:center;gap:2px;color:var(--muted);font-size:9px;font-weight:600;border-radius:9px;white-space:nowrap}
+nav button.active{color:var(--grn-dk)}nav button.active svg{stroke:var(--grn-dk)}
+nav svg{stroke:var(--muted);stroke-width:2;fill:none}
+
+.consol{width:100%;border-collapse:collapse;font-size:14px}
+.consol th{text-align:left;font-size:11px;text-transform:uppercase;letter-spacing:.4px;color:var(--muted);padding:6px 6px;border-bottom:2px solid var(--line)}
+.consol td{padding:9px 6px;border-bottom:1px solid #eef2f1}
+.consol th:not(:first-child),.consol td:not(:first-child){text-align:right;font-family:var(--mono)}
+.consol tr.tot td{font-weight:800;border-top:2px solid var(--line);border-bottom:none}
+.statgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.stat{background:var(--panel);border:1px solid var(--line);border-radius:13px;padding:14px 8px;text-align:center}
+.stat .sn{font-size:24px;font-weight:800;font-family:var(--mono);color:var(--grn-dk);line-height:1}
+.stat .sl{font-size:10px;text-transform:uppercase;letter-spacing:.4px;color:var(--muted);margin-top:5px}
+
+.toast{position:fixed;left:50%;bottom:96px;transform:translateX(-50%) translateY(20px);background:var(--bg);color:#fff;padding:12px 20px;border-radius:12px;font-size:14px;font-weight:600;opacity:0;transition:.25s;z-index:100;pointer-events:none;max-width:90%;text-align:center}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+@media print{nav,header .dash,.noprint{display:none!important}}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="brand">
+    <span class="logoEPM">EPM</span>
+    <div><h1>Bitácora de Vuelo Dron</h1><div class="sub">F-EPM-03 · RAC 100</div></div>
+  </div>
+  <div class="dash">
+    <div class="chip"><div class="n" id="dTot">0</div><div class="l">Operac.</div></div>
+    <div class="chip go"><div class="n" id="dGo">0</div><div class="l">GO</div></div>
+    <div class="chip nogo"><div class="n" id="dNogo">0</div><div class="l">NO-GO</div></div>
+    <div class="chip hrs"><div class="n" id="dHrs">0.0</div><div class="l">Horas</div></div>
+  </div>
+</header>
+
+<main>
+
+<!-- ===== PROYECTOS ===== -->
+<section class="view active" id="v-hist">
+  <div class="card">
+    <h2 id="projTitle">Crear proyecto</h2>
+    <div class="field"><label>Nombre del proyecto</label><input type="text" id="pr_nombre" placeholder="Ej. Levantamiento LT Ancón–Occidente"></div>
+    <div class="field"><label>Descripción / tramo (opcional)</label><input type="text" id="pr_desc"></div>
+    <button class="btn" id="pr_saveBtn" onclick="saveProject()">Crear proyecto</button>
+    <div id="pr_cancel" style="display:none;margin-top:8px"><button class="btn sec" onclick="resetProjectForm()">Cancelar</button></div>
+  </div>
+  <div id="projList"></div>
+</section>
+
+<!-- ===== BITÁCORA (POR PILOTO) ===== -->
+<section class="view" id="v-bitacora">
+  <div class="card">
+    <h2>Consolidado por piloto</h2>
+    <select id="pilotConsol" onchange="renderConsolPilotos()"></select>
+  </div>
+  <div id="consolPilotos"></div>
+</section>
+
+<!-- ===== LIBRO DE VUELO (POR DRON) ===== -->
+<section class="view" id="v-libro">
+  <div class="card">
+    <h2>Libro de vuelo por dron</h2>
+    <select id="dronConsol" onchange="renderConsolDrones()"></select>
+  </div>
+  <div id="consolDrones"></div>
+</section>
+
+<!-- ===== NUEVA OPERACIÓN ===== -->
+<section class="view" id="v-nueva">
+  <div id="draftBar"></div>
+  <div id="setupWarn"></div>
+
+  <div class="card">
+    <h2><span class="step">1</span>Datos generales</h2>
+    <div class="field"><label>Proyecto</label><select id="g_proyId" onchange="saveDraft()"></select></div>
+    <div class="field"><label>Piloto principal</label><select id="g_pilotoId" onchange="verdict();saveDraft()"></select></div>
+    <div class="field"><label>Tipo de operación</label>
+      <div class="pillwrap">
+        <label class="pill" onclick="tgl(this);verdict();saveDraft()"><input type="checkbox" data-op="diurna" hidden><span class="dot"></span>Diurna</label>
+        <label class="pill" onclick="tgl(this);verdict();saveDraft()"><input type="checkbox" data-op="nocturna" hidden><span class="dot"></span>Nocturna</label>
+        <label class="pill" onclick="tgl(this);verdict();saveDraft()"><input type="checkbox" data-op="vlos" hidden><span class="dot"></span>VLOS</label>
+        <label class="pill" onclick="tgl(this);verdict();saveDraft()"><input type="checkbox" data-op="evlos" hidden><span class="dot"></span>EVLOS</label>
+        <label class="pill" onclick="tgl(this);verdict();saveDraft()"><input type="checkbox" data-op="bvlos" hidden><span class="dot"></span>BVLOS</label>
+      </div>
+    </div>
+    <div class="row2">
+      <div class="field"><label>Municipio</label><input type="text" id="g_muni" oninput="saveDraft()"></div>
+      <div class="field"><label>Departamento</label><input type="text" id="g_depto" oninput="saveDraft()"></div>
+    </div>
+    <div class="row2">
+      <div class="field"><label>Latitud</label><input type="text" id="g_lat" class="mono" placeholder="6.530001" oninput="saveDraft()"></div>
+      <div class="field"><label>Longitud</label><input type="text" id="g_lon" class="mono" placeholder="-75.250656" oninput="saveDraft()"></div>
+    </div>
+    <button type="button" class="btn sec sm noprint" onclick="capturarGPS()">📍 Usar mi ubicación</button>
+    <div class="hint" id="gpsHint">Sobre HTTPS (app instalada) captura lat/lon automáticamente. Como archivo local, pegá las coordenadas.</div>
+    <div class="field"><label>Dron</label><select id="g_dron" onchange="verdict();renderSorties();saveDraft()"></select></div>
+  </div>
+
+  <div class="card">
+    <h2><span class="step">2</span>Autorización de vuelo</h2>
+    <div class="row2">
+      <div class="field"><label>Radicado</label><input type="text" id="a_rad" class="mono" placeholder="2026251070031645" oninput="verdict();saveDraft()"></div>
+      <div class="field"><label>ID</label><input type="text" id="a_id" class="mono" placeholder="2569646" oninput="saveDraft()"></div>
+    </div>
+    <div class="row2">
+      <div class="field"><label>Vigencia inicio</label><input type="date" id="a_ini" oninput="verdict();saveDraft()"></div>
+      <div class="field"><label>Vigencia final</label><input type="date" id="a_fin" oninput="verdict();saveDraft()"></div>
+    </div>
+    <div class="field"><label>Certificado de autorización (PDF)</label>
+      <button class="btn sec sm noprint" onclick="document.getElementById('autPdf').click()">📎 Adjuntar PDF</button>
+      <input type="file" id="autPdf" accept="application/pdf" style="display:none" onchange="attachPdf(event)">
+      <div id="autPdfRow"></div>
+    </div>
+  </div>
+
+  <div class="card"><h2><span class="step">3</span>Chequeo en oficina</h2><div id="chkOficina"></div></div>
+
+  <div class="card">
+    <h2><span class="step">4</span>Chequeo pre-vuelo</h2>
+    <div class="field"><label>Inicio de la operación</label><input type="datetime-local" id="p_inicio" oninput="verdict();saveDraft()"></div>
+    <div id="chkPrevuelo"></div>
+    <div class="sectlabel">Aptitud psicofísica — IMSAFE</div>
+    <div class="alert info"><span>🩺</span><div><b>IMSAFE</b>: Illness, Medication, Stress, Alcohol, Fatigue, Emotion. Autoevaluación de aptitud del piloto tomada de la aviación (FAA).</div></div>
+    <div id="hfBlock"></div>
+    <div class="field" style="margin-top:6px"><label>Observaciones pre-vuelo</label><textarea id="p_obs" oninput="saveDraft()"></textarea></div>
+    <div class="field"><label>Fotografías pre-vuelo</label>
+      <div class="btnrow noprint"><button class="btn sec sm" onclick="document.getElementById('cam1').click()">📷 Cámara</button><button class="btn sec sm" onclick="document.getElementById('gal1').click()">🖼️ Galería</button></div>
+      <input type="file" id="cam1" accept="image/*" capture="environment" style="display:none" onchange="addPhotos(event,'pre')">
+      <input type="file" id="gal1" accept="image/*" multiple style="display:none" onchange="addPhotos(event,'pre')">
+      <div class="photos" id="grid_pre"></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="verdict pend" id="verdictBox"><div class="light" id="vLight">•</div><div class="word" id="vWord">—</div><div class="desc" id="vDesc">Completá los chequeos críticos</div><ul id="vReasons" style="display:none"></ul></div>
+    <div class="hint" style="margin-top:8px">● = ítem crítico. Un "No" crítico, IMSAFE en rojo, autorización/póliza/examen médico vencidos, o una habilitación faltante (nocturno/BVLOS) fuerzan <b>NO-GO</b>. Los críticos sin responder dejan la operación en <b>PENDIENTE</b>.</div>
+  </div>
+
+  <div class="card"><h2><span class="step">5</span>Registro durante la operación</h2><div id="sortieList"></div><button class="btn sec" onclick="addSortie()">＋ Agregar vuelo</button></div>
+
+  <div class="card">
+    <h2><span class="step">6</span>Chequeo pos-vuelo</h2>
+    <div id="chkPosvuelo"></div>
+    <div class="field" style="margin-top:10px"><label>Fin de la operación</label><input type="datetime-local" id="q_fin" oninput="saveDraft()"></div>
+    <div class="sectlabel">Ocurrencias de seguridad</div>
+    <div class="hint" style="margin:-4px 0 10px">Un "Sí" marca una ocurrencia y activa el aviso de MOR.</div>
+    <div id="ocurrList"></div><div id="morFlag"></div>
+    <div class="field" style="margin-top:10px"><label>Observaciones pos-vuelo</label><textarea id="q_obs" oninput="saveDraft()"></textarea></div>
+    <div class="field"><label>Fotografías pos-vuelo</label>
+      <div class="btnrow noprint"><button class="btn sec sm" onclick="document.getElementById('cam2').click()">📷 Cámara</button><button class="btn sec sm" onclick="document.getElementById('gal2').click()">🖼️ Galería</button></div>
+      <input type="file" id="cam2" accept="image/*" capture="environment" style="display:none" onchange="addPhotos(event,'pos')">
+      <input type="file" id="gal2" accept="image/*" multiple style="display:none" onchange="addPhotos(event,'pos')">
+      <div class="photos" id="grid_pos"></div>
+    </div>
+  </div>
+
+  <button class="btn" onclick="saveOp()">Guardar operación</button>
+  <div style="height:10px"></div>
+  <button class="btn sec" onclick="resetForm(true)">Limpiar formulario</button>
+</section>
+
+<!-- ===== FLOTA ===== -->
+<section class="view" id="v-flota">
+  <div class="card">
+    <h2 id="fleetTitle">Agregar dron</h2>
+    <div class="field"><label>Modelo</label><input type="text" id="d_modelo" placeholder="Ej. DJI Matrice 4 Enterprise"></div>
+    <div class="field"><label>Serial del dron</label><input type="text" id="d_serial" class="mono"></div>
+    <div class="row2">
+      <div class="field"><label>Código RUAS</label><input type="text" id="d_ruas" class="mono"></div>
+      <div class="field"><label>Código Máximo</label><input type="text" id="d_maximo" class="mono" placeholder="Ej. DR25"></div>
+    </div>
+    <div class="row2">
+      <div class="field"><label>Póliza RC No.</label><input type="text" id="d_poliza" class="mono"></div>
+      <div class="field"><label>Póliza vence</label><input type="date" id="d_polizaVence"></div>
+    </div>
+    <div class="field"><label>Habilitaciones del dron</label>
+      <div class="pillwrap">
+        <label class="pill" onclick="tgl(this)"><input type="checkbox" id="d_hnoc" hidden><span class="dot"></span>Operación nocturna</label>
+        <label class="pill" onclick="tgl(this)"><input type="checkbox" id="d_hbvlos" hidden><span class="dot"></span>BVLOS</label>
+      </div>
+    </div>
+    <button class="btn" onclick="saveDrone()" id="d_saveBtn">Agregar a la flota</button>
+    <div id="d_cancel" style="display:none;margin-top:8px"><button class="btn sec" onclick="resetDroneForm()">Cancelar</button></div>
+  </div>
+  <div id="fleetList"></div>
+</section>
+
+<!-- ===== PILOTOS ===== -->
+<section class="view" id="v-pilotos">
+  <div class="card">
+    <h2 id="pilotTitle">Agregar piloto</h2>
+    <div class="field"><label>Nombre</label><input type="text" id="pi_nombre"></div>
+    <div class="field"><label>Cédula</label><input type="text" id="pi_cedula" class="mono"></div>
+    <div class="field"><label>CIPU (uno o varios)</label>
+      <div class="row2"><input type="text" id="pi_cipuIn" class="mono" placeholder="No. CIPU">
+        <select id="pi_cipuTipo"><option value="Piloto">Piloto</option><option value="Nocturno">Operación nocturna</option><option value="BVLOS">BVLOS</option></select></div>
+      <button class="btn sec sm" onclick="addCipu()" style="margin-top:8px">＋ Agregar CIPU</button>
+      <div class="chips" id="pi_cipuChips"></div>
+      <div class="hint">Las habilitaciones nocturna y BVLOS del piloto se derivan del tipo de sus CIPU.</div>
+    </div>
+    <div class="field"><label>Vigencia examen médico</label><input type="date" id="pi_med"></div>
+    <button class="btn" onclick="savePilot()" id="pi_saveBtn">Agregar piloto</button>
+    <div id="pi_cancel" style="display:none;margin-top:8px"><button class="btn sec" onclick="resetPilotForm()">Cancelar</button></div>
+  </div>
+  <div id="pilotList"></div>
+</section>
+
+<!-- ===== DATOS ===== -->
+<section class="view" id="v-datos">
+  <div class="card"><h2>Exportar</h2>
+    <div class="field"><button class="btn sec" onclick="exportCSV()">📊 CSV para Power BI</button><div class="hint">Una fila por vuelo con el contexto de la operación. Dejá los CSV en una carpeta y usá el conector <b>Carpeta</b> de Power BI.</div></div>
+    <div class="field"><button class="btn dark" onclick="exportPDF()">📄 Reporte PDF (fondo blanco)</button></div>
+  </div>
+  <div class="card"><h2>Respaldo</h2>
+    <div class="field"><button class="btn sec" onclick="exportJSON()">💾 Descargar respaldo (JSON)</button><div class="hint">Incluye pilotos, flota, operaciones, fotos y PDFs adjuntos.</div></div>
+    <div class="field"><button class="btn sec" onclick="document.getElementById('restoreIn').click()">↩️ Restaurar desde respaldo</button>
+      <input type="file" id="restoreIn" accept="application/json,.json" style="display:none" onchange="importJSON(event)"></div>
+  </div>
+  <div class="card"><h2>Almacenamiento</h2><div id="storageInfo"><div class="hint">Cargando…</div></div></div>
+  <div class="card"><h2>Zona de riesgo</h2><button class="btn danger" onclick="wipeAll()">Borrar todos los datos</button></div>
+</section>
+
+</main>
+
+<nav>
+  <button class="active" data-view="hist" onclick="nav('hist')"><svg width="20" height="20" viewBox="0 0 24 24"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>Proyectos</button>
+  <button data-view="bitacora" onclick="nav('bitacora')"><svg width="20" height="20" viewBox="0 0 24 24"><path d="M5 20V10M12 20V4M19 20v-7"/></svg>Bitácora</button>
+  <button data-view="libro" onclick="nav('libro')"><svg width="20" height="20" viewBox="0 0 24 24"><path d="M4 5a2 2 0 0 1 2-2h13v16H6a2 2 0 0 0-2 2z"/><path d="M9 3v14"/></svg>Libro</button>
+  <button data-view="nueva" onclick="nav('nueva')"><svg width="20" height="20" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 8v8M8 12h8"/></svg>Nueva</button>
+  <button data-view="flota" onclick="nav('flota')"><svg width="20" height="20" viewBox="0 0 24 24"><circle cx="12" cy="12" r="2.5"/><circle cx="6" cy="6" r="2"/><circle cx="18" cy="6" r="2"/><circle cx="6" cy="18" r="2"/><circle cx="18" cy="18" r="2"/></svg>Flota</button>
+  <button data-view="pilotos" onclick="nav('pilotos')"><svg width="20" height="20" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 4-6 8-6s8 2 8 6"/></svg>Pilotos</button>
+  <button data-view="datos" onclick="nav('datos')"><svg width="20" height="20" viewBox="0 0 24 24"><path d="M12 3v14m0 0l-4-4m4 4l4-4M5 21h14"/></svg>Datos</button>
+</nav>
+<div class="toast" id="toast"></div>
+
+<script>
+"use strict";
+const CHK_OFICINA=[['plan','¿El plan de vuelo está detallado y actualizado?',true],['apps','¿Las aplicaciones actualizadas y cargadas en el dispositivo móvil?',false],['firmware','¿El firmware de la aeronave está actualizado?',true],['gcs','¿El software del radiocontrol/GCS está actualizado?',false],['baterias','¿Las baterías de la aeronave enumeradas y cargadas al 100%?',true],['batMovil','¿La batería del dispositivo móvil está cargada?',false],['cables','¿Cables y accesorios revisados, en buen estado y empacados?',false],['aeronave','¿Aeronave, hélices, estructura y motores en buen estado y empacados?',true],['comObs','¿Equipos de comunicación con el observador en buen estado y empacados?',false],['demarcacion','¿Accesorios para demarcación de la zona de seguridad completos y empacados?',false],['extintor','¿Extintor, botiquín y herramientas básicas completas y empacadas?',false]];
+const CHK_PREVUELO=[['aeronavegable','¿La aeronave y sus componentes están en condiciones aeronavegables?',true],['batAjustada','¿La batería de la aeronave está ajustada y con carga?',true],['batRadio','¿La batería del radiocontrol y dispositivos móviles están cargados?',false],['areaDespejada','¿El área de trabajo está despejada y delimitada?',true],['accesorios','¿Los accesorios y equipos de trabajo instalados y en buen estado?',false],['c2','¿La conexión de enlace C2 funciona correctamente?',true],['sonidos','¿Los sonidos de alerta del radiocontrol en volumen audible?',false],['meteo','¿Las condiciones meteorológicas son aceptables para el vuelo?',true],['satelital','¿La recepción satelital es aceptable para el vuelo?',true],['kp','¿El índice Kp es aceptable para el vuelo? (menor a 4.0)',true],['comObsF','¿El equipo de comunicación con el observador está funcionando?',false],['botiquin','¿El botiquín y extintor ubicados para fácil acceso?',false],['areaSegura','¿El área de operación es segura para el despegue y aterrizaje?',true],['pesoBalance','¿Verificó el peso y balance de la UA?',true],['funcionamiento','¿Evaluó el funcionamiento de la UA?',true],['coordino','¿Coordinó las funciones con el personal operativo UAS?',true]];
+const CHK_POSVUELO=[['limpios','¿La aeronave, accesorios y equipos están limpios y empacados?',false],['senal','¿Los elementos de señalización y seguridad recogidos y empacados?',false],['zonaLimpia','¿La zona de operación limpia y libre de desechos/basura?',false]];
+const OCURRENCIAS=[['aterrizoOtro','¿La aeronave aterrizó en un punto diferente al autorizado o planificado?'],['sepTripulada','¿Pérdida de separación o proximidad peligrosa con aeronave tripulada?'],['aves','¿Acercamiento peligroso o maniobra evasiva por aves u otra fauna?'],['otroUA','¿Proximidad no controlada con otro UA que generara riesgo de impacto?'],['obstaculo','¿Maniobra evasiva para evitar infraestructura u obstáculos fijos?'],['bateria','¿Descarga abrupta, caída de voltaje, sobrecalentamiento o degradación de la batería?'],['dano','¿Golpe, lesión leve o daño menor a personas o bienes de terceros?'],['perdControl','¿Pérdida total o parcial del control con riesgo severo?'],['impacto','¿La aeronave perdió el control y terminó impactando el terreno?'],['enlaceC2','¿Deterioro significativo o pérdida total del enlace C2?'],['meteoNoPrev','¿La UA estuvo expuesta a condiciones meteorológicas no previstas?'],['meteoAdversa','¿La pérdida de control estuvo asociada a meteo adversa?'],['visual','¿En VLOS o EVLOS se perdió el contacto visual requerido con la UA?']];
+// IMSAFE calificado: cada opción lleva [valor, texto, calificativo, puntaje]. puntaje 9 = No apto (bloqueo).
+const IMSAFE=[
+ {k:'illness',letra:'I',q:'Illness — Enfermedad',opts:[['sano','Sano, sin síntomas','Óptimo',0],['leve','Síntomas leves (molestia, resfriado)','Marginal',2],['enfermo','Enfermo, con fiebre o dolor','No apto',9]]},
+ {k:'medication',letra:'M',q:'Medication — Medicación',opts:[['ninguna','Ninguna','Óptimo',0],['otc','Sin efectos secundarios','Aceptable',1],['sedante','Con efectos / sedante','No apto',9]]},
+ {k:'stress',letra:'S',q:'Stress — Estrés',opts:[['bajo','Bajo','Óptimo',0],['moderado','Moderado','Marginal',2],['alto','Alto','No apto',9]]},
+ {k:'alcohol',letra:'A',q:'Alcohol',opts:[['ninguno','Ninguno en las últimas 8 h','Óptimo',0],['reciente','Consumo en menos de 8 h','No apto',9]]},
+ {k:'fatigue',letra:'F',q:'Fatigue — Fatiga',opts:[['descansado','Descansado, dormí bien','Óptimo',0],['algo','Algo cansado','Marginal',2],['fatigado','Fatigado / dormí menos de 8 h','No apto',9]]},
+ {k:'emotion',letra:'E',q:'Emotion — Emoción',opts:[['estable','Estable','Óptimo',0],['alterado','Algo alterado','Marginal',2],['muy','Muy alterado (ira, duelo, ansiedad)','No apto',9]]}
+];
+const COND=[
+ {k:'meteoCond',q:'Condición meteorológica',opts:[['ok','Visibilidad > 8 km y techo operacional de 1 km',false],['marginal','5 km de visibilidad y 300 m de techo (menos de 8 km / 1 km)','warn']]},
+ {k:'vueloEs',q:'El vuelo es…',opts:[['dia','De día',false],['noche','De noche',false]]},
+ {k:'planeacion',q:'Planeación del vuelo',opts:[['software','Despego usando el software de planificación del UAS',false],['sinAfan','No estoy afanado por despegar',false]]}
+];
+
+const K={fl:'bvd_flota',pilots:'bvd_pilotos',proj:'bvd_proyectos',ops:'bvd_operaciones',draft:'bvd_draft'};
+const load=(k,d)=>{try{const v=localStorage.getItem(k);return v?JSON.parse(v):d}catch(e){return d}};
+const save=(k,v)=>{try{localStorage.setItem(k,JSON.stringify(v));return true}catch(e){return false}};
+let flota=load(K.fl,[]),pilotos=load(K.pilots,[]),proyectos=load(K.proj,[]),operaciones=load(K.ops,[]);
+let editDroneId=null,editPilotId=null,editProjId=null,pendingCipus=[];
+let expandedProj=new Set();
+// Migración: operaciones antiguas con proyecto (texto) → crea entidad proyecto y enlaza
+function migrateProjects(){let ch=false;
+  operaciones.forEach(o=>{if(!o.proyectoId){const nm=o.proyecto||'Sin proyecto';let p=proyectos.find(x=>x.nombre===nm);
+    if(!p){p={id:uid(),nombre:nm,desc:'',creado:Date.now()};proyectos.push(p);ch=true;}o.proyectoId=p.id;ch=true;}});
+  if(ch){save(K.proj,proyectos);save(K.ops,operaciones);}}
+
+/* ---------- Assets: binarios (fotos/PDF) en IndexedDB con respaldo a localStorage ---------- */
+const Assets={readyP:null,useIDB:false,db:null,cache:{},
+  init(){this.readyP=new Promise(res=>{try{const req=indexedDB.open('bvd_assets',1);
+    req.onupgradeneeded=e=>{const db=e.target.result;if(!db.objectStoreNames.contains('a'))db.createObjectStore('a');};
+    req.onsuccess=e=>{this.db=e.target.result;this.useIDB=true;res();};
+    req.onerror=()=>{this.useIDB=false;res();};}catch(e){this.useIDB=false;res();}});return this.readyP;},
+  _tx(mode,fn){return new Promise((res,rej)=>{const tx=this.db.transaction('a',mode);const req=fn(tx.objectStore('a'));
+    req.onsuccess=()=>res(req.result);req.onerror=()=>rej(req.error);});},
+  async put(id,data){await this.readyP;this.cache[id]=data;
+    if(this.useIDB){try{await this._tx('readwrite',s=>s.put(data,id));return true;}catch(e){this.useIDB=false;}}
+    try{localStorage.setItem('bvd_a_'+id,data);return true;}catch(e){return false;}},
+  async get(id){await this.readyP;if(this.cache[id]!=null)return this.cache[id];
+    let d=null;if(this.useIDB){try{d=await this._tx('readonly',s=>s.get(id));}catch(e){}}
+    if(d==null)d=localStorage.getItem('bvd_a_'+id);if(d!=null)this.cache[id]=d;return d;},
+  async del(id){await this.readyP;delete this.cache[id];
+    if(this.useIDB){try{await this._tx('readwrite',s=>s.delete(id));}catch(e){}}
+    localStorage.removeItem('bvd_a_'+id);},
+  async clear(){await this.readyP;this.cache={};
+    if(this.useIDB){try{await this._tx('readwrite',s=>s.clear());}catch(e){}}
+    for(let i=localStorage.length-1;i>=0;i--){const k=localStorage.key(i);if(k&&k.slice(0,6)==='bvd_a_')localStorage.removeItem(k);}}};
+function isDataURL(v){return typeof v==='string'&&v.slice(0,5)==='data:'}
+function assetSrc(v){return isDataURL(v)?v:(Assets.cache[v]||'')}
+async function preloadAssets(ids){for(const v of (ids||[])){if(v&&!isDataURL(v))await Assets.get(v);}}
+function opAssetIds(o){return[].concat(o.fotosPre||[],o.fotosPos||[],(o.aut&&o.aut.pdf&&o.aut.pdf.id)?[o.aut.pdf.id]:[])}
+// Migra binarios embebidos (dataURL) de operaciones antiguas a Assets, dejando ids en localStorage
+async function migrateAssets(){let ch=false;
+  for(const o of operaciones){
+    for(const key of ['fotosPre','fotosPos']){if(Array.isArray(o[key]))for(let i=0;i<o[key].length;i++){const v=o[key][i];
+      if(isDataURL(v)){const id=uid();await Assets.put(id,v);o[key][i]=id;ch=true;}}}
+    if(o.aut&&o.aut.pdf&&isDataURL(o.aut.pdf.data)){const id=uid();await Assets.put(id,o.aut.pdf.data);o.aut.pdf={id,name:o.aut.pdf.name};ch=true;}}
+  if(ch)save(K.ops,operaciones);}
+async function storageInfo(){let idb=0,quota=0;
+  if(navigator.storage&&navigator.storage.estimate){try{const e=await navigator.storage.estimate();idb=e.usage||0;quota=e.quota||0;}catch(_){}}
+  let ls=0;for(let i=0;i<localStorage.length;i++){const k=localStorage.key(i);ls+=(k.length+(localStorage.getItem(k)||'').length)*2;}
+  return{idb,quota,ls,mode:Assets.useIDB?'IndexedDB':'localStorage'};}
+function fmtMB(b){return (b/1048576).toFixed(1)+' MB'}
+let st=blankState();
+function blankState(){return{oficina:{},prevuelo:{},posvuelo:{},ocurr:{},hf:{},sorties:[],fotosPre:[],fotosPos:[],autPdf:null}}
+
+const $=id=>document.getElementById(id);
+const uid=()=>Date.now().toString(36)+Math.random().toString(36).slice(2,6);
+function toast(m){const t=$('toast');t.textContent=m;t.classList.add('show');clearTimeout(t._t);t._t=setTimeout(()=>t.classList.remove('show'),2200)}
+function tgl(el){const c=el.querySelector('input');c.checked=!c.checked;el.classList.toggle('on',c.checked)}
+function num(x){if(x===''||x==null)return null;const n=Number(x);return isNaN(n)?null:n}
+function esc(s){return String(s==null?'':s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]))}
+function daysTo(d){if(!d)return null;const x=new Date(d+'T00:00:00'),n=new Date();n.setHours(0,0,0,0);return Math.round((x-n)/86400000)}
+function pilotById(id){return pilotos.find(p=>p.id===id)}
+function dronById(id){return flota.find(d=>d.id===id)}
+function proyectoById(id){return proyectos.find(p=>p.id===id)}
+function projName(o){const p=proyectoById(o.proyectoId);return p?p.nombre:(o.proyecto||'Sin proyecto')}
+function hasCert(p,tipo){return !!(p&&p.cipus&&p.cipus.some(c=>(c.tipo||c)===tipo))}
+
+function nav(v){document.querySelectorAll('.view').forEach(x=>x.classList.remove('active'));$('v-'+v).classList.add('active');
+  document.querySelectorAll('nav button').forEach(b=>b.classList.toggle('active',b.dataset.view===v));window.scrollTo(0,0);
+  if(v==='nueva')prepNueva();if(v==='flota')renderFleet();if(v==='pilotos')renderPilots();if(v==='hist')renderHistory();
+  if(v==='bitacora')renderConsolPilotos();if(v==='libro')renderConsolDrones();if(v==='datos')renderStorage();}
+
+/* ---------- pilotos ---------- */
+function cipuLabel(c){return (c.tipo||c)==='Nocturno'?'Nocturno':(c.tipo||c)==='BVLOS'?'BVLOS':'Piloto';}
+function renderPilots(){const l=$('pilotList');
+  if(!pilotos.length){l.innerHTML='<div class="card empty">No hay pilotos. Agregá el primero arriba para que aparezca en los desplegables.</div>';return}
+  l.innerHTML=pilotos.map(p=>{const mv=daysTo(p.med);const med=p.med?(mv<0?'⛔ médico vencido':'médico vence '+p.med):'sin médico';
+    const cip=(p.cipus||[]).map(c=>esc(c.num||c)+' ('+cipuLabel(c)+')').join(', ')||'—';
+    return `<div class="item"><div class="top"><div><div class="name">${esc(p.nombre)}</div>
+    <div class="meta">CC ${esc(p.cedula||'—')}</div>
+    <div class="meta">CIPU: ${cip}</div>
+    <div class="meta">${hasCert(p,'Nocturno')?'✓ nocturno ':''}${hasCert(p,'BVLOS')?'✓ BVLOS ':''}· ${med}</div></div>
+    <div class="acts"><button class="icon-btn" onclick="editPilot('${p.id}')">✎</button><button class="icon-btn del" onclick="delPilot('${p.id}')">🗑</button></div></div></div>`}).join('');}
+function addCipu(){const v=$('pi_cipuIn').value.trim();if(!v)return;pendingCipus.push({num:v,tipo:$('pi_cipuTipo').value});$('pi_cipuIn').value='';renderCipuChips();}
+function renderCipuChips(){$('pi_cipuChips').innerHTML=pendingCipus.map((c,i)=>`<span class="chipx">${esc(c.num)} · ${cipuLabel(c)}<button onclick="rmCipu(${i})">×</button></span>`).join('');}
+function rmCipu(i){pendingCipus.splice(i,1);renderCipuChips();}
+function savePilot(){const n=$('pi_nombre').value.trim();if(!n){toast('Poné el nombre');return}
+  const o={id:editPilotId||uid(),nombre:n,cedula:$('pi_cedula').value.trim(),cipus:pendingCipus.slice(),med:$('pi_med').value};
+  if(editPilotId){pilotos[pilotos.findIndex(x=>x.id===editPilotId)]=o}else pilotos.push(o);
+  save(K.pilots,pilotos);resetPilotForm();renderPilots();toast('Piloto guardado');}
+function editPilot(id){const p=pilotById(id);if(!p)return;editPilotId=id;pendingCipus=(p.cipus||[]).map(c=>typeof c==='string'?{num:c,tipo:'Piloto'}:{...c});
+  $('pi_nombre').value=p.nombre;$('pi_cedula').value=p.cedula||'';$('pi_med').value=p.med||'';
+  renderCipuChips();$('pilotTitle').textContent='Editar piloto';$('pi_saveBtn').textContent='Guardar cambios';$('pi_cancel').style.display='block';window.scrollTo(0,0);}
+function resetPilotForm(){editPilotId=null;pendingCipus=[];['pi_nombre','pi_cedula','pi_cipuIn','pi_med'].forEach(i=>$(i).value='');renderCipuChips();
+  $('pilotTitle').textContent='Agregar piloto';$('pi_saveBtn').textContent='Agregar piloto';$('pi_cancel').style.display='none';}
+function delPilot(id){if(!confirm('¿Eliminar este piloto?'))return;pilotos=pilotos.filter(x=>x.id!==id);save(K.pilots,pilotos);renderPilots();}
+
+/* ---------- flota ---------- */
+function renderFleet(){const l=$('fleetList');
+  if(!flota.length){l.innerHTML='<div class="card empty">La flota está vacía. Agregá tu primer dron arriba.</div>';return}
+  l.innerHTML=flota.map(d=>{const pv=daysTo(d.polizaVence);const pol=d.polizaVence?(pv<0?'⛔ póliza vencida':'póliza vence '+d.polizaVence):'sin póliza';
+    return `<div class="item"><div class="top"><div><div class="name">${esc(d.modelo)}</div>
+    <div class="meta">Serial ${esc(d.serial||'—')}</div>
+    <div class="meta">RUAS ${d.ruas||'—'} · Máximo ${d.maximo||'—'}</div>
+    <div class="meta">${d.habNocturno?'✓ nocturno ':''}${d.habBVLOS?'✓ BVLOS ':''}· ${pol}</div></div>
+    <div class="acts"><button class="icon-btn" onclick="editDrone('${d.id}')">✎</button><button class="icon-btn del" onclick="delDrone('${d.id}')">🗑</button></div></div></div>`}).join('');}
+function saveDrone(){const m=$('d_modelo').value.trim();if(!m){toast('Poné el modelo');return}
+  const o={id:editDroneId||uid(),modelo:m,serial:$('d_serial').value.trim(),ruas:$('d_ruas').value.trim(),maximo:$('d_maximo').value.trim(),
+    poliza:$('d_poliza').value.trim(),polizaVence:$('d_polizaVence').value,habNocturno:$('d_hnoc').checked,habBVLOS:$('d_hbvlos').checked};
+  if(editDroneId){flota[flota.findIndex(x=>x.id===editDroneId)]=o}else flota.push(o);
+  save(K.fl,flota);resetDroneForm();renderFleet();toast('Flota actualizada');}
+function editDrone(id){const d=dronById(id);if(!d)return;editDroneId=id;
+  $('d_modelo').value=d.modelo;$('d_serial').value=d.serial||'';$('d_ruas').value=d.ruas||'';$('d_maximo').value=d.maximo||'';
+  $('d_poliza').value=d.poliza||'';$('d_polizaVence').value=d.polizaVence||'';
+  $('d_hnoc').checked=d.habNocturno;$('d_hbvlos').checked=d.habBVLOS;
+  document.querySelectorAll('#v-flota .pill').forEach(pl=>{const c=pl.querySelector('input');pl.classList.toggle('on',c&&c.checked)});
+  $('fleetTitle').textContent='Editar dron';$('d_saveBtn').textContent='Guardar cambios';$('d_cancel').style.display='block';window.scrollTo(0,0);}
+function resetDroneForm(){editDroneId=null;['d_modelo','d_serial','d_ruas','d_maximo','d_poliza','d_polizaVence'].forEach(i=>$(i).value='');
+  ['d_hnoc','d_hbvlos'].forEach(i=>{$(i).checked=false;$(i).closest('.pill').classList.remove('on')});
+  $('fleetTitle').textContent='Agregar dron';$('d_saveBtn').textContent='Agregar a la flota';$('d_cancel').style.display='none';}
+function delDrone(id){if(!confirm('¿Eliminar este dron?'))return;flota=flota.filter(x=>x.id!==id);save(K.fl,flota);renderFleet();}
+
+/* ---------- desplegables ---------- */
+function pilotOptions(sel){return '<option value="">— piloto —</option>'+pilotos.map(p=>`<option value="${p.id}" ${p.id===sel?'selected':''}>${esc(p.nombre)}</option>`).join('');}
+
+/* ---------- checklists ---------- */
+function renderSiNo(cont,cfg,group){$(cont).innerHTML=cfg.map(([k,q,crit])=>{const v=st[group][k];
+  return `<div class="sino ${crit?'crit':''}"><div class="q">${q}</div><div class="btns">
+    <button type="button" class="b si ${v==='si'?'on':''}" onclick="setSN('${group}','${k}','si')">Sí</button>
+    <button type="button" class="b no ${v==='no'?'on':''}" onclick="setSN('${group}','${k}','no')">No</button></div></div>`}).join('');}
+function setSN(group,k,val){st[group][k]=(st[group][k]===val?null:val);
+  if(group==='oficina')renderSiNo('chkOficina',CHK_OFICINA,'oficina');
+  else if(group==='prevuelo')renderSiNo('chkPrevuelo',CHK_PREVUELO,'prevuelo');
+  else if(group==='posvuelo')renderSiNo('chkPosvuelo',CHK_POSVUELO,'posvuelo');
+  else if(group==='ocurr'){renderOcurr();morCheck();}
+  verdict();saveDraft();}
+function renderOcurr(){$('ocurrList').innerHTML=OCURRENCIAS.map(([k,q])=>{const v=st.ocurr[k];
+  return `<div class="sino inv"><div class="q">${q}</div><div class="btns">
+    <button type="button" class="b si ${v==='si'?'on':''}" onclick="setSN('ocurr','${k}','si')">Sí</button>
+    <button type="button" class="b no ${v==='no'?'on':''}" onclick="setSN('ocurr','${k}','no')">No</button></div></div>`}).join('');}
+function imsafeResult(){let sum=0,block=false,answered=0;
+  IMSAFE.forEach(f=>{const o=f.opts.find(x=>x[0]===st.hf[f.k]);if(o){answered++;if(o[3]>=9)block=true;else sum+=o[3];}});
+  let calif,cls;
+  if(block){calif='NO APTO';cls='noapto';}
+  else if(answered<IMSAFE.length){calif='INCOMPLETO';cls='prec';}
+  else if(sum>=5){calif='NO APTO';cls='noapto';}
+  else if(sum>=1){calif='PRECAUCIÓN';cls='prec';}
+  else{calif='APTO';cls='apto';}
+  return{sum,block,answered,calif,cls};}
+function renderHF(){
+  const ims=IMSAFE.map(f=>{const v=st.hf[f.k];
+    return `<div class="choice"><div class="q"><span class="letra">${f.letra}</span>${f.q}</div><div class="opts">
+    ${f.opts.map(([ok,txt,cal,sc])=>{const on=v===ok;const cc=sc>=9?'c9':sc>=1?'c1':'c0';
+      return `<div class="copt ${on?'on':''} ${on&&sc>=9?'red':''}" onclick="setHF('${f.k}','${ok}')"><span>${txt}</span><span class="calif ${cc}">${cal}</span></div>`}).join('')}</div></div>`}).join('');
+  const r=imsafeResult();
+  const label=r.calif==='APTO'?'✓ APTO PARA VOLAR':r.calif==='NO APTO'?'✕ NO APTO PARA VOLAR':r.calif==='PRECAUCIÓN'?'⚠ PRECAUCIÓN':'IMSAFE incompleto';
+  const res=`<div class="imsafeRes ${r.cls}">${label}<span class="sc">Puntaje ${r.sum}${r.answered<IMSAFE.length?' · faltan '+(IMSAFE.length-r.answered)+' factor(es)':''}</span></div>`;
+  const cond=COND.map(f=>`<div class="choice"><div class="q">${f.q}</div><div class="opts">
+    ${f.opts.map(([ok,txt,red])=>{const on=st.hf[f.k]===ok;const rc=(red==='warn'&&on)?'red':'';return `<div class="copt ${on?'on':''} ${rc}" onclick="setHF('${f.k}','${ok}')"><span>${txt}</span></div>`}).join('')}</div></div>`).join('');
+  $('hfBlock').innerHTML=ims+res+'<div class="sectlabel">Condiciones operativas</div>'+cond;}
+function setHF(k,v){st.hf[k]=(st.hf[k]===v?null:v);renderHF();verdict();saveDraft();}
+function morCheck(){const any=OCURRENCIAS.some(([k])=>st.ocurr[k]==='si');$('morFlag').innerHTML=any?'<div class="alert bad"><span>⚠️</span><div>Ocurrencias marcadas: se requiere diligenciar el <b>MOR (F-EPM-03)</b> por fuera de esta app.</div></div>':'';}
+
+/* ---------- sorties ---------- */
+function addSortie(d){st.sorties.push(d||{fecha:($('p_inicio').value||'').slice(0,10),inicio:'',fin:'',pilotoId:$('g_pilotoId').value||'',observadorId:'',batDesp:'',batAter:'',obs:''});renderSorties();saveDraft();}
+function renderSorties(){const bvlos=isOp('bvlos')||isOp('evlos');
+  $('sortieList').innerHTML=st.sorties.map((s,i)=>{const dur=sortieDur(s);const needObs=bvlos&&!s.observadorId;
+    return `<div class="sortie"><div class="sh"><span class="n">Vuelo #${i+1}</span><span class="dur">${dur!=null?dur+' min de vuelo':''}</span><button class="rm" onclick="rmSortie(${i})">Quitar</button></div>
+      <div class="field"><label>Piloto</label><select onchange="setS(${i},'pilotoId',this.value)">${pilotOptions(s.pilotoId)}</select></div>
+      <div class="field"><label>Observador ${needObs?'<span style="color:#dc2626">· requerido en BVLOS/EVLOS</span>':''}</label><select onchange="setS(${i},'observadorId',this.value)">${pilotOptions(s.observadorId)}</select></div>
+      <div class="field"><label>Fecha</label><input type="date" value="${s.fecha||''}" onchange="setS(${i},'fecha',this.value)"></div>
+      <div class="row2"><div class="field"><label>Hora inicio</label><input type="time" value="${s.inicio||''}" onchange="setS(${i},'inicio',this.value)"></div>
+      <div class="field"><label>Hora fin</label><input type="time" value="${s.fin||''}" onchange="setS(${i},'fin',this.value)"></div></div>
+      <div class="row2"><div class="field"><label>Batería despegue (%)</label><input type="number" class="mono" value="${s.batDesp}" onchange="setS(${i},'batDesp',this.value)"></div>
+      <div class="field"><label>Batería aterrizaje (%)</label><input type="number" class="mono" value="${s.batAter}" onchange="setS(${i},'batAter',this.value)"></div></div>
+      <div class="field"><label>Observaciones del vuelo</label><input type="text" value="${esc(s.obs)}" onchange="setS(${i},'obs',this.value)"></div></div>`}).join('');
+  updateDash();}
+function setS(i,k,v){st.sorties[i][k]=v;if(k==='inicio'||k==='fin'||k==='observadorId')renderSorties();saveDraft();}
+function rmSortie(i){st.sorties.splice(i,1);renderSorties();saveDraft();}
+function sortieDur(s){if(!s.inicio||!s.fin)return null;let[h1,m1]=s.inicio.split(':').map(Number),[h2,m2]=s.fin.split(':').map(Number);let d=(h2*60+m2)-(h1*60+m1);if(d<0)d+=1440;return d;}
+function totalMins(a){return(a||[]).reduce((x,s)=>x+(sortieDur(s)||0),0)}
+function isOp(k){const el=document.querySelector(`#v-nueva [data-op="${k}"]`);return el&&el.checked;}
+
+/* ---------- adjuntar PDF ---------- */
+function attachPdf(e){const f=e.target.files[0];e.target.value='';if(!f)return;
+  if(f.size>8*1024*1024&&!confirm('El PDF pesa '+(f.size/1048576).toFixed(1)+' MB. ¿Continuar?'))return;
+  const r=new FileReader();r.onload=async ev=>{const id=uid();const ok=await Assets.put(id,ev.target.result);if(!ok){toast('Sin espacio para el PDF');return;}st.autPdf={id,name:f.name};renderPdfRow();saveDraft();};r.readAsDataURL(f);}
+function renderPdfRow(){$('autPdfRow').innerHTML=st.autPdf?`<div class="filerow"><span>📄</span><span class="nm">${esc(st.autPdf.name)}</span><button class="icon-btn" onclick="openPdf('${st.autPdf.id}')">Ver</button><button class="icon-btn del" onclick="removeAutPdf()">Quitar</button></div>`:'';}
+function removeAutPdf(){if(st.autPdf&&st.autPdf.id)Assets.del(st.autPdf.id);st.autPdf=null;renderPdfRow();saveDraft();}
+async function openPdf(id){try{const data=await Assets.get(id);if(!data){toast('No se pudo abrir');return}const b=dataURLtoBlob(data);const u=URL.createObjectURL(b);window.open(u,'_blank');setTimeout(()=>URL.revokeObjectURL(u),30000);}catch(e){toast('No se pudo abrir')}}
+function dataURLtoBlob(du){const[meta,b64]=du.split(',');const mime=(meta.match(/:(.*?);/)||[])[1]||'application/pdf';const bin=atob(b64);const a=new Uint8Array(bin.length);for(let i=0;i<bin.length;i++)a[i]=bin.charCodeAt(i);return new Blob([a],{type:mime});}
+
+/* ---------- veredicto ---------- */
+function verdict(){const box=$('verdictBox'),word=$('vWord'),desc=$('vDesc'),light=$('vLight'),ul=$('vReasons');
+  const block=[],pend=[],warn=[];
+  const ini=$('a_ini').value,fin=$('a_fin').value,fecha=($('p_inicio').value||'').slice(0,10)||new Date().toISOString().slice(0,10);
+  if(ini&&fecha<ini)block.push('Operación antes del inicio de la autorización');
+  if(fin&&fecha>fin)block.push('Operación después del vencimiento de la autorización');
+  if(!$('a_rad').value.trim())warn.push('Sin radicado de autorización');
+  if(fin&&daysTo(fin)!==null&&daysTo(fin)>=0&&daysTo(fin)<=7)warn.push('La autorización vence en '+daysTo(fin)+' día(s)');
+  const noc=isOp('nocturna'),bv=isOp('bvlos');
+  const p=pilotById($('g_pilotoId').value);
+  if(p){if(p.med&&daysTo(p.med)<0)block.push('Examen médico del piloto vencido');
+    if(noc&&!hasCert(p,'Nocturno'))block.push('Piloto sin CIPU de operación nocturna');
+    if(bv&&!hasCert(p,'BVLOS'))block.push('Piloto sin CIPU de BVLOS');}
+  else warn.push('Sin piloto principal seleccionado');
+  const d=dronById($('g_dron').value);
+  if(d){if(d.polizaVence&&daysTo(d.polizaVence)<0)block.push('Póliza del dron vencida');
+    if(noc&&!d.habNocturno)block.push('Dron no habilitado para operación nocturna');
+    if(bv&&!d.habBVLOS)block.push('Dron no habilitado para BVLOS');}
+  CHK_OFICINA.forEach(([k,q,c])=>{if(c){if(st.oficina[k]==='no')block.push('Oficina: '+shortQ(q));else if(!st.oficina[k])pend.push('Oficina: '+shortQ(q));}});
+  CHK_PREVUELO.forEach(([k,q,c])=>{if(c){if(st.prevuelo[k]==='no')block.push('Pre-vuelo: '+shortQ(q));else if(!st.prevuelo[k])pend.push('Pre-vuelo: '+shortQ(q));}});
+  const ir=imsafeResult();
+  if(ir.calif==='NO APTO')block.push('IMSAFE: piloto no apto para volar (puntaje '+ir.sum+')');
+  else if(ir.calif==='PRECAUCIÓN')warn.push('IMSAFE: precaución (puntaje '+ir.sum+')');
+  else if(ir.calif==='INCOMPLETO')warn.push('IMSAFE sin completar');
+  COND.forEach(f=>{const o=f.opts.find(x=>x[0]===st.hf[f.k]);if(o&&o[2]==='warn')warn.push('Condición: '+o[1]);});
+  let cls,w,dtxt,ic;
+  if(block.length){cls='nogo';w='NO-GO';ic='✕';dtxt=block.length+' condición(es) de bloqueo';}
+  else if(pend.length){cls='pend';w='PENDIENTE';ic='!';dtxt=pend.length+' verificación(es) crítica(s) sin responder';}
+  else{cls='go';w='GO';ic='✓';dtxt=warn.length?warn.length+' advertencia(s), sin bloqueos':'Sin banderas rojas';}
+  box.className='verdict '+cls;light.textContent=ic;word.textContent=w;desc.textContent=dtxt;
+  const all=block.map(r=>['b',r]).concat(pend.map(r=>['p',r])).concat(warn.map(r=>['w',r]));
+  if(all.length){ul.style.display='block';ul.innerHTML=all.map(([t,r])=>`<li>${t==='b'?'⛔':t==='p'?'◻️':'⚠️'} ${esc(r)}</li>`).join('')}else ul.style.display='none';
+  return{verdict:w,block,pend,warn};}
+function shortQ(q){q=q.replace(/^¿/,'').replace(/\?$/,'');return q.length>52?q.slice(0,50)+'…':q;}
+
+/* ---------- fotos ---------- */
+function addPhotos(e,tipo){const files=[...e.target.files];e.target.value='';
+  files.forEach(f=>{const r=new FileReader();r.onload=ev=>{const img=new Image();img.onload=async()=>{
+    const max=1280,sc=Math.min(1,max/Math.max(img.width,img.height));const c=document.createElement('canvas');
+    c.width=img.width*sc;c.height=img.height*sc;c.getContext('2d').drawImage(img,0,0,c.width,c.height);
+    const id=uid();const ok=await Assets.put(id,c.toDataURL('image/jpeg',0.6));if(!ok){toast('Sin espacio para la foto');return;}
+    (tipo==='pre'?st.fotosPre:st.fotosPos).push(id);renderPhotos(tipo);saveDraft();};img.src=ev.target.result;};r.readAsDataURL(f);});}
+function renderPhotos(tipo){const arr=tipo==='pre'?st.fotosPre:st.fotosPos;$('grid_'+tipo).innerHTML=arr.map((v,i)=>`<div class="ph"><img src="${assetSrc(v)}"><button onclick="rmPhoto('${tipo}',${i})">×</button></div>`).join('');}
+function rmPhoto(tipo,i){const arr=(tipo==='pre'?st.fotosPre:st.fotosPos);const v=arr[i];arr.splice(i,1);if(v&&!isDataURL(v))Assets.del(v);renderPhotos(tipo);saveDraft();}
+
+/* ---------- borrador (autoguardado) ---------- */
+function collectForm(){return{proyId:$('g_proyId').value,pilotoId:$('g_pilotoId').value,
+  tipoOp:{diurna:isOp('diurna'),nocturna:isOp('nocturna'),vlos:isOp('vlos'),evlos:isOp('evlos'),bvlos:isOp('bvlos')},
+  muni:$('g_muni').value,depto:$('g_depto').value,lat:$('g_lat').value,lon:$('g_lon').value,dron:$('g_dron').value,
+  rad:$('a_rad').value,aid:$('a_id').value,ini:$('a_ini').value,fin:$('a_fin').value,
+  pInicio:$('p_inicio').value,qFin:$('q_fin').value,pObs:$('p_obs').value,qObs:$('q_obs').value,st};}
+function saveDraft(){save(K.draft,collectForm());}
+async function loadDraft(){const d=load(K.draft,null);if(!d)return false;
+  $('g_muni').value=d.muni||'';$('g_depto').value=d.depto||'';$('g_lat').value=d.lat||'';$('g_lon').value=d.lon||'';
+  $('a_rad').value=d.rad||'';$('a_id').value=d.aid||'';$('a_ini').value=d.ini||'';$('a_fin').value=d.fin||'';
+  $('p_inicio').value=d.pInicio||'';$('q_fin').value=d.qFin||'';$('p_obs').value=d.pObs||'';$('q_obs').value=d.qObs||'';
+  st=Object.assign(blankState(),d.st||{});
+  Object.entries(d.tipoOp||{}).forEach(([k,val])=>{const el=document.querySelector(`#v-nueva [data-op="${k}"]`);if(el){el.checked=val;el.closest('.pill').classList.toggle('on',val)}});
+  await preloadAssets([].concat(st.fotosPre||[],st.fotosPos||[],(st.autPdf&&st.autPdf.id)?[st.autPdf.id]:[]));
+  renderPhotos('pre');renderPhotos('pos');renderPdfRow();
+  setTimeout(()=>{if(d.proyId)$('g_proyId').value=d.proyId;if(d.pilotoId)$('g_pilotoId').value=d.pilotoId;if(d.dron)$('g_dron').value=d.dron;verdict();},0);
+  return true;}
+function discardDraft(){if(!confirm('¿Descartar el borrador en curso?'))return;
+  const ids=[].concat(st.fotosPre||[],st.fotosPos||[],(st.autPdf&&st.autPdf.id)?[st.autPdf.id]:[]);
+  const used=new Set();operaciones.forEach(o=>opAssetIds(o).forEach(a=>used.add(a)));
+  ids.forEach(a=>{if(a&&!isDataURL(a)&&!used.has(a))Assets.del(a);});
+  localStorage.removeItem(K.draft);resetForm(true);$('draftBar').innerHTML='';toast('Borrador descartado');}
+
+/* ---------- preparar nueva ---------- */
+function prepNueva(){
+  const selD=$('g_dron');selD.innerHTML=flota.length?'<option value="">— dron —</option>'+flota.map(d=>`<option value="${d.id}">${esc(d.modelo)}</option>`).join(''):'<option value="">— sin drones —</option>';
+  $('g_pilotoId').innerHTML=pilotOptions('');
+  $('g_proyId').innerHTML=proyectos.length?'<option value="">— proyecto —</option>'+proyectos.map(p=>`<option value="${p.id}">${esc(p.nombre)}</option>`).join(''):'<option value="">— sin proyectos —</option>';
+  renderSiNo('chkOficina',CHK_OFICINA,'oficina');renderSiNo('chkPrevuelo',CHK_PREVUELO,'prevuelo');renderSiNo('chkPosvuelo',CHK_POSVUELO,'posvuelo');
+  renderHF();renderOcurr();renderSorties();renderPhotos('pre');renderPhotos('pos');renderPdfRow();morCheck();
+  const hasDraft=localStorage.getItem(K.draft);
+  $('draftBar').innerHTML=hasDraft?'<div class="alert info"><span>💾</span><div>Borrador en curso (autoguardado). <a href="#" onclick="discardDraft();return false" style="color:#065f46;font-weight:700">Descartar</a></div></div>':'';
+  if(hasDraft)loadDraft();
+  let w='';if(!proyectos.length)w+='<div class="alert warn"><span>⚠️</span><div>No hay <b>proyectos</b>. Creá uno en la pestaña Proyectos para asociarle la operación.</div></div>';
+  if(!pilotos.length)w+='<div class="alert warn"><span>⚠️</span><div>No hay <b>pilotos</b> cargados. Agregá al menos uno.</div></div>';
+  if(!flota.length)w+='<div class="alert bad"><span>⛔</span><div>La <b>flota</b> está vacía. Agregá un dron.</div></div>';
+  $('setupWarn').innerHTML=w;verdict();}
+
+/* ---------- guardar operación ---------- */
+function saveOp(){const pr=proyectoById($('g_proyId').value);if(!pr){toast('Seleccioná o creá un proyecto');nav('nueva');return;}
+  const v=verdict();
+  const d=dronById($('g_dron').value);const pp=pilotById($('g_pilotoId').value);
+  const nm=id=>{const p=pilotById(id);return p?p.nombre:''};
+  const rec={id:uid(),ts:Date.now(),proyectoId:pr.id,proyecto:pr.nombre,pilotoId:$('g_pilotoId').value,piloto:pp?pp.nombre:'',
+    tipoOp:{diurna:isOp('diurna'),nocturna:isOp('nocturna'),vlos:isOp('vlos'),evlos:isOp('evlos'),bvlos:isOp('bvlos')},
+    municipio:$('g_muni').value.trim(),departamento:$('g_depto').value.trim(),lat:$('g_lat').value.trim(),lon:$('g_lon').value.trim(),
+    dronId:d?d.id:'',dronModelo:d?d.modelo:'',dronSerial:d?d.serial:'',dronRuas:d?d.ruas:'',dronMaximo:d?d.maximo:'',
+    aut:{radicado:$('a_rad').value.trim(),id:$('a_id').value.trim(),ini:$('a_ini').value,fin:$('a_fin').value,pdf:st.autPdf},
+    inicioOp:$('p_inicio').value,finOp:$('q_fin').value,
+    oficina:{...st.oficina},prevuelo:{...st.prevuelo},posvuelo:{...st.posvuelo},hf:{...st.hf},ocurr:{...st.ocurr},
+    imsafe:imsafeResult(),
+    obsPre:$('p_obs').value.trim(),obsPos:$('q_obs').value.trim(),
+    sorties:st.sorties.map(s=>({...s,piloto:nm(s.pilotoId),observador:nm(s.observadorId),dur:sortieDur(s)})),
+    fotosPre:st.fotosPre.slice(),fotosPos:st.fotosPos.slice(),
+    verdict:v.verdict,block:v.block,pend:v.pend,warn:v.warn,requiereMOR:OCURRENCIAS.some(([k])=>st.ocurr[k]==='si'),
+    operadorPiloto:pp?{cedula:pp.cedula,cipus:pp.cipus,med:pp.med}:null};
+  operaciones.unshift(rec);
+  if(!save(K.ops,operaciones)){operaciones.shift();toast('Sin espacio: quitá fotos o el PDF adjunto');return;}
+  localStorage.removeItem(K.draft);toast('Operación guardada ('+v.verdict+')');resetForm(false);nav('hist');}
+function resetForm(clearAll){st=blankState();
+  ['g_muni','g_depto','g_lat','g_lon','a_rad','a_id','a_ini','a_fin','p_inicio','q_fin','p_obs','q_obs'].forEach(i=>$(i).value='');
+  if(clearAll){$('g_proyId').value='';$('g_pilotoId').value='';localStorage.removeItem(K.draft);$('draftBar').innerHTML='';}
+  document.querySelectorAll('#v-nueva .pill').forEach(p=>{p.classList.remove('on');const c=p.querySelector('input');if(c)c.checked=false;});
+  renderSiNo('chkOficina',CHK_OFICINA,'oficina');renderSiNo('chkPrevuelo',CHK_PREVUELO,'prevuelo');renderSiNo('chkPosvuelo',CHK_POSVUELO,'posvuelo');
+  renderHF();renderOcurr();renderSorties();renderPhotos('pre');renderPhotos('pos');renderPdfRow();morCheck();verdict();}
+
+/* ---------- duplicar ---------- */
+function dupOp(id){const o=operaciones.find(x=>x.id===id);if(!o)return;
+  const dr={proyId:o.proyectoId,pilotoId:o.pilotoId,tipoOp:o.tipoOp,muni:o.municipio,depto:o.departamento,lat:o.lat,lon:o.lon,dron:o.dronId,
+    rad:o.aut&&o.aut.radicado,aid:o.aut&&o.aut.id,ini:o.aut&&o.aut.ini,fin:o.aut&&o.aut.fin,
+    pInicio:'',qFin:'',pObs:'',qObs:'',st:Object.assign(blankState(),{autPdf:o.aut&&o.aut.pdf||null})};
+  save(K.draft,dr);nav('nueva');toast('Datos copiados a una nueva operación');}
+
+/* ---------- historial ---------- */
+/* ---------- proyectos ---------- */
+function saveProject(){const n=$('pr_nombre').value.trim();if(!n){toast('Poné el nombre del proyecto');return}
+  const o={id:editProjId||uid(),nombre:n,desc:$('pr_desc').value.trim(),creado:Date.now()};
+  if(editProjId){const i=proyectos.findIndex(x=>x.id===editProjId);o.creado=proyectos[i].creado;proyectos[i]=o;expandedProj.add(editProjId);}else proyectos.push(o);
+  save(K.proj,proyectos);resetProjectForm();renderHistory();toast('Proyecto guardado');}
+function editProject(id){const p=proyectoById(id);if(!p)return;editProjId=id;$('pr_nombre').value=p.nombre;$('pr_desc').value=p.desc||'';
+  $('projTitle').textContent='Editar proyecto';$('pr_saveBtn').textContent='Guardar cambios';$('pr_cancel').style.display='block';window.scrollTo(0,0);}
+function resetProjectForm(){editProjId=null;$('pr_nombre').value='';$('pr_desc').value='';
+  $('projTitle').textContent='Crear proyecto';$('pr_saveBtn').textContent='Crear proyecto';$('pr_cancel').style.display='none';}
+function delProject(id){const opsIn=operaciones.filter(o=>o.proyectoId===id);
+  if(!confirm(opsIn.length?('Este proyecto tiene '+opsIn.length+' operación(es) que también se borrarán. ¿Continuar?'):'¿Eliminar este proyecto?'))return;
+  opsIn.forEach(o=>opAssetIds(o).forEach(a=>Assets.del(a)));
+  proyectos=proyectos.filter(x=>x.id!==id);operaciones=operaciones.filter(o=>o.proyectoId!==id);
+  save(K.proj,proyectos);save(K.ops,operaciones);renderHistory();}
+function toggleProj(id){if(expandedProj.has(id))expandedProj.delete(id);else expandedProj.add(id);renderHistory();}
+function nuevaOpEnProyecto(pid){save(K.draft,{proyId:pid,st:blankState()});nav('nueva');toast('Nueva operación en el proyecto');}
+
+function renderHistory(){updateDash();const cont=$('projList');
+  if(!proyectos.length){cont.innerHTML='<div class="card empty">No hay proyectos todavía.<br>Creá el primero arriba (por ejemplo, una LT completa) y después agregale operaciones.</div>';return}
+  const _last=Number(localStorage.getItem('bvd_lastBackup')||0);
+  const _banner=backupOverdue()?`<div class="alert warn"><span>💾</span><div>${_last?('Último respaldo hace '+Math.floor((Date.now()-_last)/86400000)+' día(s).'):'Nunca respaldaste.'} Descargá un respaldo en <b>Datos</b>.</div></div>`:'';
+  cont.innerHTML=_banner+proyectos.map(pr=>{const ops=operaciones.filter(o=>o.proyectoId===pr.id);
+    const mins=ops.reduce((a,o)=>a+totalMins(o.sorties),0);const vuelos=ops.reduce((a,o)=>a+((o.sorties||[]).length),0);const open=expandedProj.has(pr.id);
+    const opItems=ops.map(o=>{const cls=o.verdict==='GO'?'go':o.verdict==='NO-GO'?'nogo':'pend';const m=totalMins(o.sorties);
+      return `<div class="item"><div class="top"><span class="badge ${cls}">${o.verdict}</span>
+      <div><div class="name">${esc(o.dronModelo||'Sin dron')} · ${(o.inicioOp||'').slice(0,10)||''}</div>
+      <div class="meta">${esc(o.municipio||'')}${o.sorties&&o.sorties.length?' · '+o.sorties.length+' vuelo(s) · '+(m/60).toFixed(1)+' h':''}${o.requiereMOR?' · MOR':''}</div></div>
+      <div class="acts"><button class="icon-btn" onclick="dupOp('${o.id}')">⧉</button><button class="icon-btn" onclick="viewOp('${o.id}')">👁</button><button class="icon-btn del" onclick="delOp('${o.id}')">🗑</button></div></div></div>`}).join('')||'<div class="empty" style="padding:14px">Sin operaciones aún.</div>';
+    return `<div class="card"><div style="display:flex;align-items:center;gap:10px;cursor:pointer" onclick="toggleProj('${pr.id}')">
+      <div style="flex:1"><div class="name" style="font-weight:700">${esc(pr.nombre)}</div>
+      <div class="meta">${ops.length} op. · ${vuelos} vuelo(s) · ${(mins/60).toFixed(1)} h${pr.desc?' · '+esc(pr.desc):''}</div></div>
+      <span style="color:var(--muted);font-size:13px">${open?'▲':'▼'}</span></div>
+      ${open?`<div style="margin-top:12px">${opItems}
+        <div class="btnrow" style="margin-top:10px;flex-wrap:wrap">
+          <button class="btn sec sm" onclick="nuevaOpEnProyecto('${pr.id}')">＋ Operación</button>
+          <button class="btn sec sm" onclick="exportProjectCSV('${pr.id}')">CSV</button>
+          <button class="btn sec sm" onclick="exportProjectPDF('${pr.id}')">PDF</button>
+          <button class="icon-btn" onclick="editProject('${pr.id}')">✎</button>
+          <button class="icon-btn del" onclick="delProject('${pr.id}')">🗑</button>
+        </div></div>`:''}</div>`}).join('');}
+function delOp(id){if(!confirm('¿Eliminar esta operación?'))return;const o=operaciones.find(x=>x.id===id);if(o)opAssetIds(o).forEach(a=>Assets.del(a));operaciones=operaciones.filter(x=>x.id!==id);save(K.ops,operaciones);renderHistory();}
+function viewOp(id){const o=operaciones.find(x=>x.id===id);if(o)printReport([o],projName(o));}
+function updateDash(){$('dTot').textContent=operaciones.length;$('dGo').textContent=operaciones.filter(o=>o.verdict==='GO').length;
+  $('dNogo').textContent=operaciones.filter(o=>o.verdict==='NO-GO').length;
+  const mins=operaciones.reduce((s,o)=>s+totalMins(o.sorties),0);$('dHrs').textContent=(mins/60).toFixed(1);}
+
+/* ---------- consolidados ---------- */
+function pilotStats(pid){let ops=new Set(),vuelos=0,mins=0,obs=0;
+  operaciones.forEach(o=>{let in_=false;if(o.pilotoId===pid)in_=true;
+    (o.sorties||[]).forEach(s=>{if(s.pilotoId===pid){vuelos++;mins+=(s.dur||0);in_=true;}if(s.observadorId===pid){obs++;in_=true;}});
+    if(in_)ops.add(o.id);});
+  return{ops:ops.size,vuelos,horas:mins/60,obs};}
+function droneStats(did){let ops=0,vuelos=0,mins=0;
+  operaciones.forEach(o=>{if(o.dronId===did){ops++;(o.sorties||[]).forEach(s=>{vuelos++;mins+=(s.dur||0);});}});
+  return{ops,vuelos,horas:mins/60};}
+function statGrid(a,b,c,la,lb,lc){return `<div class="statgrid"><div class="stat"><div class="sn">${a}</div><div class="sl">${la}</div></div><div class="stat"><div class="sn">${b}</div><div class="sl">${lb}</div></div><div class="stat"><div class="sn">${c}</div><div class="sl">${lc}</div></div></div>`;}
+
+function renderConsolPilotos(){const sel=$('pilotConsol');const cur=sel.value;
+  sel.innerHTML='<option value="">Todos los pilotos</option>'+pilotos.map(p=>`<option value="${p.id}">${esc(p.nombre)}</option>`).join('');if(cur)sel.value=cur;
+  const cont=$('consolPilotos');
+  if(!pilotos.length){cont.innerHTML='<div class="card empty">No hay pilotos cargados.</div>';return;}
+  if(!sel.value){let t={ops:0,v:0,h:0};
+    const rows=pilotos.map(p=>{const s=pilotStats(p.id);t.ops+=s.ops;t.v+=s.vuelos;t.h+=s.horas;
+      return `<tr><td>${esc(p.nombre)}</td><td>${s.ops}</td><td>${s.vuelos}</td><td>${s.horas.toFixed(1)}</td></tr>`}).join('');
+    cont.innerHTML=`<div class="card"><table class="consol"><thead><tr><th>Piloto</th><th>Op.</th><th>Vuelos</th><th>Horas</th></tr></thead>
+      <tbody>${rows}<tr class="tot"><td>Total</td><td>${t.ops}</td><td>${t.v}</td><td>${t.h.toFixed(1)}</td></tr></tbody></table>
+      <div class="hint" style="margin-top:10px">Vuelos y horas contabilizados como piloto al mando (PIC). Elegí un piloto para ver el detalle.</div></div>`;return;}
+  const p=pilotById(sel.value);const s=pilotStats(sel.value);
+  const opsList=operaciones.filter(o=>o.pilotoId===sel.value||(o.sorties||[]).some(x=>x.pilotoId===sel.value||x.observadorId===sel.value));
+  const detail=opsList.map(o=>{const mine=(o.sorties||[]).filter(x=>x.pilotoId===sel.value);const mins=mine.reduce((a,x)=>a+(x.dur||0),0);
+    const obs=(o.sorties||[]).filter(x=>x.observadorId===sel.value).length;
+    return `<div class="item"><div class="top"><div><div class="name">${esc(projName(o))} · ${(o.inicioOp||'').slice(0,10)}</div>
+    <div class="meta">${esc(o.dronModelo||'')} · ${mine.length} PIC · ${(mins/60).toFixed(1)} h${obs?' · '+obs+' obs':''}</div></div></div></div>`}).join('');
+  cont.innerHTML=`<div class="card"><h2>${esc(p.nombre)}</h2>${statGrid(s.ops,s.vuelos,s.horas.toFixed(1),'Operaciones','Vuelos (PIC)','Horas')}
+    ${s.obs?`<div class="hint" style="margin-top:10px">Además, ${s.obs} vuelo(s) como observador.</div>`:''}</div>
+    <div class="card"><h2>Detalle</h2>${detail||'<div class="empty">Sin vuelos registrados.</div>'}</div>`;}
+
+function renderConsolDrones(){const sel=$('dronConsol');const cur=sel.value;
+  sel.innerHTML='<option value="">Todos los drones</option>'+flota.map(d=>`<option value="${d.id}">${esc(d.modelo)}</option>`).join('');if(cur)sel.value=cur;
+  const cont=$('consolDrones');
+  if(!flota.length){cont.innerHTML='<div class="card empty">No hay drones en la flota.</div>';return;}
+  if(!sel.value){let t={ops:0,v:0,h:0};
+    const rows=flota.map(d=>{const s=droneStats(d.id);t.ops+=s.ops;t.v+=s.vuelos;t.h+=s.horas;
+      return `<tr><td>${esc(d.modelo)}</td><td>${s.ops}</td><td>${s.vuelos}</td><td>${s.horas.toFixed(1)}</td></tr>`}).join('');
+    cont.innerHTML=`<div class="card"><table class="consol"><thead><tr><th>Dron</th><th>Op.</th><th>Vuelos</th><th>Horas</th></tr></thead>
+      <tbody>${rows}<tr class="tot"><td>Total</td><td>${t.ops}</td><td>${t.v}</td><td>${t.h.toFixed(1)}</td></tr></tbody></table>
+      <div class="hint" style="margin-top:10px">Elegí un dron para ver el detalle por operación.</div></div>`;return;}
+  const d=dronById(sel.value);const s=droneStats(sel.value);
+  const opsList=operaciones.filter(o=>o.dronId===sel.value);
+  const detail=opsList.map(o=>{const mins=totalMins(o.sorties);
+    return `<div class="item"><div class="top"><div><div class="name">${esc(projName(o))} · ${(o.inicioOp||'').slice(0,10)}</div>
+    <div class="meta">${esc(o.piloto||'')} · ${(o.sorties||[]).length} vuelo(s) · ${(mins/60).toFixed(1)} h</div></div></div></div>`}).join('');
+  cont.innerHTML=`<div class="card"><h2>${esc(d.modelo)}</h2><div class="hint" style="margin:-6px 0 12px">Serial ${esc(d.serial||'—')} · RUAS ${esc(d.ruas||'—')} · Máximo ${esc(d.maximo||'—')}</div>
+    ${statGrid(s.ops,s.vuelos,s.horas.toFixed(1),'Operaciones','Vuelos','Horas')}</div>
+    <div class="card"><h2>Detalle</h2>${detail||'<div class="empty">Sin vuelos registrados.</div>'}</div>`;}
+
+/* ---------- exportes ---------- */
+function exportPDF(){if(!operaciones.length){toast('No hay operaciones');return}printReport(operaciones,'Todas las operaciones');}
+function exportProjectPDF(pid){const list=operaciones.filter(o=>o.proyectoId===pid);if(!list.length){toast('El proyecto no tiene operaciones');return}printReport(list,(proyectoById(pid)||{}).nombre||'Proyecto');}
+function siNoTable(cfg,state){return `<table>${cfg.map(([k,q])=>`<tr><td class="k">${esc(q)}</td><td class="v ${state[k]==='no'?'no':state[k]==='si'?'si':''}">${state[k]?state[k].toUpperCase():'—'}</td></tr>`).join('')}</table>`;}
+async function printReport(list,titulo){const w=window.open('','_blank');if(w)w.document.write('<p style="font-family:sans-serif;padding:20px">Preparando reporte…</p>');
+  for(const o of list)await preloadAssets(opAssetIds(o));
+  if(!w){toast('Permití ventanas emergentes para ver el PDF');return;}
+  const body=list.map(o=>opBlock(o)).join('<div style="page-break-after:always"></div>');
+  w.document.open();
+  w.document.write(`<!DOCTYPE html><html><head><meta charset="utf-8"><title>Bitácora — ${esc(titulo)}</title><style>
+  *{font-family:system-ui,sans-serif;color:#111}body{margin:0;padding:26px;background:#fff}
+  h1{font-size:19px;margin:0 0 2px}.hd{border-bottom:3px solid #00a651;padding-bottom:8px;margin-bottom:14px;display:flex;align-items:center;gap:10px}
+  .lg{background:#00843f;color:#fff;font-weight:900;padding:4px 8px;border-radius:6px;font-size:16px}
+  .hd .s{font-size:11px;color:#666;letter-spacing:1px;text-transform:uppercase}
+  h3{font-size:13px;margin:14px 0 6px;color:#00843f;border-bottom:1px solid #e2e8f0;padding-bottom:3px}
+  .blk{border:1px solid #cbd5e1;border-radius:10px;padding:14px;margin-bottom:14px}
+  .vd{display:inline-block;font-weight:800;font-size:13px;padding:4px 12px;border-radius:20px;color:#fff}
+  .vd.GO{background:#16a34a}.vd.NOGO{background:#dc2626}.vd.PEND{background:#d97706}
+  table{width:100%;border-collapse:collapse;font-size:12px;margin-top:4px}td{padding:4px 6px;border-bottom:1px solid #eee;vertical-align:top}
+  td.k{color:#444;width:70%}td.v{text-align:right;font-weight:700}td.v.no{color:#dc2626}td.v.si{color:#16a34a}.kv td.k{width:36%;font-weight:600}
+  .rz{background:#fee2e2;border-radius:8px;padding:8px 12px;margin-top:8px;font-size:11.5px;color:#991b1b}
+  .imgs{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}.imgs img{width:110px;height:110px;object-fit:cover;border-radius:6px}
+  @media print{.blk{page-break-inside:avoid}}</style></head><body>
+  <div class="hd"><span class="lg">EPM</span><div><h1>Bitácora de Vuelo Dron</h1><div class="s">F-EPM-03 · RAC 100 · ${esc(titulo)}</div></div></div>
+  ${body}<p style="font-size:10px;color:#999;margin-top:18px">Generado ${new Date().toLocaleString('es-CO')} · Documento de soporte operacional</p></body></html>`);
+  w.document.close();setTimeout(()=>w.print(),400);}
+function opBlock(o){const kv=(k,val)=>val?`<tr><td class="k">${k}</td><td>${esc(String(val))}</td></tr>`:'';
+  const tipos=Object.entries(o.tipoOp||{}).filter(([,x])=>x).map(([k])=>k.toUpperCase()).join(', ');const mins=totalMins(o.sorties);
+  const cipu=o.operadorPiloto&&o.operadorPiloto.cipus?o.operadorPiloto.cipus.map(c=>(c.num||c)+' ('+(c.tipo||'Piloto')+')').join(', '):'';
+  const ced=o.operadorPiloto?o.operadorPiloto.cedula:'';
+  const sr=(o.sorties||[]).map((s,i)=>`<tr><td class="k">#${i+1} — ${esc(s.piloto||'')}${s.observador?' / obs '+esc(s.observador):''}${s.obs?' · '+esc(s.obs):''}</td><td>${s.inicio||'?'}–${s.fin||'?'} · ${s.dur!=null?s.dur+' min':''} · bat ${s.batDesp||'?'}→${s.batAter||'?'}%</td></tr>`).join('');
+  return `<div class="blk"><div><span class="vd ${o.verdict==='GO'?'GO':o.verdict==='NO-GO'?'NOGO':'PEND'}">${o.verdict}</span>${o.requiereMOR?' <span class="vd" style="background:#b45309">MOR REQUERIDO</span>':''}</div>
+  <h3>Datos generales</h3><table class="kv">${kv('Explotador','EPM')}${kv('Proyecto',projName(o))}${kv('Piloto principal',o.piloto)}${kv('Cédula',ced)}${kv('CIPU',cipu)}${kv('Tipo',tipos)}${kv('Ubicación',[o.municipio,o.departamento].filter(Boolean).join(', '))}${o.lat||o.lon?kv('Coordenadas',o.lat+', '+o.lon):''}${kv('Dron',o.dronModelo)}${kv('Serial',o.dronSerial)}${kv('RUAS',o.dronRuas)}${kv('Código Máximo',o.dronMaximo)}</table>
+  <h3>Autorización</h3><table class="kv">${kv('Radicado',o.aut&&o.aut.radicado)}${kv('ID',o.aut&&o.aut.id)}${kv('Vigencia',o.aut?(o.aut.ini||'?')+' a '+(o.aut.fin||'?'):'')}${o.aut&&o.aut.pdf?kv('Certificado',o.aut.pdf.name):''}</table>
+  <h3>Chequeo en oficina</h3>${siNoTable(CHK_OFICINA,o.oficina||{})}
+  <h3>Chequeo pre-vuelo</h3>${kv('Inicio operación',o.inicioOp)}${siNoTable(CHK_PREVUELO,o.prevuelo||{})}<h3>Aptitud psicofísica (IMSAFE)</h3>${hfTable(o)}${o.obsPre?`<table class="kv">${kv('Obs. pre-vuelo',o.obsPre)}</table>`:''}
+  <h3>Registro durante la operación</h3><table>${sr||'<tr><td class="k">Sin vuelos</td><td></td></tr>'}<tr><td class="k"><b>Total</b></td><td><b>${(o.sorties||[]).length} vuelo(s) · ${(mins/60).toFixed(1)} h</b></td></tr></table>
+  <h3>Chequeo pos-vuelo</h3>${siNoTable(CHK_POSVUELO,o.posvuelo||{})}${kv('Fin operación',o.finOp)}
+  <h3>Ocurrencias</h3>${siNoTable(OCURRENCIAS,o.ocurr||{})}${o.obsPos?`<table class="kv">${kv('Obs. pos-vuelo',o.obsPos)}</table>`:''}
+  ${o.block&&o.block.length?`<div class="rz"><b>NO-GO:</b> ${o.block.map(esc).join(' · ')}</div>`:''}
+  ${(function(){const src=(o.fotosPre||[]).concat(o.fotosPos||[]).map(assetSrc).filter(Boolean);return src.length?`<div class="imgs">${src.map(d=>`<img src="${d}">`).join('')}</div>`:''})()}</div>`;}
+function hfTable(o){const hf=o.hf||{};
+  const ims=IMSAFE.map(f=>{const opt=f.opts.find(x=>x[0]===hf[f.k]);return opt?`<tr><td class="k">${f.letra} · ${esc(f.q)}</td><td>${esc(opt[1])} — ${esc(opt[2])}</td></tr>`:''}).filter(Boolean).join('');
+  const ir=o.imsafe||{};const res=ir.calif?`<tr><td class="k"><b>Resultado IMSAFE</b></td><td><b>${esc(ir.calif)} (puntaje ${ir.sum||0})</b></td></tr>`:'';
+  const cond=COND.map(f=>{const opt=f.opts.find(x=>x[0]===hf[f.k]);return opt?`<tr><td class="k">${esc(f.q)}</td><td>${esc(opt[1])}</td></tr>`:''}).filter(Boolean).join('');
+  const all=ims+res+cond;return all?`<table class="kv">${all}</table>`:'';}
+function buildCSV(list){
+  const cols=['fecha_op','proyecto','operacion_id','municipio','departamento','tipo_op','piloto_principal','dron','dron_serial','ruas','codigo_maximo','radicado','id_aut','vig_ini','vig_fin','lat','lon','verdict','imsafe','requiere_mor','vuelo_n','piloto_vuelo','observador','obs_vuelo','inicio','fin','duracion_min','bat_despegue','bat_aterrizaje'];
+  const e2=s=>{s=(s==null?'':String(s)).replace(/"/g,'""');return /[",;\n]/.test(s)?'"'+s+'"':s};
+  const rows=[];list.forEach(o=>{const tipos=Object.entries(o.tipoOp||{}).filter(([,x])=>x).map(([k])=>k).join('|');
+    const base=[(o.inicioOp||'').slice(0,10),projName(o),o.id,o.municipio,o.departamento,tipos,o.piloto,o.dronModelo,o.dronSerial,o.dronRuas,o.dronMaximo,o.aut&&o.aut.radicado,o.aut&&o.aut.id,o.aut&&o.aut.ini,o.aut&&o.aut.fin,o.lat,o.lon,o.verdict,(o.imsafe&&o.imsafe.calif)||'',o.requiereMOR?'Sí':'No'];
+    if(o.sorties&&o.sorties.length)o.sorties.forEach((s,i)=>rows.push(base.concat([i+1,s.piloto,s.observador,s.obs,s.inicio,s.fin,s.dur,s.batDesp,s.batAter]).map(e2).join(',')));
+    else rows.push(base.concat(['','','','','','','','','']).map(e2).join(','));});
+  return '\ufeff'+cols.join(',')+'\n'+rows.join('\n');}
+function exportCSV(){if(!operaciones.length){toast('No hay operaciones');return}dl('bitacora_vuelos.csv',buildCSV(operaciones),'text/csv');toast('CSV exportado');}
+function exportProjectCSV(pid){const list=operaciones.filter(o=>o.proyectoId===pid);if(!list.length){toast('El proyecto no tiene operaciones');return}
+  const nm=((proyectoById(pid)||{}).nombre||'proyecto').replace(/[^\w]+/g,'_');dl('bitacora_'+nm+'.csv',buildCSV(list),'text/csv');toast('CSV del proyecto exportado');}
+async function exportJSON(){toast('Preparando respaldo…');const assets={};
+  for(const o of operaciones){for(const id of opAssetIds(o)){if(!isDataURL(id)&&!(id in assets)){const d=await Assets.get(id);if(d!=null)assets[id]=d;}}}
+  dl('bitacora_respaldo_'+new Date().toISOString().slice(0,10)+'.json',JSON.stringify({v:6,proyectos,pilotos,flota,operaciones,assets},null,1),'application/json');
+  localStorage.setItem('bvd_lastBackup',String(Date.now()));toast('Respaldo descargado');if($('v-datos').classList.contains('active'))renderStorage();}
+function importJSON(e){const f=e.target.files[0];e.target.value='';if(!f)return;const r=new FileReader();
+  r.onload=async ev=>{try{const d=JSON.parse(ev.target.result);if(!confirm('Reemplaza proyectos, pilotos, flota y operaciones. ¿Continuar?'))return;
+    if(d.assets)for(const[id,data]of Object.entries(d.assets))await Assets.put(id,data);
+    proyectos=d.proyectos||[];pilotos=d.pilotos||[];flota=d.flota||[];operaciones=d.operaciones||[];
+    migrateProjects();await migrateAssets();save(K.proj,proyectos);save(K.pilots,pilotos);save(K.fl,flota);save(K.ops,operaciones);
+    renderPilots();renderFleet();renderHistory();toast('Restaurado');nav('hist');
+  }catch(err){toast('Archivo inválido')}};r.readAsText(f);}
+function wipeAll(){if(!confirm('Se borra TODO (proyectos, pilotos, flota, operaciones y adjuntos). ¿Seguro?'))return;if(!confirm('Última confirmación: no se puede deshacer.'))return;
+  [K.fl,K.pilots,K.proj,K.ops,K.draft].forEach(k=>localStorage.removeItem(k));localStorage.removeItem('bvd_lastBackup');Assets.clear();
+  flota=[];pilotos=[];proyectos=[];operaciones=[];renderPilots();renderFleet();renderHistory();toast('Todo borrado');}
+function dl(name,content,type){const b=new Blob([content],{type});const u=URL.createObjectURL(b);const a=document.createElement('a');a.href=u;a.download=name;a.click();setTimeout(()=>URL.revokeObjectURL(u),1000);}
+function backupOverdue(){const last=Number(localStorage.getItem('bvd_lastBackup')||0);const days=last?Math.floor((Date.now()-last)/86400000):null;return operaciones.length&&(!last||days>7);}
+async function renderStorage(){const el=$('storageInfo');if(!el)return;const s=await storageInfo();
+  const last=Number(localStorage.getItem('bvd_lastBackup')||0);const lastTxt=last?new Date(last).toLocaleDateString('es-CO'):'nunca';
+  const days=last?Math.floor((Date.now()-last)/86400000):null;const overdue=!last||days>7;
+  const used=s.idb+s.ls;const pct=s.quota?Math.min(100,Math.round(used/s.quota*100)):Math.min(100,Math.round(used/(50*1048576)*100));
+  el.innerHTML=`<div class="hint" style="margin-bottom:8px">Modo: <b>${s.mode}</b>${s.mode==='localStorage'?' — el navegador bloqueó IndexedDB. Para durabilidad plena, hospedá la app en HTTPS.':' — fotos y PDF guardados fuera de localStorage.'}</div>
+    <div class="meter"><div class="meterfill" style="width:${pct}%"></div></div>
+    <div class="hint" style="margin-top:6px">Uso aproximado: <b>${fmtMB(used)}</b>${s.quota?(' de ~'+fmtMB(s.quota)+' disponibles'):''}</div>
+    <div class="divider"></div>
+    ${overdue?`<div class="alert warn" style="margin:0"><span>💾</span><div>Último respaldo: <b>${lastTxt}</b>${days!=null?(' — hace '+days+' día(s)'):''}. Descargá un respaldo JSON para no arriesgar tus datos.</div></div>`:`<div class="hint" style="margin:0">Último respaldo: <b>${lastTxt}</b> (${days} día(s)). Al día.</div>`}`;}
+
+/* flush del borrador al cerrar/ocultar */
+window.addEventListener('pagehide',()=>{if($('v-nueva').classList.contains('active'))saveDraft();});
+document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='hidden'&&$('v-nueva').classList.contains('active'))saveDraft();});
+
+function capturarGPS(){const h=$('gpsHint');
+  if(!navigator.geolocation){h.textContent='Este dispositivo no ofrece geolocalización.';h.style.color='var(--rojo)';return;}
+  if(!window.isSecureContext){h.textContent='El GPS automático requiere HTTPS. Abrí la app instalada (PWA) o pegá las coordenadas.';h.style.color='var(--amarillo)';return;}
+  h.textContent='Obteniendo ubicación…';h.style.color='var(--muted)';
+  navigator.geolocation.getCurrentPosition(p=>{
+    $('g_lat').value=p.coords.latitude.toFixed(6);$('g_lon').value=p.coords.longitude.toFixed(6);
+    h.textContent='✓ Ubicación capturada (±'+Math.round(p.coords.accuracy)+' m)';h.style.color='var(--verde)';saveDraft();
+  },err=>{h.textContent='No se pudo obtener la ubicación: '+err.message;h.style.color='var(--rojo)';},{enableHighAccuracy:true,timeout:10000,maximumAge:0});}
+
+if('serviceWorker' in navigator){window.addEventListener('load',()=>navigator.serviceWorker.register('sw.js').catch(()=>{}));}
+
+Assets.init().then(async()=>{await migrateAssets();});
+migrateProjects();
+renderHistory();
+</script>
+</body>
+</html>
