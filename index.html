@@ -511,9 +511,8 @@ function cipuLabel(c){return (c.tipo||c)==='Nocturno'?'Nocturno':(c.tipo||c)==='
 function renderPilots(){const l=$('pilotList');
   if(!pilotos.length){l.innerHTML='<div class="card empty">No hay pilotos. Agregá el primero arriba para que aparezca en los desplegables.</div>';return}
   l.innerHTML=pilotos.map(p=>{const mv=daysTo(p.med);const med=p.med?(mv<0?'⛔ médico vencido':'médico vence '+p.med):'sin médico';
-    const cip=(p.cipus||[]).map(c=>esc(c.num||c)+' ('+cipuLabel(c)+')').join(', ')||'—';
+    const cip=(p.cipus||[]).map(c=>cipuLabel(c)).join(', ')||'—';
     return `<div class="item"><div class="top"><div><div class="name">${esc(p.nombre)}</div>
-    <div class="meta">CC ${esc(p.cedula||'—')}</div>
     <div class="meta">CIPU: ${cip}</div>
     <div class="meta">${hasCert(p,'Nocturno')?'✓ nocturno ':''}${hasCert(p,'BVLOS')?'✓ BVLOS ':''}· ${med}</div></div>
     </div></div>`}).join('');}
