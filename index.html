@@ -154,6 +154,7 @@ nav#navGrid button.active svg{stroke:var(--grn-dk)}
 .modal{position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:1600;display:flex;align-items:center;justify-content:center;padding:20px}
 .modalCard{background:#fff;border-radius:16px;padding:20px;max-width:420px;width:100%;box-shadow:0 20px 60px rgba(0,0,0,.3)}
 .locked{opacity:.5;pointer-events:none;filter:grayscale(.3)}
+input[readonly]{background:#eef3f1;color:var(--muted);cursor:not-allowed}
 .infoBox{margin-top:6px;font-size:12.5px;line-height:1.5;color:var(--muted)}
 .infoBox b{color:var(--ink)}
 .infoBox .bad{color:var(--rojo);font-weight:700}
@@ -255,7 +256,7 @@ nav#navGrid button.active svg{stroke:var(--grn-dk)}
 
   <div class="card">
     <h2><span class="step">1</span>Datos generales</h2>
-    <div class="field"><label>Piloto principal</label><select id="g_pilotoId" onchange="verdict();renderPilotoInfo();saveDraft()"></select><div id="pilotoInfo" class="infoBox"></div></div>
+    <div class="field"><label>Piloto principal</label><input id="g_pilotoQ" list="dlPilotos" placeholder="Buscá por nombre…" autocomplete="off" onchange="onPilotoQ()"><input type="hidden" id="g_pilotoId"><div id="pilotoInfo" class="infoBox"></div></div><datalist id="dlPilotos"></datalist>
     <div class="field"><label>Tipo de operación</label>
       <div class="pillwrap">
         <label class="pill" onclick="tgl(this);verdict();saveDraft()"><input type="checkbox" data-op="diurna" hidden><span class="dot"></span>Diurna</label>
@@ -274,7 +275,7 @@ nav#navGrid button.active svg{stroke:var(--grn-dk)}
 
   <div class="card">
     <h2><span class="step">2</span>Autorización de vuelo</h2>
-    <div class="field"><label>Autorización</label><select id="g_autId" onchange="onAutSelect()"></select><div id="autInfo" class="infoBox"></div></div>
+    <div class="field"><label>Autorización</label><input id="g_autQ" list="dlAut" placeholder="Buscá por radicado o proyecto…" autocomplete="off" onchange="onAutQ()"><input type="hidden" id="g_autId"><div id="autInfo" class="infoBox"></div></div><datalist id="dlAut"></datalist>
     <div class="row2">
       <div class="field"><label>Radicado</label><input type="text" id="a_rad" class="mono" readonly></div>
       <div class="field"><label>ID</label><input type="text" id="a_id" class="mono" readonly></div>
@@ -465,7 +466,7 @@ const Assets={readyP:null,useIDB:false,db:null,cache:{},
 function isDataURL(v){return typeof v==='string'&&v.slice(0,5)==='data:'}
 function assetSrc(v){return isDataURL(v)?v:(Assets.cache[v]||'')}
 async function preloadAssets(ids){for(const v of (ids||[])){if(v&&!isDataURL(v))await Assets.get(v);}}
-function opAssetIds(o){return[].concat(o.fotosPre||[],o.fotosPos||[],o.fotoDron?[o.fotoDron]:[],o.fotoMeteo?[o.fotoMeteo]:[],(o.aut&&o.aut.pdf&&o.aut.pdf.id)?[o.aut.pdf.id]:[])}
+function opAssetIds(o){return[].concat(o.fotosPre||[],o.fotosPos||[],o.fotoDron?[o.fotoDron]:[],o.fotoMeteo?[o.fotoMeteo]:[],(o.aut&&o.aut.pdf&&o.aut.pdf.id)?[o.aut.pdf.id]:[],(o.aut&&o.aut.pdfInfo&&o.aut.pdfInfo.id)?[o.aut.pdfInfo.id]:[])}
 function opOwnedAssetIds(o){return[].concat(o.fotosPre||[],o.fotosPos||[],o.fotoDron?[o.fotoDron]:[],o.fotoMeteo?[o.fotoMeteo]:[])}
 // Migra binarios embebidos (dataURL) de operaciones antiguas a Assets, dejando ids en localStorage
 async function migrateAssets(){let ch=false;
@@ -480,7 +481,7 @@ async function storageInfo(){let idb=0,quota=0;
   return{idb,quota,ls,mode:Assets.useIDB?'IndexedDB':'localStorage'};}
 function fmtMB(b){return (b/1048576).toFixed(1)+' MB'}
 let st=blankState();
-function blankState(){return{oficina:{},prevuelo:{},posvuelo:{},ocurr:{},hf:{},sorties:[],fotosPre:[],fotosPos:[],fotoDron:null,fotoMeteo:null,autPdf:null}}
+function blankState(){return{oficina:{},prevuelo:{},posvuelo:{},ocurr:{},hf:{},sorties:[],fotosPre:[],fotosPos:[],fotoDron:null,fotoMeteo:null,autPdf:null,autPdfInfo:null}}
 
 const $=id=>document.getElementById(id);
 const uid=()=>Date.now().toString(36)+Math.random().toString(36).slice(2,6);
@@ -568,14 +569,15 @@ function renderAutInfo(){const el=$('autInfo');if(!el)return;const au=autById($(
   h+='Radicado: '+esc(au.radicado||'—')+(au.idAut?' · ID '+esc(au.idAut):'')+'<br>';
   h+='Vigencia: '+(au.ini?fmtDate(au.ini):'—')+' a '+fdate(au.fin);
   const b=[];
-  if(au.pdf)b.push('<button class="btn sec sm noprint" onclick="openPdf(\''+au.pdf.id+'\')">📄 Ver PDF</button>');
+  if(au.pdf)b.push('<button class="btn sec sm noprint" onclick="openPdf(\''+au.pdf.id+'\')">📄 Documento</button>');
+  if(au.pdfInfo)b.push('<button class="btn sec sm noprint" onclick="openPdf(\''+au.pdfInfo.id+'\')">📄 Información</button>');
   if(au.poly&&au.poly.length)b.push('<button class="btn sec sm noprint" onclick="verZonaAut(\''+au.id+'\')">🗺️ Ver zona en mapa</button>');
   h+='<div class="btnrow" style="margin-top:8px">'+(b.length?b.join(''):'<span class="hint">Sin PDF ni polígono cargados.</span>')+'</div>';
   el.innerHTML=h;}
 function verZonaAut(id){nav('mapa');setTimeout(()=>{const a=autById(id);if(a&&a.poly&&a.poly.length&&map){const bb=[];a.poly.forEach(p=>p.forEach(pt=>bb.push(pt)));if(bb.length){try{map.fitBounds(bb,{padding:[30,30]});}catch(e){}}}},450);}
 function onAutSelect(){const au=autById($('g_autId').value);renderAutInfo();
   $('a_rad').value=au?(au.radicado||''):'';$('a_id').value=au?(au.idAut||''):'';$('a_ini').value=au?(au.ini||''):'';$('a_fin').value=au?(au.fin||''):'';
-  st.autPdf=au&&au.pdf?au.pdf:null;renderPdfRow();verdict();saveDraft();}
+  st.autPdf=au&&au.pdf?au.pdf:null;st.autPdfInfo=au&&au.pdfInfo?au.pdfInfo:null;renderPdfRow();verdict();saveDraft();}
 function saveDrone(){const m=$('d_modelo').value.trim();if(!m){toast('Poné el modelo');return}
   const o={id:editDroneId||uid(),dr:$('d_dr').value.trim(),modelo:m,serial:$('d_serial').value.trim(),ruas:$('d_ruas').value.trim(),maximo:$('d_maximo').value.trim(),
     poliza:$('d_poliza').value.trim(),polizaVence:$('d_polizaVence').value,mant:$('d_mant').value,habNocturno:$('d_hnoc').checked,habBVLOS:$('d_hbvlos').checked};
@@ -594,6 +596,13 @@ function delDrone(id){if(!confirm('¿Eliminar este dron?'))return;flota=flota.fi
 
 /* ---------- desplegables ---------- */
 function pilotOptions(sel){return '<option value="">— piloto —</option>'+pilotos.map(p=>`<option value="${p.id}" ${p.id===sel?'selected':''}>${esc(p.nombre)}</option>`).join('');}
+function pilotName(id){const p=pilotById(id);return p?(p.nombre||''):'';}
+function resolvePilot(q){const v=(q||'').trim();return pilotos.find(p=>(p.nombre||'').trim()===v)||null;}
+function onPilotoQ(){const p=resolvePilot($('g_pilotoQ').value);$('g_pilotoId').value=p?p.id:'';verdict();renderPilotoInfo();saveDraft();}
+function setSPilot(i,field,q){const p=resolvePilot(q);setS(i,field,p?p.id:'');}
+function autLabel(a){return a?((a.radicado||'')+(a.desc?' — '+a.desc:'')):'';}
+function resolveAut(q){const v=(q||'').trim();return autorizaciones.find(a=>autLabel(a)===v)||autorizaciones.find(a=>(a.radicado||'').trim()===v)||null;}
+function onAutQ(){const a=resolveAut($('g_autQ').value);$('g_autId').value=a?a.id:'';onAutSelect();}
 
 /* ---------- checklists ---------- */
 function renderSiNo(cont,cfg,group){$(cont).innerHTML=cfg.map(([k,q,crit])=>{const v=st[group][k];
@@ -631,8 +640,8 @@ function addSortie(d){st.sorties.push(d||{fecha:($('p_inicio').value||'').slice(
 function renderSorties(){
   $('sortieList').innerHTML=st.sorties.map((s,i)=>{const dur=sortieDur(s);const needObs=!s.observadorId;
     return `<div class="sortie"><div class="sh"><span class="n">Vuelo #${i+1}</span><span class="dur">${dur!=null?dur+' min de vuelo':''}</span><button class="rm" onclick="rmSortie(${i})">Quitar</button></div>
-      <div class="field"><label>Piloto</label><select onchange="setS(${i},'pilotoId',this.value)">${pilotOptions(s.pilotoId)}</select></div>
-      <div class="field"><label>Observador ${needObs?'<span style="color:#dc2626">· obligatorio</span>':''}</label><select onchange="setS(${i},'observadorId',this.value)">${pilotOptions(s.observadorId)}</select></div>
+      <div class="field"><label>Piloto</label><input list="dlPilotos" value="${esc(pilotName(s.pilotoId))}" placeholder="Buscá por nombre…" autocomplete="off" onchange="setSPilot(${i},'pilotoId',this.value)"></div>
+      <div class="field"><label>Observador ${needObs?'<span style="color:#dc2626">· obligatorio</span>':''}</label><input list="dlPilotos" value="${esc(pilotName(s.observadorId))}" placeholder="Buscá por nombre…" autocomplete="off" onchange="setSPilot(${i},'observadorId',this.value)"></div>
       <div class="field"><label>Fecha</label><input type="date" value="${s.fecha||''}" onchange="setS(${i},'fecha',this.value)"></div>
       <div class="row2"><div class="field"><label>Hora inicio</label><input type="time" value="${s.inicio||''}" onchange="setS(${i},'inicio',this.value)"></div>
       <div class="field"><label>Hora fin</label><input type="time" value="${s.fin||''}" onchange="setS(${i},'fin',this.value)"></div></div>
@@ -736,7 +745,7 @@ async function loadDraft(){const d=load(K.draft,null);if(!d)return false;
   renderHF();renderOcurr();renderSorties();
   await preloadAssets([].concat(st.fotosPre||[],st.fotosPos||[],st.fotoDron?[st.fotoDron]:[],st.fotoMeteo?[st.fotoMeteo]:[],(st.autPdf&&st.autPdf.id)?[st.autPdf.id]:[]));
   renderPhotos('pre');renderPhotos('pos');renderNamedPhoto('fotoDron');renderNamedPhoto('fotoMeteo');renderPdfRow();
-  setTimeout(()=>{if(d.pilotoId)$('g_pilotoId').value=d.pilotoId;if(d.dron)$('g_dron').value=d.dron;if(d.autId){$('g_autId').value=d.autId;onAutSelect();}renderDronInfo();renderPilotoInfo();verdict();},0);
+  setTimeout(()=>{if(d.pilotoId){$('g_pilotoId').value=d.pilotoId;$('g_pilotoQ').value=pilotName(d.pilotoId);}if(d.dron)$('g_dron').value=d.dron;if(d.autId){$('g_autId').value=d.autId;$('g_autQ').value=autLabel(autById(d.autId));onAutSelect();}renderDronInfo();renderPilotoInfo();verdict();},0);
   return true;}
 function discardDraft(){if(!confirm('¿Descartar el borrador en curso?'))return;
   const ids=[].concat(st.fotosPre||[],st.fotosPos||[],st.fotoDron?[st.fotoDron]:[],st.fotoMeteo?[st.fotoMeteo]:[]);
@@ -747,8 +756,9 @@ function discardDraft(){if(!confirm('¿Descartar el borrador en curso?'))return;
 /* ---------- preparar nueva ---------- */
 function prepNueva(){
   const selD=$('g_dron');selD.innerHTML=flota.length?'<option value="">— dron —</option>'+flota.map(d=>`<option value="${d.id}">${esc(dronLabel(d))}</option>`).join(''):'<option value="">— sin drones —</option>';
-  $('g_pilotoId').innerHTML=pilotOptions('');
-  $('g_autId').innerHTML='<option value="">— autorización —</option>'+autorizaciones.map(a=>`<option value="${a.id}">${esc(a.desc||a.radicado||'Autorización')}</option>`).join('');
+  $('dlPilotos').innerHTML=pilotos.map(p=>`<option value="${esc(p.nombre)}">`).join('');
+  $('dlAut').innerHTML=autorizaciones.map(a=>`<option value="${esc(autLabel(a))}">`).join('');
+  $('g_pilotoQ').value='';$('g_pilotoId').value='';$('g_autQ').value='';$('g_autId').value='';
   renderSiNo('chkOficina',CHK_OFICINA,'oficina');renderSiNo('chkPrevuelo',CHK_PREVUELO,'prevuelo');renderSiNo('chkPosvuelo',CHK_POSVUELO,'posvuelo');
   renderHF();renderOcurr();renderSorties();renderPhotos('pre');renderPhotos('pos');renderNamedPhoto('fotoDron');renderNamedPhoto('fotoMeteo');renderPdfRow();renderDronInfo();renderPilotoInfo();renderAutInfo();morCheck();
   const hasDraft=localStorage.getItem(K.draft);const sb=$('saveOpBtn');
@@ -774,7 +784,7 @@ function saveOp(){
     tipoOp:{diurna:isOp('diurna'),nocturna:isOp('nocturna'),vlos:isOp('vlos'),evlos:isOp('evlos'),bvlos:isOp('bvlos')},
     municipio:$('g_muni').value.trim(),departamento:$('g_depto').value.trim(),
     dronId:d?d.id:'',dronModelo:d?d.modelo:'',dronSerial:d?d.serial:'',dronRuas:d?d.ruas:'',dronMaximo:d?d.maximo:'',dronDR:d?(d.dr||''):'',dronPolizaVence:d?(d.polizaVence||''):'',dronMant:d?(d.mant||''):'',
-    aut:{radicado:$('a_rad').value.trim(),id:$('a_id').value.trim(),ini:$('a_ini').value,fin:$('a_fin').value,pdf:st.autPdf},
+    aut:{radicado:$('a_rad').value.trim(),id:$('a_id').value.trim(),ini:$('a_ini').value,fin:$('a_fin').value,pdf:st.autPdf,pdfInfo:st.autPdfInfo},
     inicioOp:$('p_inicio').value,finOp:$('q_fin').value,
     oficina:{...st.oficina},prevuelo:{...st.prevuelo},posvuelo:{...st.posvuelo},hf:{...st.hf},ocurr:{...st.ocurr},
     riesgo:riesgoResult(),
@@ -792,7 +802,7 @@ function saveOp(){
   localStorage.removeItem(K.draft);toast('Operación guardada ('+v.verdict+')');resetForm(false);nav('oper');}
 function resetForm(clearAll){st=blankState();
   ['g_muni','g_depto','a_rad','a_id','a_ini','a_fin','p_inicio','q_fin','p_obs','q_obs'].forEach(i=>$(i).value='');
-  if(clearAll){$('g_pilotoId').value='';if($('g_autId'))$('g_autId').value='';localStorage.removeItem(K.draft);$('draftBar').innerHTML='';}
+  if(clearAll){$('g_pilotoId').value='';if($('g_pilotoQ'))$('g_pilotoQ').value='';if($('g_autId'))$('g_autId').value='';if($('g_autQ'))$('g_autQ').value='';localStorage.removeItem(K.draft);$('draftBar').innerHTML='';}
   document.querySelectorAll('#v-nueva .pill').forEach(p=>{p.classList.remove('on');const c=p.querySelector('input');if(c)c.checked=false;});
   renderSiNo('chkOficina',CHK_OFICINA,'oficina');renderSiNo('chkPrevuelo',CHK_PREVUELO,'prevuelo');renderSiNo('chkPosvuelo',CHK_POSVUELO,'posvuelo');
   renderHF();renderOcurr();renderSorties();renderPhotos('pre');renderPhotos('pos');renderNamedPhoto('fotoDron');renderNamedPhoto('fotoMeteo');renderPdfRow();morCheck();verdict();}
@@ -960,7 +970,7 @@ async function printReport(list,titulo){const w=window.open('','_blank');if(w)w.
   if(!w){toast('Permití ventanas emergentes para ver el PDF');return;}
   const body=list.map(o=>opBlock(o)).join('<div style="page-break-after:always"></div>');
   let annex='';
-  for(const o of list){if(o.aut&&o.aut.pdf&&o.aut.pdf.id){const data=await Assets.get(o.aut.pdf.id);if(data){try{const imgs=await pdfToImages(data);if(imgs.length)annex+='<div style="page-break-before:always"></div><h2 style="font-size:15px;color:#007934;border-bottom:2px solid #007934;padding-bottom:4px">Anexo — Autorización · '+esc(o.codigo||'')+' · '+fmtDT(o.inicioOp)+'</h2>'+imgs.map(im=>'<img src="'+im+'" style="width:100%;display:block;margin:8px 0;border:1px solid #cbd5e1">').join('');}catch(e){const msg=(e&&e.message==='LIB')?'La librería pdf.js no está cargada: subí <b>pdf.min.js</b> y <b>pdf.worker.min.js</b> al repositorio (junto a index.html) y abrí la app instalada, no como archivo local.':('Detalle técnico: '+esc(e&&e.message||''));annex+='<p style="color:#b45309;border:1px solid #fcd34d;background:#fffbeb;padding:8px 10px;border-radius:8px">No se pudo incrustar el PDF adjunto <b>'+esc((o.aut.pdf.name)||'')+'</b>. '+msg+'</p>';}}}}
+  for(const o of list){if(!o.aut)continue;for(const it of [{p:o.aut.pdf,lb:'documento'},{p:o.aut.pdfInfo,lb:'información'}]){const pp=it.p;if(pp&&pp.id){const data=await Assets.get(pp.id);if(data){try{const imgs=await pdfToImages(data);if(imgs.length)annex+='<div style="page-break-before:always"></div><h2 style="font-size:15px;color:#007934;border-bottom:2px solid #007934;padding-bottom:4px">Anexo — Autorización ('+it.lb+') · '+esc(o.codigo||'')+' · '+fmtDT(o.inicioOp)+'</h2>'+imgs.map(im=>'<img src="'+im+'" style="width:100%;display:block;margin:8px 0;border:1px solid #cbd5e1">').join('');}catch(e){const msg=(e&&e.message==='LIB')?'La librería pdf.js no está cargada: subí <b>pdf.min.js</b> y <b>pdf.worker.min.js</b> al repositorio (junto a index.html) y abrí la app instalada, no como archivo local.':('Detalle técnico: '+esc(e&&e.message||''));annex+='<p style="color:#b45309;border:1px solid #fcd34d;background:#fffbeb;padding:8px 10px;border-radius:8px">No se pudo incrustar el PDF adjunto <b>'+esc((pp.name)||'')+'</b>. '+msg+'</p>';}}}}}
   w.document.open();
   w.document.write(`<!DOCTYPE html><html><head><meta charset="utf-8"><title>Bitácora — ${esc(titulo)}</title><style>
   *{font-family:system-ui,sans-serif;color:#111}body{margin:0;padding:26px;background:#fff}
@@ -1129,6 +1139,7 @@ function capturarGPSVuelo(i){const h=document.getElementById('gpsHintV'+i);
 
 /* ---------- mapa de zona (KMZ) ---------- */
 let map,zonaLayers=[],meMarker,baseOSM,baseSat,curBase,vueloLayer;
+const AUT_COLORS=['#007934','#1d4ed8','#dc2626','#d97706','#7c3aed','#0891b2','#be185d','#4d7c0f','#b45309','#0f766e','#9333ea','#e11d48'];
 function coordStr(t){return t.trim().split(/\s+/).map(s=>{const a=s.split(',');return [+a[1],+a[0]];}).filter(p=>isFinite(p[0])&&isFinite(p[1]));}
 function parseKmlText(t){const doc=new DOMParser().parseFromString(t,'text/xml');const polys=[];const pg=doc.getElementsByTagName('Polygon');
   for(let i=0;i<pg.length;i++){const c=pg[i].getElementsByTagName('coordinates');if(c.length){const p=coordStr(c[0].textContent);if(p.length>=3)polys.push(p);}}
@@ -1155,7 +1166,8 @@ function renderVueloPoints(){if(!map)return;if(vueloLayer)map.removeLayer(vueloL
 function centrarVuelos(){if(!map)return;const b=[];operaciones.forEach(o=>(o.sorties||[]).forEach(s=>{const la=parseFloat(s.lat),lo=parseFloat(s.lon);if(isFinite(la)&&isFinite(lo))b.push([la,lo]);}));if(b.length){try{map.fitBounds(b,{padding:[30,30]});}catch(e){}}else if($('vpInfo'))$('vpInfo').textContent='No hay puntos de vuelo para centrar.';}
 function allPolys(){const out=[];(autorizaciones||[]).forEach(a=>(a.poly||[]).forEach(p=>out.push(p)));return out;}
 function renderZonas(){if(!map)return;zonaLayers.forEach(l=>map.removeLayer(l));zonaLayers=[];const all=[];
-  (autorizaciones||[]).forEach(a=>(a.poly||[]).forEach(poly=>{const pl=L.polygon(poly,{color:'#007934',weight:2,fillColor:'#7AD400',fillOpacity:.18}).addTo(map);pl.bindPopup('<b>'+esc(a.desc||a.radicado||'Autorización')+'</b>'+(a.radicado?'<br>Radicado '+esc(a.radicado):''));zonaLayers.push(pl);poly.forEach(pt=>all.push(pt));}));
+  (autorizaciones||[]).forEach((a,ai)=>{const col=AUT_COLORS[ai%AUT_COLORS.length];(a.poly||[]).forEach(poly=>{const pl=L.polygon(poly,{color:col,weight:2,fillColor:col,fillOpacity:.16,interactive:false}).addTo(map);zonaLayers.push(pl);poly.forEach(pt=>all.push(pt));});});
+  if(!map._zoneClick){map._zoneClick=true;map.on('click',e=>{const zs=[],seen={};(autorizaciones||[]).forEach((a,ai)=>{const hit=(a.poly||[]).some(poly=>pointInPoly([e.latlng.lat,e.latlng.lng],poly));const k=a.id||a.radicado;if(hit&&!seen[k]){seen[k]=1;zs.push({a,col:AUT_COLORS[ai%AUT_COLORS.length]});}});if(!zs.length)return;const html='<div style="max-height:190px;overflow:auto;min-width:160px">'+zs.map(z=>'<div style="border-left:4px solid '+z.col+';padding:2px 0 2px 7px;margin:3px 0"><b>'+esc(z.a.desc||z.a.radicado||'Autorización')+'</b>'+(z.a.radicado?'<br><span style="font-size:11px;color:#64748b">Radicado '+esc(z.a.radicado)+'</span>':'')+'</div>').join('')+'</div>';L.popup({maxWidth:260}).setLatLng(e.latlng).setContent(html).openOn(map);});}
   if(all.length){try{map.fitBounds(all,{padding:[20,20]});}catch(e){}}}
 function loadKmz(e){const f=e.target.files[0];e.target.value='';if(!f)return;const isKml=/\.kml$/i.test(f.name);const r=new FileReader();
   r.onload=ev=>{try{const polys=isKml?parseKmlText(ev.target.result):parseKmz(ev.target.result);
