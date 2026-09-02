@@ -10,7 +10,10 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<script src="pdf.min.js"></script>
+<script defer src="pdf.min.js"></script>
+<link rel="stylesheet" href="leaflet.css">
+<script defer src="leaflet.js"></script>
+<script defer src="fflate.js"></script>
 <style>
 :root{
   --bg:#007934;--bg2:#0a6234;--grn:#7AD400;--grn-dk:#007934;--sky-dk:#007934;
@@ -148,6 +151,12 @@ nav#navGrid button{background:none;border:none;padding:12px 2px;display:flex;fle
 nav#navGrid button.active{color:var(--grn-dk);background:#eaf7ef}
 nav#navGrid svg{stroke:var(--muted);stroke-width:2;fill:none;width:24px;height:24px}
 nav#navGrid button.active svg{stroke:var(--grn-dk)}
+.modal{position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:60;display:flex;align-items:center;justify-content:center;padding:20px}
+.modalCard{background:#fff;border-radius:16px;padding:20px;max-width:420px;width:100%;box-shadow:0 20px 60px rgba(0,0,0,.3)}
+.locked{opacity:.5;pointer-events:none;filter:grayscale(.3)}
+.infoBox{margin-top:6px;font-size:12.5px;line-height:1.5;color:var(--muted)}
+.infoBox b{color:var(--ink)}
+.infoBox .bad{color:var(--rojo);font-weight:700}
 
 .consol{width:100%;border-collapse:collapse;font-size:14px}
 .consol th{text-align:left;font-size:11px;text-transform:uppercase;letter-spacing:.4px;color:var(--muted);padding:6px 6px;border-bottom:2px solid var(--line)}
@@ -182,7 +191,7 @@ nav#navGrid button.active svg{stroke:var(--grn-dk)}
 <main>
 
 <!-- ===== PROYECTOS ===== -->
-<section class="view active" id="v-hist">
+<section class="view" id="v-hist">
   <div class="card">
     <h2 id="projTitle">Crear proyecto</h2>
     <div class="field"><label>Nombre del proyecto</label><input type="text" id="pr_nombre" placeholder="Ej. Levantamiento LT Ancón–Occidente"></div>
@@ -212,13 +221,34 @@ nav#navGrid button.active svg{stroke:var(--grn-dk)}
 </section>
 
 <!-- ===== OPERACIONES ===== -->
-<section class="view" id="v-oper">
+<section class="view active" id="v-oper">
   <div id="operList"></div>
 </section>
 
 <!-- ===== VUELOS (registro por vuelo) ===== -->
 <section class="view" id="v-vuelos">
   <div id="vuelosList"></div>
+</section>
+
+<!-- ===== MAPA ===== -->
+<section class="view" id="v-mapa">
+  <div class="card">
+    <h2>Mapa de zona</h2>
+    <div class="btnrow" style="flex-wrap:wrap">
+      <button class="btn sec sm" onclick="document.getElementById('kmzIn').click()">📁 Cargar KMZ/KML</button>
+      <input type="file" id="kmzIn" accept=".kmz,.kml" style="display:none" onchange="loadKmz(event)">
+      <button class="btn sec sm" onclick="locateMe()">📍 Mi ubicación</button>
+      <button class="btn sec sm" onclick="toggleBase()">🛰️ Calles/Satélite</button>
+      <button class="btn sec sm" onclick="centrarVuelos()">🔵 Ver vuelos</button>
+    </div>
+    <div id="mapStatus" class="hint" style="margin-top:8px">Cargá el KMZ del polígono de la LT y tocá "Mi ubicación".</div>
+    <div id="zonaInfo" style="margin-top:8px"></div>
+    <div id="vpInfo" class="hint" style="margin-top:6px"></div>
+  </div>
+  <div id="map" style="height:58vh;border:1px solid var(--line);border-radius:12px;overflow:hidden"></div>
+  <div class="card" style="margin-top:12px"><h2>Uso sin señal</h2>
+    <button class="btn sec" onclick="downloadArea()">⬇️ Descargar zona para usar offline</button>
+    <div id="dlStatus" class="hint" style="margin-top:8px">Con internet, descargá la zona una vez; después el mapa funciona sin señal en esa área.</div></div>
 </section>
 
 <!-- ===== NUEVA OPERACIÓN ===== -->
@@ -228,7 +258,6 @@ nav#navGrid button.active svg{stroke:var(--grn-dk)}
 
   <div class="card">
     <h2><span class="step">1</span>Datos generales</h2>
-    <div class="field"><label>Proyecto</label><select id="g_proyId" onchange="saveDraft()"></select></div>
     <div class="field"><label>Piloto principal</label><select id="g_pilotoId" onchange="verdict();saveDraft()"></select></div>
     <div class="field"><label>Tipo de operación</label>
       <div class="pillwrap">
@@ -243,29 +272,19 @@ nav#navGrid button.active svg{stroke:var(--grn-dk)}
       <div class="field"><label>Municipio</label><input type="text" id="g_muni" oninput="saveDraft()"></div>
       <div class="field"><label>Departamento</label><input type="text" id="g_depto" oninput="saveDraft()"></div>
     </div>
-    <div class="row2">
-      <div class="field"><label>Latitud</label><input type="text" id="g_lat" class="mono" placeholder="6.530001" oninput="saveDraft()"></div>
-      <div class="field"><label>Longitud</label><input type="text" id="g_lon" class="mono" placeholder="-75.250656" oninput="saveDraft()"></div>
-    </div>
-    <button type="button" class="btn sec sm noprint" onclick="capturarGPS()">📍 Usar mi ubicación</button>
-    <div class="hint" id="gpsHint">Sobre HTTPS (app instalada) captura lat/lon automáticamente. Como archivo local, pegá las coordenadas.</div>
-    <div class="field"><label>Dron</label><select id="g_dron" onchange="verdict();renderSorties();saveDraft()"></select></div>
+    <div class="field"><label>Dron</label><select id="g_dron" onchange="verdict();renderSorties();renderDronInfo();saveDraft()"></select><div id="dronInfo" class="infoBox"></div></div>
   </div>
 
   <div class="card">
     <h2><span class="step">2</span>Autorización de vuelo</h2>
+    <div class="field"><label>Autorización</label><select id="g_autId" onchange="onAutSelect()"></select><div id="autInfo" class="infoBox"></div></div>
     <div class="row2">
-      <div class="field"><label>Radicado</label><input type="text" id="a_rad" class="mono" placeholder="2026251070031645" oninput="verdict();saveDraft()"></div>
-      <div class="field"><label>ID</label><input type="text" id="a_id" class="mono" placeholder="2569646" oninput="saveDraft()"></div>
+      <div class="field"><label>Radicado</label><input type="text" id="a_rad" class="mono" readonly></div>
+      <div class="field"><label>ID</label><input type="text" id="a_id" class="mono" readonly></div>
     </div>
     <div class="row2">
-      <div class="field"><label>Vigencia inicio</label><input type="date" id="a_ini" oninput="verdict();saveDraft()"></div>
-      <div class="field"><label>Vigencia final</label><input type="date" id="a_fin" oninput="verdict();saveDraft()"></div>
-    </div>
-    <div class="field"><label>Certificado de autorización (PDF)</label>
-      <button class="btn sec sm noprint" onclick="document.getElementById('autPdf').click()">📎 Adjuntar PDF</button>
-      <input type="file" id="autPdf" accept="application/pdf" style="display:none" onchange="attachPdf(event)">
-      <div id="autPdfRow"></div>
+      <div class="field"><label>Vigencia inicio</label><input type="date" id="a_ini" readonly></div>
+      <div class="field"><label>Vigencia final</label><input type="date" id="a_fin" readonly></div>
     </div>
   </div>
 
@@ -303,7 +322,7 @@ nav#navGrid button.active svg{stroke:var(--grn-dk)}
     <div class="hint" style="margin-top:8px">● = ítem crítico. Un "No" crítico, un análisis de riesgo <b>INSEGURO</b>, autorización/póliza/examen médico vencidos, o una habilitación faltante (nocturno/BVLOS) fuerzan <b>NO-GO</b>. Los ítems críticos sin responder dejan la operación en <b>PENDIENTE</b>.</div>
   </div>
 
-  <div class="card"><h2><span class="step">5</span>Registro durante la operación</h2><div id="sortieList"></div><button class="btn sec" onclick="addSortie()">＋ Agregar vuelo</button></div>
+  <div class="card" id="secVuelos"><h2><span class="step">5</span>Registro durante la operación</h2><div id="vueloLock"></div><div id="secVueloBody"><div id="sortieList"></div><button class="btn sec" onclick="addSortie()">＋ Agregar vuelo</button></div></div>
 
   <div class="card">
     <h2><span class="step">6</span>Chequeo pos-vuelo</h2>
@@ -326,11 +345,20 @@ nav#navGrid button.active svg{stroke:var(--grn-dk)}
   <button class="btn sec" onclick="resetForm(true)">Limpiar formulario</button>
 </section>
 
+<!-- ===== AUTORIZACIONES ===== -->
+<section class="view" id="v-aut">
+  <div class="card"><h2>Autorizaciones de vuelo</h2>
+    <div class="hint">Catálogo de <b>solo consulta</b>. Las autorizaciones se administran de forma central y llegan por el catálogo (seed); no se crean desde el teléfono.</div>
+  </div>
+  <div id="autList"></div>
+</section>
+
 <!-- ===== FLOTA ===== -->
 <section class="view" id="v-flota">
-  <div class="card">
+  <div class="card" id="fleetForm">
     <h2 id="fleetTitle">Agregar dron</h2>
     <div class="field"><label>Modelo</label><input type="text" id="d_modelo" placeholder="Ej. DJI Matrice 4 Enterprise"></div>
+    <div class="field"><label>Código EPM (DRxxx)</label><input type="text" id="d_dr" class="mono" placeholder="Ej. DR001"></div>
     <div class="field"><label>Serial del dron</label><input type="text" id="d_serial" class="mono"></div>
     <div class="row2">
       <div class="field"><label>Código RUAS</label><input type="text" id="d_ruas" class="mono"></div>
@@ -340,6 +368,7 @@ nav#navGrid button.active svg{stroke:var(--grn-dk)}
       <div class="field"><label>Póliza RC No.</label><input type="text" id="d_poliza" class="mono"></div>
       <div class="field"><label>Póliza vence</label><input type="date" id="d_polizaVence"></div>
     </div>
+    <div class="field"><label>Mantenimiento vence</label><input type="date" id="d_mant"></div>
     <div class="field"><label>Habilitaciones del dron</label>
       <div class="pillwrap">
         <label class="pill" onclick="tgl(this)"><input type="checkbox" id="d_hnoc" hidden><span class="dot"></span>Operación nocturna</label>
@@ -354,7 +383,7 @@ nav#navGrid button.active svg{stroke:var(--grn-dk)}
 
 <!-- ===== PILOTOS ===== -->
 <section class="view" id="v-pilotos">
-  <div class="card">
+  <div class="card" id="pilotForm">
     <h2 id="pilotTitle">Agregar piloto</h2>
     <div class="field"><label>Nombre</label><input type="text" id="pi_nombre"></div>
     <div class="field"><label>Cédula</label><input type="text" id="pi_cedula" class="mono"></div>
@@ -380,26 +409,45 @@ nav#navGrid button.active svg{stroke:var(--grn-dk)}
   </div>
   <div class="card"><h2>Respaldo</h2>
     <div class="field"><button class="btn sec" onclick="exportJSON()">💾 Descargar respaldo (JSON)</button><div class="hint">Incluye pilotos, flota, operaciones, fotos y PDFs adjuntos.</div></div>
-    <div class="field"><button class="btn sec" onclick="document.getElementById('restoreIn').click()">↩️ Restaurar desde respaldo</button>
-      <input type="file" id="restoreIn" accept="application/json,.json" style="display:none" onchange="importJSON(event)"></div>
+    <div class="field"><button class="btn sec" onclick="shareBackup()">📤 Compartir respaldo (JSON)</button><div class="hint">Abre el menú de compartir del teléfono (OneDrive, Teams, correo…) para enviar el respaldo sin buscar el archivo.</div></div>
+    <div class="field"><button class="btn sec" onclick="document.getElementById('loadIn').click()">📂 Cargar JSON</button>
+      <input type="file" id="loadIn" accept="application/json,.json" style="display:none" onchange="loadJSON(event)">
+      <div class="hint">Al cargarlo te pregunta si <b>adicionar</b> (consolidar sin borrar) o <b>reemplazar</b> todo.</div></div>
   </div>
   <div class="card"><h2>Almacenamiento</h2><div id="storageInfo"><div class="hint">Cargando…</div></div></div>
+  <div class="card"><h2>Catálogo (seed)</h2>
+    <div class="field"><label style="display:flex;align-items:center;gap:8px;font-size:15px"><input type="checkbox" id="modoPilotoChk" onchange="setModoPiloto(this.checked)"> Modo piloto (Pilotos y Flota de solo consulta)</label>
+      <div class="hint">Actívalo en los teléfonos de los pilotos: los catálogos pasan a solo consulta y llegan por el seed. En tu dispositivo maestro dejalo apagado para editar.</div></div>
+    <div class="field"><button class="btn sec" onclick="exportSeed()">📤 Exportar catálogo (seed.json)</button>
+      <div class="hint">Genera el seed (drones, pilotos y autorizaciones con sus PDF) para subir al repositorio. Cada exportación sube la versión y todos la reciben al abrir con internet.</div></div>
+  </div>
+  <div class="card"><h2>Actualización</h2>
+    <div class="field"><button class="btn sec" onclick="forceUpdate()">🔄 Buscar actualización</button>
+      <div class="hint">Descarga la última versión publicada. No borra tus datos; solo actualiza la app. Requiere internet.</div></div></div>
 </section>
 
 </main>
 
 <div id="navBackdrop" onclick="closeNav()"></div>
 <nav id="navGrid" class="collapsed">
-  <button class="active" data-view="hist" onclick="nav('hist')"><svg width="20" height="20" viewBox="0 0 24 24"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>Proyectos</button>
-  <button data-view="oper" onclick="nav('oper')"><svg width="20" height="20" viewBox="0 0 24 24"><path d="M4 5h16M4 12h16M4 19h10"/></svg>Operaciones</button>
+  <button class="active" data-view="oper" onclick="nav('oper')"><svg width="20" height="20" viewBox="0 0 24 24"><path d="M4 5h16M4 12h16M4 19h10"/></svg>Operaciones</button>
   <button data-view="vuelos" onclick="nav('vuelos')"><svg width="20" height="20" viewBox="0 0 24 24"><path d="M2 12l20-8-7.5 20-3-8.5L2 12z"/></svg>Vuelos</button>
+  <button data-view="mapa" onclick="nav('mapa')"><svg width="20" height="20" viewBox="0 0 24 24"><path d="M9 3 3 6v15l6-3 6 3 6-3V3l-6 3-6-3z"/><path d="M9 3v15M15 6v15"/></svg>Mapa</button>
   <button data-view="bitacora" onclick="nav('bitacora')"><svg width="20" height="20" viewBox="0 0 24 24"><path d="M5 20V10M12 20V4M19 20v-7"/></svg>Bitácora</button>
   <button data-view="libro" onclick="nav('libro')"><svg width="20" height="20" viewBox="0 0 24 24"><path d="M4 5a2 2 0 0 1 2-2h13v16H6a2 2 0 0 0-2 2z"/><path d="M9 3v14"/></svg>Libro de vuelo</button>
   <button data-view="flota" onclick="nav('flota')"><svg width="20" height="20" viewBox="0 0 24 24"><circle cx="12" cy="12" r="2.5"/><circle cx="6" cy="6" r="2"/><circle cx="18" cy="6" r="2"/><circle cx="6" cy="18" r="2"/><circle cx="18" cy="18" r="2"/></svg>Flota</button>
+  <button data-view="aut" onclick="nav('aut')"><svg width="20" height="20" viewBox="0 0 24 24"><path d="M6 2h9l5 5v15a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1V3a1 1 0 0 1 1-1z"/><path d="M14 2v6h6M9 13l2 2 4-4"/></svg>Autoriz.</button>
   <button data-view="pilotos" onclick="nav('pilotos')"><svg width="20" height="20" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 4-6 8-6s8 2 8 6"/></svg>Pilotos</button>
   <button data-view="datos" onclick="nav('datos')"><svg width="20" height="20" viewBox="0 0 24 24"><path d="M12 3v14m0 0l-4-4m4 4l4-4M5 21h14"/></svg>Datos</button>
 </nav>
 <div id="navBar"><button id="navToggle" onclick="toggleNav()"><span class="ic" id="navToggleIcon">☰</span><span id="navToggleLabel">Menú</span></button></div>
+<div id="importModal" class="modal" style="display:none"><div class="modalCard">
+  <h2 style="margin:0 0 6px">Cargar JSON</h2>
+  <div class="hint" style="margin-bottom:14px">¿Qué querés hacer con este archivo?</div>
+  <button class="btn" onclick="applyImport('merge')">➕ Adicionar (consolidar, no borra)</button>
+  <button class="btn sec" style="margin-top:8px" onclick="applyImport('replace')">↩️ Reemplazar todo</button>
+  <button class="btn sec" style="margin-top:8px" onclick="closeImportModal()">Cancelar</button>
+</div></div>
 <div class="toast" id="toast"></div>
 
 <script>
@@ -423,18 +471,16 @@ const RIESGO=[
  {k:'coordino',q:'¿Coordinó las funciones con el personal operativo UAS?',opts:[['si','Sí',0],['no','No',3]]}
 ];
 
-const K={fl:'bvd_flota',pilots:'bvd_pilotos',proj:'bvd_proyectos',ops:'bvd_operaciones',draft:'bvd_draft'};
+const K={fl:'bvd_flota',pilots:'bvd_pilotos',proj:'bvd_proyectos',ops:'bvd_operaciones',aut:'bvd_autorizaciones',draft:'bvd_draft'};
 const load=(k,d)=>{try{const v=localStorage.getItem(k);return v?JSON.parse(v):d}catch(e){return d}};
 const save=(k,v)=>{try{localStorage.setItem(k,JSON.stringify(v));return true}catch(e){return false}};
-let flota=load(K.fl,[]),pilotos=load(K.pilots,[]),proyectos=load(K.proj,[]),operaciones=load(K.ops,[]);
+let flota=load(K.fl,[]),pilotos=load(K.pilots,[]),proyectos=load(K.proj,[]),operaciones=load(K.ops,[]),autorizaciones=load(K.aut,[]);
 let editDroneId=null,editPilotId=null,editProjId=null,pendingCipus=[];
+let editAutId=null,autFormPdf=null;
 let expandedProj=new Set();
 let editingOpId=null;
 // Migración: operaciones antiguas con proyecto (texto) → crea entidad proyecto y enlaza
-function migrateProjects(){let ch=false;
-  operaciones.forEach(o=>{if(!o.proyectoId){const nm=o.proyecto||'Sin proyecto';let p=proyectos.find(x=>x.nombre===nm);
-    if(!p){p={id:uid(),nombre:nm,desc:'',creado:Date.now()};proyectos.push(p);ch=true;}o.proyectoId=p.id;ch=true;}});
-  if(ch){save(K.proj,proyectos);save(K.ops,operaciones);}}
+function migrateProjects(){}
 
 /* ---------- Assets: binarios (fotos/PDF) en IndexedDB con respaldo a localStorage ---------- */
 const Assets={readyP:null,useIDB:false,db:null,cache:{},
@@ -460,6 +506,7 @@ function isDataURL(v){return typeof v==='string'&&v.slice(0,5)==='data:'}
 function assetSrc(v){return isDataURL(v)?v:(Assets.cache[v]||'')}
 async function preloadAssets(ids){for(const v of (ids||[])){if(v&&!isDataURL(v))await Assets.get(v);}}
 function opAssetIds(o){return[].concat(o.fotosPre||[],o.fotosPos||[],o.fotoDron?[o.fotoDron]:[],o.fotoMeteo?[o.fotoMeteo]:[],(o.aut&&o.aut.pdf&&o.aut.pdf.id)?[o.aut.pdf.id]:[])}
+function opOwnedAssetIds(o){return[].concat(o.fotosPre||[],o.fotosPos||[],o.fotoDron?[o.fotoDron]:[],o.fotoMeteo?[o.fotoMeteo]:[])}
 // Migra binarios embebidos (dataURL) de operaciones antiguas a Assets, dejando ids en localStorage
 async function migrateAssets(){let ch=false;
   for(const o of operaciones){
@@ -484,6 +531,8 @@ function esc(s){return String(s==null?'':s).replace(/[&<>"]/g,c=>({'&':'&amp;','
 function daysTo(d){if(!d)return null;const x=new Date(d+'T00:00:00'),n=new Date();n.setHours(0,0,0,0);return Math.round((x-n)/86400000)}
 function pilotById(id){return pilotos.find(p=>p.id===id)}
 function dronById(id){return flota.find(d=>d.id===id)}
+function autById(id){return autorizaciones.find(a=>a.id===id)}
+function dronLabel(d){return d?((d.modelo||'')+(d.dr?' -'+d.dr:'')):''}
 function proyectoById(id){return proyectos.find(p=>p.id===id)}
 function projName(o){const p=proyectoById(o.proyectoId);return p?p.nombre:(o.proyecto||'Sin proyecto')}
 function hasCert(p,tipo){return !!(p&&p.cipus&&p.cipus.some(c=>(c.tipo||c)===tipo))}
@@ -491,7 +540,8 @@ function hasCert(p,tipo){return !!(p&&p.cipus&&p.cipus.some(c=>(c.tipo||c)===tip
 function nav(v){document.querySelectorAll('.view').forEach(x=>x.classList.remove('active'));$('v-'+v).classList.add('active');
   const tab=(v==='nueva')?'oper':v;
   document.querySelectorAll('nav button').forEach(b=>b.classList.toggle('active',b.dataset.view===tab));window.scrollTo(0,0);
-  if(v==='nueva')prepNueva();if(v==='oper')renderOper();if(v==='vuelos')renderVuelos();if(v==='flota')renderFleet();if(v==='pilotos')renderPilots();if(v==='hist')renderHistory();
+  if(v==='nueva')prepNueva();if(v==='oper')renderOper();
+applyModo();if(v==='vuelos')renderVuelos();if(v==='mapa')initMap();if(v==='flota')renderFleet();if(v==='aut')renderAut();if(v==='pilotos')renderPilots();if(v==='hist')renderHistory();
   if(v==='bitacora')renderConsolPilotos();if(v==='libro')renderConsolDrones();if(v==='datos')renderStorage();
   closeNav();}
 function toggleNav(){$('navGrid').classList.toggle('collapsed');syncNav();}
@@ -508,7 +558,7 @@ function renderPilots(){const l=$('pilotList');
     <div class="meta">CC ${esc(p.cedula||'—')}</div>
     <div class="meta">CIPU: ${cip}</div>
     <div class="meta">${hasCert(p,'Nocturno')?'✓ nocturno ':''}${hasCert(p,'BVLOS')?'✓ BVLOS ':''}· ${med}</div></div>
-    <div class="acts"><button class="icon-btn" onclick="editPilot('${p.id}')">✎</button><button class="icon-btn del" onclick="delPilot('${p.id}')">🗑</button></div></div></div>`}).join('');}
+    ${modoPiloto()?'':`<div class="acts"><button class="icon-btn" onclick="editPilot('${p.id}')">✎</button><button class="icon-btn del" onclick="delPilot('${p.id}')">🗑</button></div>`}</div></div>`}).join('');applyModo();}
 function addCipu(){const v=$('pi_cipuIn').value.trim();if(!v)return;pendingCipus.push({num:v,tipo:$('pi_cipuTipo').value});$('pi_cipuIn').value='';renderCipuChips();}
 function renderCipuChips(){$('pi_cipuChips').innerHTML=pendingCipus.map((c,i)=>`<span class="chipx">${esc(c.num)} · ${cipuLabel(c)}<button onclick="rmCipu(${i})">×</button></span>`).join('');}
 function rmCipu(i){pendingCipus.splice(i,1);renderCipuChips();}
@@ -527,23 +577,45 @@ function delPilot(id){if(!confirm('¿Eliminar este piloto?'))return;pilotos=pilo
 function renderFleet(){const l=$('fleetList');
   if(!flota.length){l.innerHTML='<div class="card empty">La flota está vacía. Agregá tu primer dron arriba.</div>';return}
   l.innerHTML=flota.map(d=>{const pv=daysTo(d.polizaVence);const pol=d.polizaVence?(pv<0?'⛔ póliza vencida':'póliza vence '+d.polizaVence):'sin póliza';
-    return `<div class="item"><div class="top"><div><div class="name">${esc(d.modelo)}</div>
+    return `<div class="item"><div class="top"><div><div class="name">${esc(dronLabel(d))}</div>
     <div class="meta">Serial ${esc(d.serial||'—')}</div>
     <div class="meta">RUAS ${d.ruas||'—'} · Máximo ${d.maximo||'—'}</div>
-    <div class="meta">${d.habNocturno?'✓ nocturno ':''}${d.habBVLOS?'✓ BVLOS ':''}· ${pol}</div></div>
-    <div class="acts"><button class="icon-btn" onclick="editDrone('${d.id}')">✎</button><button class="icon-btn del" onclick="delDrone('${d.id}')">🗑</button></div></div></div>`}).join('');}
+    <div class="meta">${d.habNocturno?'✓ nocturno ':''}${d.habBVLOS?'✓ BVLOS ':''}· ${pol}${d.mant?' · mant '+fmtDate(d.mant)+(daysTo(d.mant)<0?' ⛔':''):''}</div></div>
+    ${modoPiloto()?'':`<div class="acts"><button class="icon-btn" onclick="editDrone('${d.id}')">✎</button><button class="icon-btn del" onclick="delDrone('${d.id}')">🗑</button></div>`}</div></div>`}).join('');applyModo();}
+function attachAutPdf(e){const f=e.target.files[0];e.target.value='';if(!f)return;
+  const r=new FileReader();r.onload=async ev=>{const id=uid();const ok=await Assets.put(id,ev.target.result);if(!ok){toast('Sin espacio para el PDF');return;}autFormPdf={id,name:f.name};renderAutPdfRow();};r.readAsDataURL(f);}
+function renderAutPdfRow(){const el=$('au_pdfRow');if(el)el.innerHTML=autFormPdf?`<div class="filerow"><span>📄</span><span class="nm">${esc(autFormPdf.name)}</span><button class="icon-btn" onclick="openPdf('${autFormPdf.id}')">Ver</button><button class="icon-btn del" onclick="autFormPdf=null;renderAutPdfRow()">Quitar</button></div>`:'';}
+function saveAut(){const rad=$('au_rad').value.trim();if(!rad){toast('Poné el radicado');return}
+  const o={id:editAutId||uid(),radicado:rad,idAut:$('au_id').value.trim(),ini:$('au_ini').value,fin:$('au_fin').value,desc:$('au_desc').value.trim(),pdf:autFormPdf};
+  if(editAutId){autorizaciones[autorizaciones.findIndex(x=>x.id===editAutId)]=o;}else autorizaciones.push(o);
+  save(K.aut,autorizaciones);resetAutForm();renderAut();toast('Autorización guardada');}
+function editAut(id){const a=autById(id);if(!a)return;editAutId=id;$('au_rad').value=a.radicado||'';$('au_id').value=a.idAut||'';$('au_ini').value=a.ini||'';$('au_fin').value=a.fin||'';$('au_desc').value=a.desc||'';autFormPdf=a.pdf||null;renderAutPdfRow();
+  $('autTitle').textContent='Editar autorización';$('au_saveBtn').textContent='Guardar cambios';$('au_cancel').style.display='block';window.scrollTo(0,0);}
+function resetAutForm(){editAutId=null;autFormPdf=null;['au_rad','au_id','au_ini','au_fin','au_desc'].forEach(i=>$(i).value='');renderAutPdfRow();$('autTitle').textContent='Nueva autorización';$('au_saveBtn').textContent='Crear autorización';$('au_cancel').style.display='none';}
+function delAut(id){if(!confirm('¿Eliminar esta autorización?'))return;autorizaciones=autorizaciones.filter(x=>x.id!==id);save(K.aut,autorizaciones);renderAut();}
+function renderAut(){const cont=$('autList');if(!cont)return;
+  cont.innerHTML=autorizaciones.length?autorizaciones.map(a=>{const v=daysTo(a.fin);const est=a.fin?(v<0?'⛔ vencida':'vence '+fmtDate(a.fin)):'sin vigencia';
+    return `<div class="item"><div class="top"><div><div class="name">${esc(a.radicado||'—')}</div><div class="meta">ID ${esc(a.idAut||'—')} · ${a.ini?esc(fmtDate(a.ini)):'?'} a ${a.fin?esc(fmtDate(a.fin)):'?'} · ${est}</div>${a.desc?`<div class="meta">${esc(a.desc)}</div>`:''}${a.pdf?`<button class="btn sec sm noprint" style="margin-top:6px" onclick="openPdf('${a.pdf.id}')">Ver PDF</button>`:''}</div></div></div>`}).join(''):'<div class="card empty">No hay autorizaciones cargadas. Llegarán con el catálogo (seed).</div>';}
+function fdate(x){return x?fmtDate(x)+(daysTo(x)<0?' <span class="bad">(vencido)</span>':''):'—';}
+function renderDronInfo(){const el=$('dronInfo');if(!el)return;const d=dronById($('g_dron').value);
+  el.innerHTML=d?`<b>${esc(dronLabel(d))}</b><br>Serial: ${esc(d.serial||'—')} · RUAS: ${esc(d.ruas||'—')} · Máximo: ${esc(d.maximo||'—')}<br>Póliza vence: ${fdate(d.polizaVence)} · Mantenimiento vence: ${fdate(d.mant)}${(d.habNocturno||d.habBVLOS)?'<br>Habilitado: '+[d.habNocturno?'nocturno':'',d.habBVLOS?'BVLOS':''].filter(Boolean).join(', '):''}`:'';}
+function renderAutInfo(){const el=$('autInfo');if(!el)return;const au=autById($('g_autId').value);
+  el.innerHTML=au?`<b>Radicado ${esc(au.radicado||'—')}</b> · ID ${esc(au.idAut||'—')}<br>Vigencia: ${fdate(au.ini)} a ${fdate(au.fin)}${au.desc?'<br>'+esc(au.desc):''}<br>${au.pdf?`<button class="btn sec sm noprint" style="margin-top:6px" onclick="openPdf('${au.pdf.id}')">📄 Ver PDF de la autorización</button>`:'<span>Sin PDF de autorización adjunto.</span>'}`:'<span>Se crean/consultan en la pestaña Autorizaciones.</span>';}
+function onAutSelect(){const au=autById($('g_autId').value);renderAutInfo();
+  $('a_rad').value=au?(au.radicado||''):'';$('a_id').value=au?(au.idAut||''):'';$('a_ini').value=au?(au.ini||''):'';$('a_fin').value=au?(au.fin||''):'';
+  st.autPdf=au&&au.pdf?au.pdf:null;renderPdfRow();verdict();saveDraft();}
 function saveDrone(){const m=$('d_modelo').value.trim();if(!m){toast('Poné el modelo');return}
-  const o={id:editDroneId||uid(),modelo:m,serial:$('d_serial').value.trim(),ruas:$('d_ruas').value.trim(),maximo:$('d_maximo').value.trim(),
-    poliza:$('d_poliza').value.trim(),polizaVence:$('d_polizaVence').value,habNocturno:$('d_hnoc').checked,habBVLOS:$('d_hbvlos').checked};
+  const o={id:editDroneId||uid(),dr:$('d_dr').value.trim(),modelo:m,serial:$('d_serial').value.trim(),ruas:$('d_ruas').value.trim(),maximo:$('d_maximo').value.trim(),
+    poliza:$('d_poliza').value.trim(),polizaVence:$('d_polizaVence').value,mant:$('d_mant').value,habNocturno:$('d_hnoc').checked,habBVLOS:$('d_hbvlos').checked};
   if(editDroneId){flota[flota.findIndex(x=>x.id===editDroneId)]=o}else flota.push(o);
   save(K.fl,flota);resetDroneForm();renderFleet();toast('Flota actualizada');}
 function editDrone(id){const d=dronById(id);if(!d)return;editDroneId=id;
-  $('d_modelo').value=d.modelo;$('d_serial').value=d.serial||'';$('d_ruas').value=d.ruas||'';$('d_maximo').value=d.maximo||'';
-  $('d_poliza').value=d.poliza||'';$('d_polizaVence').value=d.polizaVence||'';
+  $('d_modelo').value=d.modelo;$('d_dr').value=d.dr||'';$('d_serial').value=d.serial||'';$('d_ruas').value=d.ruas||'';$('d_maximo').value=d.maximo||'';
+  $('d_poliza').value=d.poliza||'';$('d_polizaVence').value=d.polizaVence||'';$('d_mant').value=d.mant||'';
   $('d_hnoc').checked=d.habNocturno;$('d_hbvlos').checked=d.habBVLOS;
   document.querySelectorAll('#v-flota .pill').forEach(pl=>{const c=pl.querySelector('input');pl.classList.toggle('on',c&&c.checked)});
   $('fleetTitle').textContent='Editar dron';$('d_saveBtn').textContent='Guardar cambios';$('d_cancel').style.display='block';window.scrollTo(0,0);}
-function resetDroneForm(){editDroneId=null;['d_modelo','d_serial','d_ruas','d_maximo','d_poliza','d_polizaVence'].forEach(i=>$(i).value='');
+function resetDroneForm(){editDroneId=null;['d_modelo','d_dr','d_serial','d_ruas','d_maximo','d_poliza','d_polizaVence','d_mant'].forEach(i=>$(i).value='');
   ['d_hnoc','d_hbvlos'].forEach(i=>{$(i).checked=false;$(i).closest('.pill').classList.remove('on')});
   $('fleetTitle').textContent='Agregar dron';$('d_saveBtn').textContent='Agregar a la flota';$('d_cancel').style.display='none';}
 function delDrone(id){if(!confirm('¿Eliminar este dron?'))return;flota=flota.filter(x=>x.id!==id);save(K.fl,flota);renderFleet();}
@@ -583,18 +655,21 @@ function setHF(k,v){st.hf[k]=(st.hf[k]===v?null:v);renderHF();verdict();saveDraf
 function morCheck(){const el=$('morFlag');if(el)el.innerHTML='';}
 
 /* ---------- sorties ---------- */
-function addSortie(d){st.sorties.push(d||{fecha:($('p_inicio').value||'').slice(0,10),inicio:'',fin:'',pilotoId:$('g_pilotoId').value||'',observadorId:'',batDesp:'',batAter:'',obs:''});renderSorties();saveDraft();}
-function renderSorties(){const bvlos=isOp('bvlos')||isOp('evlos');
-  $('sortieList').innerHTML=st.sorties.map((s,i)=>{const dur=sortieDur(s);const needObs=bvlos&&!s.observadorId;
+function addSortie(d){st.sorties.push(d||{fecha:($('p_inicio').value||'').slice(0,10),inicio:'',fin:'',pilotoId:$('g_pilotoId').value||'',observadorId:'',batDesp:'',batAter:'',obs:'',lat:'',lon:''});renderSorties();saveDraft();}
+function renderSorties(){
+  $('sortieList').innerHTML=st.sorties.map((s,i)=>{const dur=sortieDur(s);const needObs=!s.observadorId;
     return `<div class="sortie"><div class="sh"><span class="n">Vuelo #${i+1}</span><span class="dur">${dur!=null?dur+' min de vuelo':''}</span><button class="rm" onclick="rmSortie(${i})">Quitar</button></div>
       <div class="field"><label>Piloto</label><select onchange="setS(${i},'pilotoId',this.value)">${pilotOptions(s.pilotoId)}</select></div>
-      <div class="field"><label>Observador ${needObs?'<span style="color:#dc2626">· requerido en BVLOS/EVLOS</span>':''}</label><select onchange="setS(${i},'observadorId',this.value)">${pilotOptions(s.observadorId)}</select></div>
+      <div class="field"><label>Observador ${needObs?'<span style="color:#dc2626">· obligatorio</span>':''}</label><select onchange="setS(${i},'observadorId',this.value)">${pilotOptions(s.observadorId)}</select></div>
       <div class="field"><label>Fecha</label><input type="date" value="${s.fecha||''}" onchange="setS(${i},'fecha',this.value)"></div>
       <div class="row2"><div class="field"><label>Hora inicio</label><input type="time" value="${s.inicio||''}" onchange="setS(${i},'inicio',this.value)"></div>
       <div class="field"><label>Hora fin</label><input type="time" value="${s.fin||''}" onchange="setS(${i},'fin',this.value)"></div></div>
       <div class="row2"><div class="field"><label>Batería despegue (%)</label><input type="number" class="mono" value="${s.batDesp}" onchange="setS(${i},'batDesp',this.value)"></div>
       <div class="field"><label>Batería aterrizaje (%)</label><input type="number" class="mono" value="${s.batAter}" onchange="setS(${i},'batAter',this.value)"></div></div>
-      <div class="field"><label>Observaciones del vuelo</label><input type="text" value="${esc(s.obs)}" onchange="setS(${i},'obs',this.value)"></div></div>`}).join('');
+      <div class="field"><label>Observaciones del vuelo</label><input type="text" value="${esc(s.obs)}" onchange="setS(${i},'obs',this.value)"></div>
+      <div class="row2"><div class="field"><label>Latitud</label><input type="text" class="mono" value="${esc(s.lat||'')}" placeholder="6.53" onchange="setS(${i},'lat',this.value)"></div>
+      <div class="field"><label>Longitud</label><input type="text" class="mono" value="${esc(s.lon||'')}" placeholder="-75.25" onchange="setS(${i},'lon',this.value)"></div></div>
+      <button type="button" class="btn sec sm noprint" onclick="capturarGPSVuelo(${i})">📍 Usar mi ubicación</button><div class="hint" id="gpsHintV${i}"></div></div>`}).join('');
   updateDash();}
 function setS(i,k,v){st.sorties[i][k]=v;if(k==='inicio'||k==='fin'||k==='observadorId')renderSorties();saveDraft();}
 function rmSortie(i){st.sorties.splice(i,1);renderSorties();saveDraft();}
@@ -606,7 +681,7 @@ function isOp(k){const el=document.querySelector(`#v-nueva [data-op="${k}"]`);re
 function attachPdf(e){const f=e.target.files[0];e.target.value='';if(!f)return;
   if(f.size>8*1024*1024&&!confirm('El PDF pesa '+(f.size/1048576).toFixed(1)+' MB. ¿Continuar?'))return;
   const r=new FileReader();r.onload=async ev=>{const id=uid();const ok=await Assets.put(id,ev.target.result);if(!ok){toast('Sin espacio para el PDF');return;}st.autPdf={id,name:f.name};renderPdfRow();saveDraft();};r.readAsDataURL(f);}
-function renderPdfRow(){$('autPdfRow').innerHTML=st.autPdf?`<div class="filerow"><span>📄</span><span class="nm">${esc(st.autPdf.name)}</span><button class="icon-btn" onclick="openPdf('${st.autPdf.id}')">Ver</button><button class="icon-btn del" onclick="removeAutPdf()">Quitar</button></div>`:'';}
+function renderPdfRow(){const el=$('autPdfRow');if(!el)return;el.innerHTML=st.autPdf?`<div class="filerow"><span>📄</span><span class="nm">${esc(st.autPdf.name)}</span><button class="icon-btn" onclick="openPdf('${st.autPdf.id}')">Ver</button></div>`:'<div class="hint">La autorización seleccionada no tiene PDF adjunto.</div>';}
 function removeAutPdf(){if(st.autPdf&&st.autPdf.id)Assets.del(st.autPdf.id);st.autPdf=null;renderPdfRow();saveDraft();}
 async function openPdf(id){try{const data=await Assets.get(id);if(!data){toast('No se pudo abrir');return}const b=dataURLtoBlob(data);const u=URL.createObjectURL(b);window.open(u,'_blank');setTimeout(()=>URL.revokeObjectURL(u),30000);}catch(e){toast('No se pudo abrir')}}
 function dataURLtoBlob(du){const[meta,b64]=du.split(',');const mime=(meta.match(/:(.*?);/)||[])[1]||'application/pdf';const bin=atob(b64);const a=new Uint8Array(bin.length);for(let i=0;i<bin.length;i++)a[i]=bin.charCodeAt(i);return new Blob([a],{type:mime});}
@@ -621,14 +696,20 @@ function verdict(){const box=$('verdictBox'),word=$('vWord'),desc=$('vDesc'),lig
   if(fin&&daysTo(fin)!==null&&daysTo(fin)>=0&&daysTo(fin)<=7)warn.push('La autorización vence en '+daysTo(fin)+' día(s)');
   const noc=isOp('nocturna'),bv=isOp('bvlos');
   const p=pilotById($('g_pilotoId').value);
-  if(p){if(p.med&&daysTo(p.med)<0)block.push('Examen médico del piloto vencido');
-    if(noc&&!hasCert(p,'Nocturno'))block.push('Piloto sin CIPU de operación nocturna');
-    if(bv&&!hasCert(p,'BVLOS'))block.push('Piloto sin CIPU de BVLOS');}
+  if(p){if(p.med&&daysTo(p.med)<0)block.push('Examen médico del piloto vencido');}
   else warn.push('Sin piloto principal seleccionado');
   const d=dronById($('g_dron').value);
   if(d){if(d.polizaVence&&daysTo(d.polizaVence)<0)block.push('Póliza del dron vencida');
     if(noc&&!d.habNocturno)block.push('Dron no habilitado para operación nocturna');
     if(bv&&!d.habBVLOS)block.push('Dron no habilitado para BVLOS');}
+  // Observador obligatorio en cada vuelo
+  st.sorties.forEach((s,i)=>{if(!s.observadorId)block.push('Vuelo #'+(i+1)+' sin observador (obligatorio)');});
+  // En nocturno o BVLOS, piloto y observador deben estar certificados
+  if(noc||bv){const ids=new Set();if($('g_pilotoId').value)ids.add($('g_pilotoId').value);
+    st.sorties.forEach(s=>{if(s.pilotoId)ids.add(s.pilotoId);if(s.observadorId)ids.add(s.observadorId);});
+    ids.forEach(id=>{const per=pilotById(id);if(!per)return;const nom=per.nombre||'Tripulante';
+      if(noc&&!hasCert(per,'Nocturno'))block.push(nom+' sin CIPU de operación nocturna');
+      if(bv&&!hasCert(per,'BVLOS'))block.push(nom+' sin CIPU de BVLOS');});}
   CHK_OFICINA.forEach(([k,q,c])=>{if(c){if(st.oficina[k]==='no')block.push('Oficina: '+shortQ(q));else if(!st.oficina[k])pend.push('Oficina: '+shortQ(q));}});
   CHK_PREVUELO.forEach(([k,q,c])=>{if(c){if(st.prevuelo[k]==='no')block.push('Pre-vuelo: '+shortQ(q));else if(!st.prevuelo[k])pend.push('Pre-vuelo: '+shortQ(q));}});
   const ir=riesgoResult();
@@ -639,6 +720,7 @@ function verdict(){const box=$('verdictBox'),word=$('vWord'),desc=$('vDesc'),lig
   else if(pend.length){cls='pend';w='PENDIENTE';ic='!';dtxt=pend.length+' verificación(es) crítica(s) sin responder';}
   else{cls='go';w='GO';ic='✓';dtxt=warn.length?warn.length+' advertencia(s), sin bloqueos':'Sin banderas rojas';}
   box.className='verdict '+cls;light.textContent=ic;word.textContent=w;desc.textContent=dtxt;
+  const _svb=$('secVueloBody'),_vl=$('vueloLock');if(_svb)_svb.classList.toggle('locked',w==='NO-GO');if(_vl)_vl.innerHTML=w==='NO-GO'?'<div class="alert bad"><span>⛔</span><div>Operación en NO-GO: resolvé los bloqueos antes de registrar vuelos.</div></div>':'';
   const all=block.map(r=>['b',r]).concat(pend.map(r=>['p',r])).concat(warn.map(r=>['w',r]));
   if(all.length){ul.style.display='block';ul.innerHTML=all.map(([t,r])=>`<li>${t==='b'?'⛔':t==='p'?'◻️':'⚠️'} ${esc(r)}</li>`).join('')}else ul.style.display='none';
   return{verdict:w,block,pend,warn};}
@@ -666,14 +748,14 @@ function renderNamedPhoto(slot){const el=$('row_'+slot);if(!el)return;const v=st
 function rmNamedPhoto(slot){const v=st[slot];if(v&&!isDataURL(v))Assets.del(v);st[slot]=null;renderNamedPhoto(slot);saveDraft();}
 
 /* ---------- borrador (autoguardado) ---------- */
-function collectForm(){return{proyId:$('g_proyId').value,pilotoId:$('g_pilotoId').value,
+function collectForm(){return{pilotoId:$('g_pilotoId').value,
   tipoOp:{diurna:isOp('diurna'),nocturna:isOp('nocturna'),vlos:isOp('vlos'),evlos:isOp('evlos'),bvlos:isOp('bvlos')},
-  muni:$('g_muni').value,depto:$('g_depto').value,lat:$('g_lat').value,lon:$('g_lon').value,dron:$('g_dron').value,
-  rad:$('a_rad').value,aid:$('a_id').value,ini:$('a_ini').value,fin:$('a_fin').value,
+  muni:$('g_muni').value,depto:$('g_depto').value,dron:$('g_dron').value,
+  autId:$('g_autId').value,rad:$('a_rad').value,aid:$('a_id').value,ini:$('a_ini').value,fin:$('a_fin').value,
   pInicio:$('p_inicio').value,qFin:$('q_fin').value,pObs:$('p_obs').value,qObs:$('q_obs').value,st};}
 function saveDraft(){save(K.draft,collectForm());}
 async function loadDraft(){const d=load(K.draft,null);if(!d)return false;
-  $('g_muni').value=d.muni||'';$('g_depto').value=d.depto||'';$('g_lat').value=d.lat||'';$('g_lon').value=d.lon||'';
+  $('g_muni').value=d.muni||'';$('g_depto').value=d.depto||'';
   $('a_rad').value=d.rad||'';$('a_id').value=d.aid||'';$('a_ini').value=d.ini||'';$('a_fin').value=d.fin||'';
   $('p_inicio').value=d.pInicio||'';$('q_fin').value=d.qFin||'';$('p_obs').value=d.pObs||'';$('q_obs').value=d.qObs||'';
   st=Object.assign(blankState(),d.st||{});
@@ -682,46 +764,50 @@ async function loadDraft(){const d=load(K.draft,null);if(!d)return false;
   renderHF();renderOcurr();renderSorties();
   await preloadAssets([].concat(st.fotosPre||[],st.fotosPos||[],st.fotoDron?[st.fotoDron]:[],st.fotoMeteo?[st.fotoMeteo]:[],(st.autPdf&&st.autPdf.id)?[st.autPdf.id]:[]));
   renderPhotos('pre');renderPhotos('pos');renderNamedPhoto('fotoDron');renderNamedPhoto('fotoMeteo');renderPdfRow();
-  setTimeout(()=>{if(d.proyId)$('g_proyId').value=d.proyId;if(d.pilotoId)$('g_pilotoId').value=d.pilotoId;if(d.dron)$('g_dron').value=d.dron;verdict();},0);
+  setTimeout(()=>{if(d.pilotoId)$('g_pilotoId').value=d.pilotoId;if(d.dron)$('g_dron').value=d.dron;if(d.autId){$('g_autId').value=d.autId;onAutSelect();}renderDronInfo();verdict();},0);
   return true;}
 function discardDraft(){if(!confirm('¿Descartar el borrador en curso?'))return;
-  const ids=[].concat(st.fotosPre||[],st.fotosPos||[],st.fotoDron?[st.fotoDron]:[],st.fotoMeteo?[st.fotoMeteo]:[],(st.autPdf&&st.autPdf.id)?[st.autPdf.id]:[]);
+  const ids=[].concat(st.fotosPre||[],st.fotosPos||[],st.fotoDron?[st.fotoDron]:[],st.fotoMeteo?[st.fotoMeteo]:[]);
   const used=new Set();operaciones.forEach(o=>opAssetIds(o).forEach(a=>used.add(a)));
   ids.forEach(a=>{if(a&&!isDataURL(a)&&!used.has(a))Assets.del(a);});
   localStorage.removeItem(K.draft);resetForm(true);$('draftBar').innerHTML='';toast('Borrador descartado');}
 
 /* ---------- preparar nueva ---------- */
 function prepNueva(){
-  const selD=$('g_dron');selD.innerHTML=flota.length?'<option value="">— dron —</option>'+flota.map(d=>`<option value="${d.id}">${esc(d.modelo)}</option>`).join(''):'<option value="">— sin drones —</option>';
+  const selD=$('g_dron');selD.innerHTML=flota.length?'<option value="">— dron —</option>'+flota.map(d=>`<option value="${d.id}">${esc(dronLabel(d))}</option>`).join(''):'<option value="">— sin drones —</option>';
   $('g_pilotoId').innerHTML=pilotOptions('');
-  $('g_proyId').innerHTML=proyectos.length?'<option value="">— proyecto —</option>'+proyectos.map(p=>`<option value="${p.id}">${esc(p.nombre)}</option>`).join(''):'<option value="">— sin proyectos —</option>';
+  $('g_autId').innerHTML='<option value="">— autorización —</option>'+autorizaciones.map(a=>`<option value="${a.id}">${esc(a.radicado||a.idAut||'Aut')}</option>`).join('');
   renderSiNo('chkOficina',CHK_OFICINA,'oficina');renderSiNo('chkPrevuelo',CHK_PREVUELO,'prevuelo');renderSiNo('chkPosvuelo',CHK_POSVUELO,'posvuelo');
-  renderHF();renderOcurr();renderSorties();renderPhotos('pre');renderPhotos('pos');renderNamedPhoto('fotoDron');renderNamedPhoto('fotoMeteo');renderPdfRow();morCheck();
+  renderHF();renderOcurr();renderSorties();renderPhotos('pre');renderPhotos('pos');renderNamedPhoto('fotoDron');renderNamedPhoto('fotoMeteo');renderPdfRow();renderDronInfo();renderAutInfo();morCheck();
   const hasDraft=localStorage.getItem(K.draft);const sb=$('saveOpBtn');
   if(editingOpId){$('draftBar').innerHTML='<div class="alert info"><span>✏️</span><div>Editando una operación guardada. <a href="#" onclick="cancelEdit();return false" style="color:#065f46;font-weight:700">Cancelar edición</a></div></div>';if(sb)sb.textContent='Guardar cambios';}
   else{$('draftBar').innerHTML=hasDraft?'<div class="alert info"><span>💾</span><div>Borrador en curso (autoguardado). <a href="#" onclick="discardDraft();return false" style="color:#065f46;font-weight:700">Descartar</a></div></div>':'';if(sb)sb.textContent='Guardar operación';}
   if(hasDraft)loadDraft();
-  let w='';if(!proyectos.length)w+='<div class="alert warn"><span>⚠️</span><div>No hay <b>proyectos</b>. Creá uno en la pestaña Proyectos para asociarle la operación.</div></div>';
   if(!pilotos.length)w+='<div class="alert warn"><span>⚠️</span><div>No hay <b>pilotos</b> cargados. Agregá al menos uno.</div></div>';
   if(!flota.length)w+='<div class="alert bad"><span>⛔</span><div>La <b>flota</b> está vacía. Agregá un dron.</div></div>';
   $('setupWarn').innerHTML=w;verdict();}
 
 /* ---------- guardar operación ---------- */
-function saveOp(){const pr=proyectoById($('g_proyId').value);if(!pr){toast('Seleccioná o creá un proyecto');nav('nueva');return;}
+function nextCodigo(base){let n=0;operaciones.forEach(o=>{if(o.codigo&&o.codigo.indexOf(base+'-')===0){const m=o.codigo.slice(base.length+1).match(/^(\d+)/);if(m)n=Math.max(n,+m[1]);}});return base+'-'+(n+1);}
+function saveOp(){
   if(!st.fotoDron||!st.fotoMeteo){toast('Faltan las fotos obligatorias: dron/puerto y app de meteorología');nav('nueva');return;}
   const v=verdict();
   const d=dronById($('g_dron').value);const pp=pilotById($('g_pilotoId').value);
   const nm=id=>{const p=pilotById(id);return p?p.nombre:''};
-  const rec={id:uid(),ts:Date.now(),proyectoId:pr.id,proyecto:pr.nombre,pilotoId:$('g_pilotoId').value,piloto:pp?pp.nombre:'',
+  const cd=id=>{const p=pilotById(id);return p?(p.cedula||''):''};
+  const fechaCod=(($('p_inicio').value||new Date().toISOString().slice(0,10)).slice(0,10)).replace(/-/g,'');
+  const codBase=fechaCod+'-'+((d&&d.maximo)||'SINMAX');
+  const codigo=editingOpId?((operaciones.find(x=>x.id===editingOpId)||{}).codigo||nextCodigo(codBase)):nextCodigo(codBase);
+  const rec={id:uid(),ts:Date.now(),codigo:codigo,pilotoId:$('g_pilotoId').value,piloto:pp?pp.nombre:'',
     tipoOp:{diurna:isOp('diurna'),nocturna:isOp('nocturna'),vlos:isOp('vlos'),evlos:isOp('evlos'),bvlos:isOp('bvlos')},
-    municipio:$('g_muni').value.trim(),departamento:$('g_depto').value.trim(),lat:$('g_lat').value.trim(),lon:$('g_lon').value.trim(),
-    dronId:d?d.id:'',dronModelo:d?d.modelo:'',dronSerial:d?d.serial:'',dronRuas:d?d.ruas:'',dronMaximo:d?d.maximo:'',
+    municipio:$('g_muni').value.trim(),departamento:$('g_depto').value.trim(),
+    dronId:d?d.id:'',dronModelo:d?d.modelo:'',dronSerial:d?d.serial:'',dronRuas:d?d.ruas:'',dronMaximo:d?d.maximo:'',dronDR:d?(d.dr||''):'',dronPolizaVence:d?(d.polizaVence||''):'',dronMant:d?(d.mant||''):'',
     aut:{radicado:$('a_rad').value.trim(),id:$('a_id').value.trim(),ini:$('a_ini').value,fin:$('a_fin').value,pdf:st.autPdf},
     inicioOp:$('p_inicio').value,finOp:$('q_fin').value,
     oficina:{...st.oficina},prevuelo:{...st.prevuelo},posvuelo:{...st.posvuelo},hf:{...st.hf},ocurr:{...st.ocurr},
     riesgo:riesgoResult(),
     obsPre:$('p_obs').value.trim(),obsPos:$('q_obs').value.trim(),
-    sorties:st.sorties.map(s=>({...s,piloto:nm(s.pilotoId),observador:nm(s.observadorId),dur:sortieDur(s)})),
+    sorties:st.sorties.map(s=>({...s,piloto:nm(s.pilotoId),observador:nm(s.observadorId),pilotoCedula:cd(s.pilotoId),observadorCedula:cd(s.observadorId),dur:sortieDur(s)})),
     fotosPre:st.fotosPre.slice(),fotosPos:st.fotosPos.slice(),fotoDron:st.fotoDron||null,fotoMeteo:st.fotoMeteo||null,
     verdict:v.verdict,block:v.block,pend:v.pend,warn:v.warn,requiereMOR:false,
     operadorPiloto:pp?{cedula:pp.cedula,cipus:pp.cipus,med:pp.med}:null};
@@ -733,8 +819,8 @@ function saveOp(){const pr=proyectoById($('g_proyId').value);if(!pr){toast('Sele
   if(!save(K.ops,operaciones)){operaciones.shift();toast('Sin espacio: quitá fotos o el PDF adjunto');return;}
   localStorage.removeItem(K.draft);toast('Operación guardada ('+v.verdict+')');resetForm(false);nav('oper');}
 function resetForm(clearAll){st=blankState();
-  ['g_muni','g_depto','g_lat','g_lon','a_rad','a_id','a_ini','a_fin','p_inicio','q_fin','p_obs','q_obs'].forEach(i=>$(i).value='');
-  if(clearAll){$('g_proyId').value='';$('g_pilotoId').value='';localStorage.removeItem(K.draft);$('draftBar').innerHTML='';}
+  ['g_muni','g_depto','a_rad','a_id','a_ini','a_fin','p_inicio','q_fin','p_obs','q_obs'].forEach(i=>$(i).value='');
+  if(clearAll){$('g_pilotoId').value='';if($('g_autId'))$('g_autId').value='';localStorage.removeItem(K.draft);$('draftBar').innerHTML='';}
   document.querySelectorAll('#v-nueva .pill').forEach(p=>{p.classList.remove('on');const c=p.querySelector('input');if(c)c.checked=false;});
   renderSiNo('chkOficina',CHK_OFICINA,'oficina');renderSiNo('chkPrevuelo',CHK_PREVUELO,'prevuelo');renderSiNo('chkPosvuelo',CHK_POSVUELO,'posvuelo');
   renderHF();renderOcurr();renderSorties();renderPhotos('pre');renderPhotos('pos');renderNamedPhoto('fotoDron');renderNamedPhoto('fotoMeteo');renderPdfRow();morCheck();verdict();}
@@ -754,8 +840,8 @@ function renderOper(){updateDash();const cont=$('operList');if(!cont)return;cons
   if(!list.length){cont.innerHTML=html+'<div class="card empty" style="margin-top:12px">Todavía no hay operaciones. Tocá "＋ Nueva operación" para empezar.</div>';return;}
   html+='<div style="margin-top:12px">'+list.map(o=>{const cls=o.verdict==='GO'?'go':o.verdict==='NO-GO'?'nogo':'pend';const m=totalMins(o.sorties);
     return `<div class="card"><div style="display:flex;align-items:center;gap:10px"><span class="badge ${cls}">${o.verdict}</span>
-      <div style="flex:1"><div class="name" style="font-weight:700">${esc(projName(o))}</div>
-      <div class="meta">${esc(o.dronModelo||'Sin dron')} · ${fmtDate(o.inicioOp)||'sin fecha'}${o.sorties&&o.sorties.length?' · '+o.sorties.length+' vuelo(s) · '+(m/60).toFixed(1)+' h':''}</div></div></div>
+      <div style="flex:1"><div class="name" style="font-weight:700">${esc(o.codigo||'Operación')}</div>
+      <div class="meta">${esc((o.dronModelo||'Sin dron')+(o.dronDR?' -'+o.dronDR:''))} · ${fmtDate(o.inicioOp)||'sin fecha'}${o.sorties&&o.sorties.length?' · '+o.sorties.length+' vuelo(s) · '+(m/60).toFixed(1)+' h':''}</div></div></div>
       <div class="btnrow" style="margin-top:10px;flex-wrap:wrap">
         <button class="btn sec sm" onclick="editOp('${o.id}')">✎ Editar</button>
         <button class="btn sec sm" onclick="viewOp('${o.id}')">👁 Ver</button>
@@ -779,8 +865,8 @@ function renderVuelos(){const cont=$('vuelosList');if(!cont)return;
   rows.sort((a,b)=>(b.o.ts||0)-(a.o.ts||0));
   if(!rows.length){cont.innerHTML='<div class="card empty">Aún no hay vuelos registrados.<br>Los vuelos se cargan dentro de una operación (Operaciones → Nueva o Editar → "＋ Agregar vuelo").</div>';return;}
   cont.innerHTML='<div class="card"><h2>Registro de vuelos</h2><div class="hint">Cada vuelo individual con su operación y proyecto. Para modificarlo, editá su operación.</div></div>'+
-    rows.map(({o,s,i})=>`<div class="card"><div class="name" style="font-weight:700">${esc(projName(o))} · vuelo #${i+1}</div>
-      <div class="meta">${fmtDate(o.inicioOp)} · ${esc(o.dronModelo||'Sin dron')} · piloto ${esc(s.piloto||'—')}${s.observador?' · obs '+esc(s.observador):''}</div>
+    rows.map(({o,s,i})=>`<div class="card"><div class="name" style="font-weight:700">${esc(o.codigo||'Operación')} · vuelo #${i+1}</div>
+      <div class="meta">${fmtDate(o.inicioOp)} · ${esc((o.dronModelo||'Sin dron')+(o.dronDR?' -'+o.dronDR:''))} · piloto ${esc(s.piloto||'—')}${s.observador?' · obs '+esc(s.observador):''}</div>
       <div class="meta">${s.inicio||'?'}–${s.fin||'?'} · ${s.dur!=null?s.dur+' min':''} · bat ${s.batDesp||'?'}→${s.batAter||'?'}%</div>
       <div class="btnrow" style="margin-top:8px"><button class="btn sec sm" onclick="editOp('${o.id}')">✎ Editar operación</button></div></div>`).join('');}
 
@@ -796,7 +882,7 @@ function resetProjectForm(){editProjId=null;$('pr_nombre').value='';$('pr_desc')
   $('projTitle').textContent='Crear proyecto';$('pr_saveBtn').textContent='Crear proyecto';$('pr_cancel').style.display='none';}
 function delProject(id){const opsIn=operaciones.filter(o=>o.proyectoId===id);
   if(!confirm(opsIn.length?('Este proyecto tiene '+opsIn.length+' operación(es) que también se borrarán. ¿Continuar?'):'¿Eliminar este proyecto?'))return;
-  opsIn.forEach(o=>opAssetIds(o).forEach(a=>Assets.del(a)));
+  opsIn.forEach(o=>opOwnedAssetIds(o).forEach(a=>Assets.del(a)));
   proyectos=proyectos.filter(x=>x.id!==id);operaciones=operaciones.filter(o=>o.proyectoId!==id);
   save(K.proj,proyectos);save(K.ops,operaciones);renderHistory();}
 function toggleProj(id){if(expandedProj.has(id))expandedProj.delete(id);else expandedProj.add(id);renderHistory();}
@@ -810,7 +896,7 @@ function renderHistory(){updateDash();const cont=$('projList');
     const mins=ops.reduce((a,o)=>a+totalMins(o.sorties),0);const vuelos=ops.reduce((a,o)=>a+((o.sorties||[]).length),0);const open=expandedProj.has(pr.id);
     const opItems=ops.map(o=>{const cls=o.verdict==='GO'?'go':o.verdict==='NO-GO'?'nogo':'pend';const m=totalMins(o.sorties);
       return `<div class="item"><div class="top"><span class="badge ${cls}">${o.verdict}</span>
-      <div><div class="name">${esc(o.dronModelo||'Sin dron')} · ${fmtDate(o.inicioOp)}</div>
+      <div><div class="name">${esc((o.dronModelo||'Sin dron')+(o.dronDR?' -'+o.dronDR:''))} · ${fmtDate(o.inicioOp)}</div>
       <div class="meta">${esc(o.municipio||'')}${o.sorties&&o.sorties.length?' · '+o.sorties.length+' vuelo(s) · '+(m/60).toFixed(1)+' h':''}${o.requiereMOR?' · MOR':''}</div></div>
       <div class="acts"><button class="icon-btn" onclick="dupOp('${o.id}')">⧉</button><button class="icon-btn" onclick="viewOp('${o.id}')">👁</button><button class="icon-btn del" onclick="delOp('${o.id}')">🗑</button></div></div></div>`}).join('')||'<div class="empty" style="padding:14px">Sin operaciones aún.</div>';
     return `<div class="card"><div style="display:flex;align-items:center;gap:10px;cursor:pointer" onclick="toggleProj('${pr.id}')">
@@ -825,7 +911,7 @@ function renderHistory(){updateDash();const cont=$('projList');
           <button class="icon-btn" onclick="editProject('${pr.id}')">✎</button>
           <button class="icon-btn del" onclick="delProject('${pr.id}')">🗑</button>
         </div></div>`:''}</div>`}).join('');}
-function delOp(id){if(!confirm('¿Eliminar esta operación?'))return;const o=operaciones.find(x=>x.id===id);if(o)opAssetIds(o).forEach(a=>Assets.del(a));operaciones=operaciones.filter(x=>x.id!==id);save(K.ops,operaciones);renderHistory();renderOper();}
+function delOp(id){if(!confirm('¿Eliminar esta operación?'))return;const o=operaciones.find(x=>x.id===id);if(o)opOwnedAssetIds(o).forEach(a=>Assets.del(a));operaciones=operaciones.filter(x=>x.id!==id);save(K.ops,operaciones);renderHistory();renderOper();}
 function viewOp(id){const o=operaciones.find(x=>x.id===id);if(o)printReport([o],projName(o));}
 function updateDash(){$('dTot').textContent=operaciones.length;$('dGo').textContent=operaciones.filter(o=>o.verdict==='GO').length;
   $('dNogo').textContent=operaciones.filter(o=>o.verdict==='NO-GO').length;
@@ -843,11 +929,12 @@ function droneStats(did){let ops=0,vuelos=0,mins=0;
 function statGrid(a,b,c,la,lb,lc){return `<div class="statgrid"><div class="stat"><div class="sn">${a}</div><div class="sl">${la}</div></div><div class="stat"><div class="sn">${b}</div><div class="sl">${lb}</div></div><div class="stat"><div class="sn">${c}</div><div class="sl">${lc}</div></div></div>`;}
 
 function renderConsolPilotos(){const sel=$('pilotConsol');const cur=sel.value;
-  sel.innerHTML='<option value="">Todos los pilotos</option>'+pilotos.map(p=>`<option value="${p.id}">${esc(p.nombre)}</option>`).join('');if(cur)sel.value=cur;
+  const act=pilotos.filter(p=>operaciones.some(o=>o.pilotoId===p.id||(o.sorties||[]).some(x=>x.pilotoId===p.id||x.observadorId===p.id)));
+  sel.innerHTML='<option value="">Todos los pilotos</option>'+act.map(p=>`<option value="${p.id}">${esc(p.nombre)}</option>`).join('');if(cur)sel.value=cur;
   const cont=$('consolPilotos');
-  if(!pilotos.length){cont.innerHTML='<div class="card empty">No hay pilotos cargados.</div>';return;}
+  if(!act.length){cont.innerHTML='<div class="card empty">Aún no hay pilotos con vuelos registrados en este dispositivo.</div>';return;}
   if(!sel.value){let t={ops:0,v:0,h:0};
-    const rows=pilotos.map(p=>{const s=pilotStats(p.id);t.ops+=s.ops;t.v+=s.vuelos;t.h+=s.horas;
+    const rows=act.map(p=>{const s=pilotStats(p.id);t.ops+=s.ops;t.v+=s.vuelos;t.h+=s.horas;
       return `<tr><td>${esc(p.nombre)}</td><td>${s.ops}</td><td>${s.vuelos}</td><td>${s.horas.toFixed(1)}</td></tr>`}).join('');
     cont.innerHTML=`<div class="card"><table class="consol"><thead><tr><th>Piloto</th><th>Op.</th><th>Vuelos</th><th>Horas</th></tr></thead>
       <tbody>${rows}<tr class="tot"><td>Total</td><td>${t.ops}</td><td>${t.v}</td><td>${t.h.toFixed(1)}</td></tr></tbody></table>
@@ -856,18 +943,19 @@ function renderConsolPilotos(){const sel=$('pilotConsol');const cur=sel.value;
   const opsList=operaciones.filter(o=>o.pilotoId===sel.value||(o.sorties||[]).some(x=>x.pilotoId===sel.value||x.observadorId===sel.value));
   const detail=opsList.map(o=>{const mine=(o.sorties||[]).filter(x=>x.pilotoId===sel.value);const mins=mine.reduce((a,x)=>a+(x.dur||0),0);
     const obs=(o.sorties||[]).filter(x=>x.observadorId===sel.value).length;
-    return `<div class="item"><div class="top"><div><div class="name">${esc(projName(o))} · ${fmtDate(o.inicioOp)}</div>
+    return `<div class="item"><div class="top"><div><div class="name">${esc(o.codigo||'')} · ${fmtDate(o.inicioOp)}</div>
     <div class="meta">${esc(o.dronModelo||'')} · ${mine.length} PIC · ${(mins/60).toFixed(1)} h${obs?' · '+obs+' obs':''}</div></div></div></div>`}).join('');
   cont.innerHTML=`<div class="card"><h2>${esc(p.nombre)}</h2>${statGrid(s.ops,s.vuelos,s.horas.toFixed(1),'Operaciones','Vuelos (PIC)','Horas')}
     ${s.obs?`<div class="hint" style="margin-top:10px">Además, ${s.obs} vuelo(s) como observador.</div>`:''}</div>
     <div class="card"><h2>Detalle</h2>${detail||'<div class="empty">Sin vuelos registrados.</div>'}</div>`;}
 
 function renderConsolDrones(){const sel=$('dronConsol');const cur=sel.value;
-  sel.innerHTML='<option value="">Todos los drones</option>'+flota.map(d=>`<option value="${d.id}">${esc(d.modelo)}</option>`).join('');if(cur)sel.value=cur;
+  const act=flota.filter(d=>operaciones.some(o=>o.dronId===d.id));
+  sel.innerHTML='<option value="">Todos los drones</option>'+act.map(d=>`<option value="${d.id}">${esc(dronLabel(d))}</option>`).join('');if(cur)sel.value=cur;
   const cont=$('consolDrones');
-  if(!flota.length){cont.innerHTML='<div class="card empty">No hay drones en la flota.</div>';return;}
+  if(!act.length){cont.innerHTML='<div class="card empty">Aún no hay drones con vuelos registrados en este dispositivo.</div>';return;}
   if(!sel.value){let t={ops:0,v:0,h:0};
-    const rows=flota.map(d=>{const s=droneStats(d.id);t.ops+=s.ops;t.v+=s.vuelos;t.h+=s.horas;
+    const rows=act.map(d=>{const s=droneStats(d.id);t.ops+=s.ops;t.v+=s.vuelos;t.h+=s.horas;
       return `<tr><td>${esc(d.modelo)}</td><td>${s.ops}</td><td>${s.vuelos}</td><td>${s.horas.toFixed(1)}</td></tr>`}).join('');
     cont.innerHTML=`<div class="card"><table class="consol"><thead><tr><th>Dron</th><th>Op.</th><th>Vuelos</th><th>Horas</th></tr></thead>
       <tbody>${rows}<tr class="tot"><td>Total</td><td>${t.ops}</td><td>${t.v}</td><td>${t.h.toFixed(1)}</td></tr></tbody></table>
@@ -875,7 +963,7 @@ function renderConsolDrones(){const sel=$('dronConsol');const cur=sel.value;
   const d=dronById(sel.value);const s=droneStats(sel.value);
   const opsList=operaciones.filter(o=>o.dronId===sel.value);
   const detail=opsList.map(o=>{const mins=totalMins(o.sorties);
-    return `<div class="item"><div class="top"><div><div class="name">${esc(projName(o))} · ${fmtDate(o.inicioOp)}</div>
+    return `<div class="item"><div class="top"><div><div class="name">${esc(o.codigo||'')} · ${fmtDate(o.inicioOp)}</div>
     <div class="meta">${esc(o.piloto||'')} · ${(o.sorties||[]).length} vuelo(s) · ${(mins/60).toFixed(1)} h</div></div></div></div>`}).join('');
   cont.innerHTML=`<div class="card"><h2>${esc(d.modelo)}</h2><div class="hint" style="margin:-6px 0 12px">Serial ${esc(d.serial||'—')} · RUAS ${esc(d.ruas||'—')} · Máximo ${esc(d.maximo||'—')}</div>
     ${statGrid(s.ops,s.vuelos,s.horas.toFixed(1),'Operaciones','Vuelos','Horas')}</div>
@@ -900,7 +988,7 @@ async function printReport(list,titulo){const w=window.open('','_blank');if(w)w.
   if(!w){toast('Permití ventanas emergentes para ver el PDF');return;}
   const body=list.map(o=>opBlock(o)).join('<div style="page-break-after:always"></div>');
   let annex='';
-  for(const o of list){if(o.aut&&o.aut.pdf&&o.aut.pdf.id){const data=await Assets.get(o.aut.pdf.id);if(data){try{const imgs=await pdfToImages(data);if(imgs.length)annex+='<div style="page-break-before:always"></div><h2 style="font-size:15px;color:#007934;border-bottom:2px solid #007934;padding-bottom:4px">Anexo — Autorización · '+esc(projName(o))+' · '+fmtDT(o.inicioOp)+'</h2>'+imgs.map(im=>'<img src="'+im+'" style="width:100%;display:block;margin:8px 0;border:1px solid #cbd5e1">').join('');}catch(e){const msg=(e&&e.message==='LIB')?'La librería pdf.js no está cargada: subí <b>pdf.min.js</b> y <b>pdf.worker.min.js</b> al repositorio (junto a index.html) y abrí la app instalada, no como archivo local.':('Detalle técnico: '+esc(e&&e.message||''));annex+='<p style="color:#b45309;border:1px solid #fcd34d;background:#fffbeb;padding:8px 10px;border-radius:8px">No se pudo incrustar el PDF adjunto <b>'+esc((o.aut.pdf.name)||'')+'</b>. '+msg+'</p>';}}}}
+  for(const o of list){if(o.aut&&o.aut.pdf&&o.aut.pdf.id){const data=await Assets.get(o.aut.pdf.id);if(data){try{const imgs=await pdfToImages(data);if(imgs.length)annex+='<div style="page-break-before:always"></div><h2 style="font-size:15px;color:#007934;border-bottom:2px solid #007934;padding-bottom:4px">Anexo — Autorización · '+esc(o.codigo||'')+' · '+fmtDT(o.inicioOp)+'</h2>'+imgs.map(im=>'<img src="'+im+'" style="width:100%;display:block;margin:8px 0;border:1px solid #cbd5e1">').join('');}catch(e){const msg=(e&&e.message==='LIB')?'La librería pdf.js no está cargada: subí <b>pdf.min.js</b> y <b>pdf.worker.min.js</b> al repositorio (junto a index.html) y abrí la app instalada, no como archivo local.':('Detalle técnico: '+esc(e&&e.message||''));annex+='<p style="color:#b45309;border:1px solid #fcd34d;background:#fffbeb;padding:8px 10px;border-radius:8px">No se pudo incrustar el PDF adjunto <b>'+esc((o.aut.pdf.name)||'')+'</b>. '+msg+'</p>';}}}}
   w.document.open();
   w.document.write(`<!DOCTYPE html><html><head><meta charset="utf-8"><title>Bitácora — ${esc(titulo)}</title><style>
   *{font-family:system-ui,sans-serif;color:#111}body{margin:0;padding:26px;background:#fff}
@@ -923,9 +1011,9 @@ function opBlock(o){const kv=(k,val)=>val?`<tr><td class="k">${k}</td><td>${esc(
   const tipos=Object.entries(o.tipoOp||{}).filter(([,x])=>x).map(([k])=>k.toUpperCase()).join(', ');const mins=totalMins(o.sorties);
   const cipu=o.operadorPiloto&&o.operadorPiloto.cipus?o.operadorPiloto.cipus.map(c=>(c.num||c)+' ('+(c.tipo||'Piloto')+')').join(', '):'';
   const ced=o.operadorPiloto?o.operadorPiloto.cedula:'';
-  const sr=(o.sorties||[]).map((s,i)=>`<tr><td class="k">#${i+1} — ${esc(s.piloto||'')}${s.observador?' / obs '+esc(s.observador):''}${s.obs?' · '+esc(s.obs):''}</td><td>${s.inicio||'?'}–${s.fin||'?'} · ${s.dur!=null?s.dur+' min':''} · bat ${s.batDesp||'?'}→${s.batAter||'?'}%</td></tr>`).join('');
+  const sr=(o.sorties||[]).map((s,i)=>`<tr><td class="k">#${i+1} — ${esc(s.piloto||'')}${s.observador?' / obs '+esc(s.observador):''}${s.obs?' · '+esc(s.obs):''}</td><td>${s.inicio||'?'}–${s.fin||'?'} · ${s.dur!=null?s.dur+' min':''} · bat ${s.batDesp||'?'}→${s.batAter||'?'}%${(s.lat||s.lon)?' · '+esc(s.lat||'')+', '+esc(s.lon||''):''}</td></tr>`).join('');
   return `<div class="blk"><div><span class="vd ${o.verdict==='GO'?'GO':o.verdict==='NO-GO'?'NOGO':'PEND'}">${o.verdict}</span></div>
-  <h3>Datos generales</h3><table class="kv">${kv('Explotador','EPM')}${kv('Proyecto',projName(o))}${kv('Piloto principal',o.piloto)}${kv('Cédula',ced)}${kv('CIPU',cipu)}${kv('Tipo',tipos)}${kv('Ubicación',[o.municipio,o.departamento].filter(Boolean).join(', '))}${o.lat||o.lon?kv('Coordenadas',o.lat+', '+o.lon):''}${kv('Dron',o.dronModelo)}${kv('Serial',o.dronSerial)}${kv('RUAS',o.dronRuas)}${kv('Código Máximo',o.dronMaximo)}</table>
+  <h3>Datos generales</h3><table class="kv">${kv('Explotador','EPM')}${kv('Código operación',o.codigo)}${kv('Piloto principal',o.piloto)}${kv('Cédula',ced)}${kv('CIPU',cipu)}${kv('Tipo',tipos)}${kv('Ubicación',[o.municipio,o.departamento].filter(Boolean).join(', '))}${kv('Dron',(o.dronModelo||'')+(o.dronDR?' -'+o.dronDR:''))}${kv('Serial',o.dronSerial)}${kv('RUAS',o.dronRuas)}${kv('Código Máximo',o.dronMaximo)}${kv('Póliza vence',o.dronPolizaVence)}${kv('Mantenimiento vence',o.dronMant)}</table>
   <h3>Autorización</h3><table class="kv">${kv('Radicado',o.aut&&o.aut.radicado)}${kv('ID',o.aut&&o.aut.id)}${kv('Vigencia',o.aut?(o.aut.ini||'?')+' a '+(o.aut.fin||'?'):'')}${o.aut&&o.aut.pdf?kv('Certificado',o.aut.pdf.name):''}</table>
   <h3>Chequeo en oficina</h3>${siNoTable(CHK_OFICINA,o.oficina||{})}
   <h3>Chequeo pre-vuelo</h3>${kv('Inicio operación',fmtDT(o.inicioOp))}${siNoTable(CHK_PREVUELO,o.prevuelo||{})}<h3>Análisis de riesgo</h3>${riesgoTable(o)}${o.obsPre?`<table class="kv">${kv('Obs. pre-vuelo',o.obsPre)}</table>`:''}
@@ -941,27 +1029,83 @@ function riesgoTable(o){const hf=o.hf||{};
   const res=calif?`<tr><td class="k"><b>Calificación</b></td><td><b>${esc(calif)}</b></td></tr>`:'';
   const all=rows+res;return all?`<table class="kv">${all}</table>`:'';}
 function buildCSV(list){
-  const cols=['fecha_op','proyecto','operacion_id','municipio','departamento','tipo_op','piloto_principal','dron','dron_serial','ruas','codigo_maximo','radicado','id_aut','vig_ini','vig_fin','lat','lon','verdict','riesgo','requiere_mor','vuelo_n','piloto_vuelo','observador','obs_vuelo','inicio','fin','duracion_min','bat_despegue','bat_aterrizaje'];
+  const cols=['fecha_op','operacion_id','codigo_operacion','municipio','departamento','tipo_diurna','tipo_nocturna','tipo_vlos','tipo_evlos','tipo_bvlos','piloto_principal','cedula_piloto_principal','dron','dron_dr','dron_serial','ruas','codigo_maximo','radicado','id_aut','vig_ini','vig_fin','verdict','riesgo','requiere_mor','vuelo_n','piloto_vuelo','cedula_piloto_vuelo','observador','cedula_observador','obs_vuelo','inicio','fin','duracion_min','bat_despegue','bat_aterrizaje','lat','lon'];
   const e2=s=>{s=(s==null?'':String(s)).replace(/"/g,'""');return /[",;\n]/.test(s)?'"'+s+'"':s};
-  const rows=[];list.forEach(o=>{const tipos=Object.entries(o.tipoOp||{}).filter(([,x])=>x).map(([k])=>k).join('|');
-    const base=[(o.inicioOp||'').slice(0,10),projName(o),o.id,o.municipio,o.departamento,tipos,o.piloto,o.dronModelo,o.dronSerial,o.dronRuas,o.dronMaximo,o.aut&&o.aut.radicado,o.aut&&o.aut.id,o.aut&&o.aut.ini,o.aut&&o.aut.fin,o.lat,o.lon,o.verdict,(o.riesgo&&o.riesgo.calif)||(o.imsafe&&o.imsafe.calif)||'',o.requiereMOR?'Sí':'No'];
-    if(o.sorties&&o.sorties.length)o.sorties.forEach((s,i)=>rows.push(base.concat([i+1,s.piloto,s.observador,s.obs,s.inicio,s.fin,s.dur,s.batDesp,s.batAter]).map(e2).join(',')));
-    else rows.push(base.concat(['','','','','','','','','']).map(e2).join(','));});
+  const cedP=o=>(o.operadorPiloto&&o.operadorPiloto.cedula)||((pilotById(o.pilotoId)||{}).cedula)||'';
+  const rows=[];list.forEach(o=>{const t=o.tipoOp||{};const fl=k=>t[k]?1:0;
+    const base=[(o.inicioOp||'').slice(0,10),o.id,o.codigo||'',o.municipio,o.departamento,fl('diurna'),fl('nocturna'),fl('vlos'),fl('evlos'),fl('bvlos'),o.piloto,cedP(o),o.dronModelo,o.dronDR||'',o.dronSerial,o.dronRuas,o.dronMaximo,o.aut&&o.aut.radicado,o.aut&&o.aut.id,o.aut&&o.aut.ini,o.aut&&o.aut.fin,o.verdict,(o.riesgo&&o.riesgo.calif)||(o.imsafe&&o.imsafe.calif)||'',o.requiereMOR?'Sí':'No'];
+    const scd=(s,k)=>s[k]||((pilotById(s[k==='pilotoCedula'?'pilotoId':'observadorId'])||{}).cedula)||'';
+    if(o.sorties&&o.sorties.length)o.sorties.forEach((s,i)=>rows.push(base.concat([i+1,s.piloto,scd(s,'pilotoCedula'),s.observador,scd(s,'observadorCedula'),s.obs,s.inicio,s.fin,s.dur,s.batDesp,s.batAter,s.lat||'',s.lon||'']).map(e2).join(',')));
+    else rows.push(base.concat(['','','','','','','','','','','','','']).map(e2).join(','));});
   return '\ufeff'+cols.join(',')+'\n'+rows.join('\n');}
 function exportCSV(){if(!operaciones.length){toast('No hay operaciones');return}dl('bitacora_vuelos.csv',buildCSV(operaciones),'text/csv');toast('CSV exportado');}
 function exportProjectCSV(pid){const list=operaciones.filter(o=>o.proyectoId===pid);if(!list.length){toast('El proyecto no tiene operaciones');return}
   const nm=((proyectoById(pid)||{}).nombre||'proyecto').replace(/[^\w]+/g,'_');dl('bitacora_'+nm+'.csv',buildCSV(list),'text/csv');toast('CSV del proyecto exportado');}
 async function exportJSON(){toast('Preparando respaldo…');const assets={};
   for(const o of operaciones){for(const id of opAssetIds(o)){if(!isDataURL(id)&&!(id in assets)){const d=await Assets.get(id);if(d!=null)assets[id]=d;}}}
-  dl('bitacora_respaldo_'+new Date().toISOString().slice(0,10)+'.json',JSON.stringify({v:6,proyectos,pilotos,flota,operaciones,assets},null,1),'application/json');
+  dl('bitacora_respaldo_'+new Date().toISOString().slice(0,10)+'.json',JSON.stringify({v:7,proyectos,pilotos,flota,autorizaciones,operaciones,assets},null,1),'application/json');
   localStorage.setItem('bvd_lastBackup',String(Date.now()));toast('Respaldo descargado');if($('v-datos').classList.contains('active'))renderStorage();}
-function importJSON(e){const f=e.target.files[0];e.target.value='';if(!f)return;const r=new FileReader();
-  r.onload=async ev=>{try{const d=JSON.parse(ev.target.result);if(!confirm('Reemplaza proyectos, pilotos, flota y operaciones. ¿Continuar?'))return;
-    if(d.assets)for(const[id,data]of Object.entries(d.assets))await Assets.put(id,data);
-    proyectos=d.proyectos||[];pilotos=d.pilotos||[];flota=d.flota||[];operaciones=d.operaciones||[];
-    migrateProjects();await migrateAssets();save(K.proj,proyectos);save(K.pilots,pilotos);save(K.fl,flota);save(K.ops,operaciones);
-    renderPilots();renderFleet();renderHistory();toast('Restaurado');nav('hist');
-  }catch(err){toast('Archivo inválido')}};r.readAsText(f);}
+async function shareBackup(){toast('Preparando respaldo…');const assets={};
+  for(const o of operaciones){for(const id of opAssetIds(o)){if(!isDataURL(id)&&!(id in assets)){const d=await Assets.get(id);if(d!=null)assets[id]=d;}}}
+  const json=JSON.stringify({v:6,proyectos,pilotos,flota,operaciones,assets},null,1);
+  const name='bitacora_'+new Date().toISOString().slice(0,10)+'.json';
+  try{const file=new File([json],name,{type:'application/json'});
+    if(navigator.canShare&&navigator.canShare({files:[file]})){await navigator.share({files:[file],title:'Bitácora de vuelo dron'});localStorage.setItem('bvd_lastBackup',String(Date.now()));if($('v-datos').classList.contains('active'))renderStorage();return;}
+  }catch(e){if(e&&e.name==='AbortError')return;}
+  dl(name,json,'application/json');localStorage.setItem('bvd_lastBackup',String(Date.now()));toast('Compartir no disponible: se descargó el archivo');}
+let pendingImport=null;
+function loadJSON(e){const f=e.target.files[0];e.target.value='';if(!f)return;const r=new FileReader();
+  r.onload=ev=>{try{pendingImport=JSON.parse(ev.target.result);const m=$('importModal');if(m)m.style.display='flex';}catch(err){toast('Archivo inválido')}};r.readAsText(f);}
+function closeImportModal(){const m=$('importModal');if(m)m.style.display='none';pendingImport=null;}
+function applyImport(mode){const d=pendingImport;const m=$('importModal');if(m)m.style.display='none';pendingImport=null;if(!d)return;if(mode==='merge')doMerge(d);else doReplace(d);}
+async function doReplace(d){
+  if(d.assets)for(const[id,data]of Object.entries(d.assets))await Assets.put(id,data);
+  proyectos=d.proyectos||[];pilotos=d.pilotos||[];flota=d.flota||[];autorizaciones=d.autorizaciones||[];operaciones=d.operaciones||[];
+  migrateProjects();await migrateAssets();save(K.proj,proyectos);save(K.pilots,pilotos);save(K.fl,flota);save(K.aut,autorizaciones);save(K.ops,operaciones);
+  renderPilots();renderFleet();renderOper();toast('Datos reemplazados');nav('oper');}
+function modoPiloto(){return localStorage.getItem('bvd_modoPiloto')==='1';}
+function applyModo(){const on=modoPiloto();['fleetForm','pilotForm'].forEach(id=>{const el=$(id);if(el)el.style.display=on?'none':'';});const c=$('modoPilotoChk');if(c)c.checked=on;}
+function setModoPiloto(on){localStorage.setItem('bvd_modoPiloto',on?'1':'');applyModo();renderFleet();renderPilots();toast(on?'Modo piloto activado (solo consulta)':'Modo maestro (edición habilitada)');}
+function mergeCatalog(local,incoming,key){if(!incoming)return 0;let n=0;incoming.forEach(item=>{let i=local.findIndex(x=>x.id===item.id);if(i<0&&key&&item[key])i=local.findIndex(x=>String(x[key]||'').trim()===String(item[key]||'').trim());if(i<0){local.push(item);n++;}else local[i]=item;});return n;}
+async function loadSeed(){try{
+  const resp=await fetch('seed.json?ts='+Date.now(),{cache:'no-store'});if(!resp.ok)return;
+  const seed=await resp.json();const localV=Number(localStorage.getItem('bvd_seedVersion')||0);
+  if(!(Number(seed.seedVersion||0)>localV))return;
+  if(seed.assets)for(const[id,data]of Object.entries(seed.assets))await Assets.put(id,data);
+  mergeCatalog(flota,seed.flota,'serial');mergeCatalog(pilotos,seed.pilotos,'cedula');mergeCatalog(autorizaciones,seed.autorizaciones,'radicado');
+  save(K.fl,flota);save(K.pilots,pilotos);save(K.aut,autorizaciones);
+  localStorage.setItem('bvd_seedVersion',String(seed.seedVersion));
+  renderFleet();renderPilots();renderAut();
+  toast('Catálogo actualizado (seed v'+seed.seedVersion+')');
+}catch(e){}}
+async function exportSeed(){const v=Number(localStorage.getItem('bvd_seedExportVersion')||0)+1;const assets={};
+  for(const a of autorizaciones){if(a.pdf&&a.pdf.id&&!(a.pdf.id in assets)){const d=await Assets.get(a.pdf.id);if(d!=null)assets[a.pdf.id]=d;}}
+  const seed={seedVersion:v,actualizado:new Date().toISOString().slice(0,10),flota,pilotos,autorizaciones,assets};
+  dl('seed.json',JSON.stringify(seed,null,1),'application/json');
+  localStorage.setItem('bvd_seedExportVersion',String(v));
+  toast('seed.json v'+v+' generado. Subilo al repositorio.');}
+async function forceUpdate(){if(!navigator.onLine){toast('Necesitás internet para actualizar');return;}
+  if(!confirm('Se descargará la última versión publicada. Tus datos no se borran. ¿Continuar?'))return;
+  try{if('serviceWorker' in navigator){const rs=await navigator.serviceWorker.getRegistrations();await Promise.all(rs.map(r=>r.unregister()));}
+    if(window.caches){const ks=await caches.keys();await Promise.all(ks.map(k=>caches.delete(k)));}}catch(e){}
+  location.reload(true);}
+async function doMerge(d){
+    if(d.assets)for(const[id,data]of Object.entries(d.assets)){await Assets.put(id,data);}
+    let nOps=0,nUpd=0,nPro=0,nPil=0,nFl=0,nAut=0;
+    (d.operaciones||[]).forEach(o=>{const i=operaciones.findIndex(x=>x.id===o.id);
+      if(i<0){operaciones.push(o);nOps++;}else if((o.ts||0)>(operaciones[i].ts||0)){operaciones[i]=o;nUpd++;}});
+    const prIds=new Set(proyectos.map(p=>p.id));
+    (d.proyectos||[]).forEach(p=>{if(!prIds.has(p.id)){proyectos.push(p);prIds.add(p.id);nPro++;}});
+    const pilIds=new Set(pilotos.map(p=>p.id)),pilCed=new Set(pilotos.map(p=>(p.cedula||'').trim()).filter(Boolean));
+    (d.pilotos||[]).forEach(p=>{const c=(p.cedula||'').trim();if(!pilIds.has(p.id)&&!(c&&pilCed.has(c))){pilotos.push(p);pilIds.add(p.id);if(c)pilCed.add(c);nPil++;}});
+    const flIds=new Set(flota.map(x=>x.id)),flSer=new Set(flota.map(x=>(x.serial||'').trim()).filter(Boolean));
+    (d.flota||[]).forEach(x=>{const s=(x.serial||'').trim();if(!flIds.has(x.id)&&!(s&&flSer.has(s))){flota.push(x);flIds.add(x.id);if(s)flSer.add(s);nFl++;}});
+    const auIds=new Set(autorizaciones.map(a=>a.id)),auRad=new Set(autorizaciones.map(a=>(a.radicado||'').trim()).filter(Boolean));
+    (d.autorizaciones||[]).forEach(a=>{const r=(a.radicado||'').trim();if(!auIds.has(a.id)&&!(r&&auRad.has(r))){autorizaciones.push(a);auIds.add(a.id);if(r)auRad.add(r);nAut++;}});
+    migrateProjects();await migrateAssets();
+    save(K.proj,proyectos);save(K.pilots,pilotos);save(K.fl,flota);save(K.aut,autorizaciones);save(K.ops,operaciones);
+    renderPilots();renderFleet();renderOper();
+    toast('Consolidado: +'+nOps+' oper., '+nUpd+' act., +'+nPil+' pilotos, +'+nFl+' drones, +'+nAut+' autoriz.');nav('oper');}
 function wipeAll(){if(!confirm('Se borra TODO (proyectos, pilotos, flota, operaciones y adjuntos). ¿Seguro?'))return;if(!confirm('Última confirmación: no se puede deshacer.'))return;
   [K.fl,K.pilots,K.proj,K.ops,K.draft].forEach(k=>localStorage.removeItem(k));localStorage.removeItem('bvd_lastBackup');Assets.clear();
   flota=[];pilotos=[];proyectos=[];operaciones=[];renderPilots();renderFleet();renderHistory();toast('Todo borrado');}
@@ -981,21 +1125,82 @@ async function renderStorage(){const el=$('storageInfo');if(!el)return;const s=a
 window.addEventListener('pagehide',()=>{if($('v-nueva').classList.contains('active'))saveDraft();});
 document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='hidden'&&$('v-nueva').classList.contains('active'))saveDraft();});
 
-function capturarGPS(){const h=$('gpsHint');
+function capturarGPSVuelo(i){const h=document.getElementById('gpsHintV'+i);
   if(!navigator.geolocation){h.textContent='Este dispositivo no ofrece geolocalización.';h.style.color='var(--rojo)';return;}
   if(!window.isSecureContext){h.textContent='El GPS automático requiere HTTPS. Abrí la app instalada (PWA) o pegá las coordenadas.';h.style.color='var(--amarillo)';return;}
   h.textContent='Obteniendo ubicación…';h.style.color='var(--muted)';
   navigator.geolocation.getCurrentPosition(p=>{
-    $('g_lat').value=p.coords.latitude.toFixed(6);$('g_lon').value=p.coords.longitude.toFixed(6);
-    h.textContent='✓ Ubicación capturada (±'+Math.round(p.coords.accuracy)+' m)';h.style.color='var(--verde)';saveDraft();
+    st.sorties[i].lat=p.coords.latitude.toFixed(6);st.sorties[i].lon=p.coords.longitude.toFixed(6);renderSorties();saveDraft();
+    const h2=document.getElementById('gpsHintV'+i);if(h2){h2.textContent='✓ ±'+Math.round(p.coords.accuracy)+' m';h2.style.color='var(--verde)';}
   },err=>{h.textContent='No se pudo obtener la ubicación: '+err.message;h.style.color='var(--rojo)';},{enableHighAccuracy:true,timeout:10000,maximumAge:0});}
+
+/* ---------- mapa de zona (KMZ) ---------- */
+let map,zonaLayers=[],meMarker,baseOSM,baseSat,curBase,vueloLayer;
+function coordStr(t){return t.trim().split(/\s+/).map(s=>{const a=s.split(',');return [+a[1],+a[0]];}).filter(p=>isFinite(p[0])&&isFinite(p[1]));}
+function parseKmlText(t){const doc=new DOMParser().parseFromString(t,'text/xml');const polys=[];const pg=doc.getElementsByTagName('Polygon');
+  for(let i=0;i<pg.length;i++){const c=pg[i].getElementsByTagName('coordinates');if(c.length){const p=coordStr(c[0].textContent);if(p.length>=3)polys.push(p);}}
+  if(!polys.length){const c=doc.getElementsByTagName('coordinates');for(let i=0;i<c.length;i++){const p=coordStr(c[i].textContent);if(p.length>=3)polys.push(p);}}
+  return polys;}
+function parseKmz(buf){const files=fflate.unzipSync(new Uint8Array(buf));const n=Object.keys(files).find(x=>/\.kml$/i.test(x));if(!n)throw new Error('KMZ sin .kml');return parseKmlText(fflate.strFromU8(files[n]));}
+function pointInPoly(pt,poly){let x=pt[1],y=pt[0],inside=false;for(let i=0,j=poly.length-1;i<poly.length;j=i++){const xi=poly[i][1],yi=poly[i][0],xj=poly[j][1],yj=poly[j][0];const it=((yi>y)!==(yj>y))&&(x<(xj-xi)*(y-yi)/(yj-yi)+xi);if(it)inside=!inside;}return inside;}
+function distToPoly(pt,poly){const R=6371000,rad=Math.PI/180,c=Math.cos(pt[0]*rad);const px=pt[1]*rad*c*R,py=pt[0]*rad*R;let mn=Infinity;
+  for(let i=0,j=poly.length-1;i<poly.length;j=i++){const ax=poly[j][1]*rad*c*R,ay=poly[j][0]*rad*R,bx=poly[i][1]*rad*c*R,by=poly[i][0]*rad*R;const dx=bx-ax,dy=by-ay,l2=dx*dx+dy*dy;let t=l2?((px-ax)*dx+(py-ay)*dy)/l2:0;t=Math.max(0,Math.min(1,t));const qx=ax+t*dx,qy=ay+t*dy,d=Math.hypot(px-qx,py-qy);if(d<mn)mn=d;}return mn;}
+function lon2tile(lo,z){return Math.floor((lo+180)/360*Math.pow(2,z));}
+function lat2tile(la,z){return Math.floor((1-Math.log(Math.tan(la*Math.PI/180)+1/Math.cos(la*Math.PI/180))/Math.PI)/2*Math.pow(2,z));}
+function initMap(){if(typeof L==='undefined'){setTimeout(initMap,300);return;}
+  if(map){setTimeout(()=>map.invalidateSize(),150);renderZonas();renderVueloPoints();return;}
+  map=L.map('map').setView([6.25,-75.57],11);
+  baseOSM=L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{maxZoom:19,attribution:'© OpenStreetMap'});
+  baseSat=L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',{maxZoom:19,attribution:'© Esri'});
+  baseOSM.addTo(map);curBase=baseOSM;renderZonas();renderVueloPoints();setTimeout(()=>map.invalidateSize(),250);}
+function renderVueloPoints(){if(!map)return;if(vueloLayer)map.removeLayer(vueloLayer);vueloLayer=L.layerGroup();let n=0;const bounds=[];
+  operaciones.forEach(o=>(o.sorties||[]).forEach((s,idx)=>{const la=parseFloat(s.lat),lo=parseFloat(s.lon);if(isFinite(la)&&isFinite(lo)){
+    const mk=L.circleMarker([la,lo],{radius:6,color:'#fff',weight:2,fillColor:'#1d4ed8',fillOpacity:1});
+    mk.bindPopup('<b>'+esc(o.codigo||'Operación')+'</b><br>Vuelo #'+(idx+1)+' · '+esc((o.dronModelo||'')+(o.dronDR?' -'+o.dronDR:''))+'<br>'+esc(fmtDate(o.inicioOp))+' · '+esc(o.verdict||'')+(s.piloto?'<br>Piloto: '+esc(s.piloto):''));
+    vueloLayer.addLayer(mk);bounds.push([la,lo]);n++;}}));
+  vueloLayer.addTo(map);const el=$('vpInfo');if(el)el.textContent=n?(n+' punto(s) de vuelo registrados'):'Sin puntos de vuelo registrados aún.';return n;}
+function centrarVuelos(){if(!map)return;const b=[];operaciones.forEach(o=>(o.sorties||[]).forEach(s=>{const la=parseFloat(s.lat),lo=parseFloat(s.lon);if(isFinite(la)&&isFinite(lo))b.push([la,lo]);}));if(b.length){try{map.fitBounds(b,{padding:[30,30]});}catch(e){}}else if($('vpInfo'))$('vpInfo').textContent='No hay puntos de vuelo para centrar.';}
+function allPolys(){const out=[];load('bvd_zonas',[]).forEach(z=>(z.polys||[]).forEach(p=>out.push(p)));(autorizaciones||[]).forEach(a=>(a.poly||[]).forEach(p=>out.push(p)));return out;}
+function renderZonas(){if(!map)return;zonaLayers.forEach(l=>map.removeLayer(l));zonaLayers=[];const zonas=load('bvd_zonas',[]);const all=[];
+  zonas.forEach(z=>(z.polys||[]).forEach(poly=>{const pl=L.polygon(poly,{color:'#007934',weight:2,fillColor:'#7AD400',fillOpacity:.18}).addTo(map);zonaLayers.push(pl);poly.forEach(pt=>all.push(pt));}));
+  (autorizaciones||[]).forEach(a=>(a.poly||[]).forEach(poly=>{const pl=L.polygon(poly,{color:'#007934',weight:2,fillColor:'#7AD400',fillOpacity:.12,dashArray:'4'}).addTo(map);pl.bindPopup('<b>'+esc(a.radicado||'Autorización')+'</b>'+(a.desc?'<br>'+esc(a.desc):''));zonaLayers.push(pl);poly.forEach(pt=>all.push(pt));}));
+  if(all.length){try{map.fitBounds(all,{padding:[20,20]});}catch(e){}}
+  const zi=$('zonaInfo');if(zi)zi.innerHTML=zonas.length?zonas.map((z,i)=>`<div class="filerow"><span>🗺️</span><span class="nm">${esc(z.name||'Zona '+(i+1))}</span><button class="icon-btn del" onclick="delZona(${i})">Quitar</button></div>`).join(''):'<div class="hint">No hay zonas cargadas.</div>';}
+function loadKmz(e){const f=e.target.files[0];e.target.value='';if(!f)return;const isKml=/\.kml$/i.test(f.name);const r=new FileReader();
+  r.onload=ev=>{try{const polys=isKml?parseKmlText(ev.target.result):parseKmz(ev.target.result);
+    if(!polys.length){$('mapStatus').textContent='No se encontraron polígonos en el archivo.';return;}
+    const zonas=load('bvd_zonas',[]);zonas.push({name:f.name,polys});save('bvd_zonas',zonas);renderZonas();
+    $('mapStatus').textContent='Zona cargada: '+f.name+' · '+polys.length+' polígono(s).';
+  }catch(err){$('mapStatus').textContent='No se pudo leer: '+((err&&err.message)||'archivo inválido');}};
+  if(isKml)r.readAsText(f);else r.readAsArrayBuffer(f);}
+function delZona(i){const zonas=load('bvd_zonas',[]);zonas.splice(i,1);save('bvd_zonas',zonas);renderZonas();}
+function locateMe(){if(!map){initMap();}if(!navigator.geolocation){$('mapStatus').textContent='Sin geolocalización.';return;}
+  if(!window.isSecureContext){$('mapStatus').textContent='El GPS requiere HTTPS (abrí la app instalada).';return;}
+  $('mapStatus').textContent='Ubicando…';
+  navigator.geolocation.getCurrentPosition(p=>{const lat=p.coords.latitude,lon=p.coords.longitude;
+    if(meMarker)map.removeLayer(meMarker);
+    meMarker=L.circleMarker([lat,lon],{radius:8,color:'#fff',weight:3,fillColor:'#dc2626',fillOpacity:1}).addTo(map);map.setView([lat,lon],16);
+    const polys=allPolys();let inside=false,mn=Infinity;
+    polys.forEach(poly=>{if(pointInPoly([lat,lon],poly))inside=true;const dd=distToPoly([lat,lon],poly);if(dd<mn)mn=dd;});
+    let msg;if(!polys.length)msg='Ubicación marcada (no hay zonas cargadas).';else msg=inside?'✓ DENTRO de zona autorizada':'✕ FUERA de zona autorizada · a ~'+Math.round(mn)+' m del borde';
+    $('mapStatus').textContent=msg+' · ±'+Math.round(p.coords.accuracy)+' m';
+  },err=>{$('mapStatus').textContent='No se pudo ubicar: '+err.message;},{enableHighAccuracy:true,timeout:12000,maximumAge:0});}
+function toggleBase(){if(!map)return;if(curBase===baseOSM){map.removeLayer(baseOSM);baseSat.addTo(map);curBase=baseSat;}else{map.removeLayer(baseSat);baseOSM.addTo(map);curBase=baseOSM;}}
+async function downloadArea(){const zonas=load('bvd_zonas',[]);if(!zonas.length){$('dlStatus').textContent='Cargá una zona (KMZ/KML) primero.';return;}
+  if(!navigator.onLine){$('dlStatus').textContent='Necesitás internet para descargar la zona.';return;}
+  let mnLa=90,mxLa=-90,mnLo=180,mxLo=-180;zonas.forEach(z=>(z.polys||[]).forEach(poly=>poly.forEach(([la,lo])=>{mnLa=Math.min(mnLa,la);mxLa=Math.max(mxLa,la);mnLo=Math.min(mnLo,lo);mxLo=Math.max(mxLo,lo);})));
+  const sat=curBase===baseSat;const tpl=sat?'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}':'https://a.tile.openstreetmap.org/{z}/{x}/{y}.png';
+  const urls=[];for(let z=13;z<=16;z++){const x1=lon2tile(mnLo,z),x2=lon2tile(mxLo,z),y1=lat2tile(mxLa,z),y2=lat2tile(mnLa,z);for(let x=x1;x<=x2;x++)for(let y=y1;y<=y2;y++)urls.push(tpl.replace('{z}',z).replace('{x}',x).replace('{y}',y));}
+  if(urls.length>2200){$('dlStatus').textContent='Zona muy grande ('+urls.length+' teselas). Reducila o usá menos zoom.';return;}
+  $('dlStatus').textContent='Descargando '+urls.length+' teselas…';let done=0,fail=0;
+  for(let i=0;i<urls.length;i+=8){await Promise.all(urls.slice(i,i+8).map(u=>fetch(u,{mode:'no-cors'}).then(()=>done++).catch(()=>fail++)));$('dlStatus').textContent='Descargando… '+done+'/'+urls.length;}
+  $('dlStatus').textContent='✓ Zona descargada ('+done+' teselas'+(fail?', '+fail+' fallaron':'')+'). Disponible offline.';}
 
 if('serviceWorker' in navigator){window.addEventListener('load',()=>navigator.serviceWorker.register('sw.js').catch(()=>{}));}
 
-Assets.init().then(async()=>{await migrateAssets();});
+Assets.init().then(async()=>{await migrateAssets();await loadSeed();});
 var _el=document.getElementById("epmLogo");if(_el)_el.src=EPM_LOGO;
-migrateProjects();
-renderHistory();
+renderOper();
 </script>
 </body>
 </html>
