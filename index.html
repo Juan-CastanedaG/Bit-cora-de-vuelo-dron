@@ -371,6 +371,7 @@ nav#navGrid button.active svg{stroke:var(--grn-dk)}
   <div class="card"><h2>Respaldo</h2>
     <div class="field"><button class="btn sec" onclick="exportJSON()">💾 Descargar respaldo (JSON)</button><div class="hint">Incluye pilotos, flota, operaciones, fotos y PDFs adjuntos.</div></div>
     <div class="field"><button class="btn sec" onclick="shareBackup()">📤 Compartir respaldo (JSON)</button><div class="hint">Abre el menú de compartir del teléfono (OneDrive, Teams, correo…) para enviar el respaldo sin buscar el archivo.</div></div>
+    <div class="field"><button class="btn" onclick="exportForms()">📊 Enviar por Forms (Excel)</button><div class="hint">Genera un Excel con todo tu respaldo adentro, para subir por el formulario de EPM (es el formato que Forms acepta).</div></div>
     <div class="field"><button class="btn sec" onclick="document.getElementById('loadIn').click()">📂 Cargar JSON</button>
       <input type="file" id="loadIn" accept="application/json,.json" style="display:none" onchange="loadJSON(event)">
       <div class="hint">Al cargarlo te pregunta si <b>adicionar</b> (consolidar sin borrar) o <b>reemplazar</b> todo.</div></div>
@@ -1024,6 +1025,27 @@ async function shareBackup(){toast('Preparando respaldo…');const assets={};
     if(navigator.canShare&&navigator.canShare({files:[file]})){await navigator.share({files:[file],title:'Bitácora de vuelo dron'});localStorage.setItem('bvd_lastBackup',String(Date.now()));if($('v-datos').classList.contains('active'))renderStorage();return;}
   }catch(e){if(e&&e.name==='AbortError')return;}
   dl(name,json,'application/json');localStorage.setItem('bvd_lastBackup',String(Date.now()));toast('Compartir no disponible: se descargó el archivo');}
+function colLetter(i){let s='';i++;while(i>0){const m=(i-1)%26;s=String.fromCharCode(65+m)+s;i=Math.floor((i-1)/26);}return s;}
+function buildXlsx(sheets){const ex=s=>String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');const F={};
+  F['[Content_Types].xml']='<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types"><Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/><Default Extension="xml" ContentType="application/xml"/>'+sheets.map((s,i)=>'<Override PartName="/xl/worksheets/sheet'+(i+1)+'.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.worksheet+xml"/>').join('')+'<Override PartName="/xl/workbook.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet.main+xml"/></Types>';
+  F['_rels/.rels']='<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument" Target="xl/workbook.xml"/></Relationships>';
+  F['xl/workbook.xml']='<?xml version="1.0" encoding="UTF-8" standalone="yes"?><workbook xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships"><sheets>'+sheets.map((s,i)=>'<sheet name="'+ex(s.name)+'" sheetId="'+(i+1)+'" r:id="rId'+(i+1)+'"/>').join('')+'</sheets></workbook>';
+  F['xl/_rels/workbook.xml.rels']='<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">'+sheets.map((s,i)=>'<Relationship Id="rId'+(i+1)+'" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/worksheet" Target="worksheets/sheet'+(i+1)+'.xml"/>').join('')+'</Relationships>';
+  sheets.forEach((s,i)=>{const rows=s.rows.map((row,ri)=>'<row r="'+(ri+1)+'">'+row.map((v,ci)=>'<c r="'+colLetter(ci)+(ri+1)+'" t="inlineStr"><is><t xml:space="preserve">'+ex(v)+'</t></is></c>').join('')+'</row>').join('');
+    F['xl/worksheets/sheet'+(i+1)+'.xml']='<?xml version="1.0" encoding="UTF-8" standalone="yes"?><worksheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main"><sheetData>'+rows+'</sheetData></worksheet>';});
+  const enc=new TextEncoder();const zo={};for(const k in F)zo[k]=enc.encode(F[k]);return fflate.zipSync(zo);}
+async function exportForms(){toast('Preparando Excel…');const assets={};
+  for(const o of operaciones){for(const id of opAssetIds(o)){if(!isDataURL(id)&&!(id in assets)){const d=await Assets.get(id);if(d!=null)assets[id]=d;}}}
+  const json=JSON.stringify({v:7,proyectos,pilotos,flota,autorizaciones,operaciones,assets});
+  const CH=30000;const chunks=[];for(let i=0;i<json.length;i+=CH)chunks.push(json.slice(i,i+CH));
+  const dataRows=[['BITACORA_JSON_V1']].concat(chunks.map(c=>[c]));
+  const resumen=[['Resumen bitácora dron'],['Operaciones',String(operaciones.length)],['Generado',new Date().toLocaleString('es-CO')],['Nota','No edite este archivo. Súbalo tal cual por el formulario.']];
+  const xls=buildXlsx([{name:'RESUMEN',rows:resumen},{name:'DATA',rows:dataRows}]);
+  const name='bitacora_'+new Date().toISOString().slice(0,10)+'.xlsx';
+  const blob=new Blob([xls],{type:'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'});
+  try{const file=new File([blob],name,{type:blob.type});if(navigator.canShare&&navigator.canShare({files:[file]})){await navigator.share({files:[file],title:'Bitácora de vuelo dron'});localStorage.setItem('bvd_lastBackup',String(Date.now()));return;}}catch(e){if(e&&e.name==='AbortError')return;}
+  const u=URL.createObjectURL(blob);const a=document.createElement('a');a.href=u;a.download=name;a.click();setTimeout(()=>URL.revokeObjectURL(u),1000);
+  localStorage.setItem('bvd_lastBackup',String(Date.now()));toast('Excel para Forms generado');}
 let pendingImport=null;
 function loadJSON(e){const f=e.target.files[0];e.target.value='';if(!f)return;const r=new FileReader();
   r.onload=ev=>{try{pendingImport=JSON.parse(ev.target.result);const m=$('importModal');if(m)m.style.display='flex';}catch(err){toast('Archivo inválido')}};r.readAsText(f);}
