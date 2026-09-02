@@ -600,7 +600,17 @@ function fdate(x){return x?fmtDate(x)+(daysTo(x)<0?' <span class="bad">(vencido)
 function renderDronInfo(){const el=$('dronInfo');if(!el)return;const d=dronById($('g_dron').value);
   el.innerHTML=d?`<b>${esc(dronLabel(d))}</b><br>Serial: ${esc(d.serial||'—')} · RUAS: ${esc(d.ruas||'—')} · Máximo: ${esc(d.maximo||'—')}<br>Póliza vence: ${fdate(d.polizaVence)} · Mantenimiento vence: ${fdate(d.mant)}${(d.habNocturno||d.habBVLOS)?'<br>Habilitado: '+[d.habNocturno?'nocturno':'',d.habBVLOS?'BVLOS':''].filter(Boolean).join(', '):''}`:'';}
 function renderAutInfo(){const el=$('autInfo');if(!el)return;const au=autById($('g_autId').value);
-  el.innerHTML=au?`<b>Radicado ${esc(au.radicado||'—')}</b> · ID ${esc(au.idAut||'—')}<br>Vigencia: ${fdate(au.ini)} a ${fdate(au.fin)}${au.desc?'<br>'+esc(au.desc):''}<br>${au.pdf?`<button class="btn sec sm noprint" style="margin-top:6px" onclick="openPdf('${au.pdf.id}')">📄 Ver PDF de la autorización</button>`:'<span>Sin PDF de autorización adjunto.</span>'}`:'<span>Se crean/consultan en la pestaña Autorizaciones.</span>';}
+  if(!au){el.innerHTML='<span>Se consultan en la pestaña Autorizaciones.</span>';return;}
+  let h='';
+  if(au.desc)h+='<b>'+esc(au.desc)+'</b><br>';
+  h+='Radicado: '+esc(au.radicado||'—')+(au.idAut?' · ID '+esc(au.idAut):'')+'<br>';
+  h+='Vigencia: '+(au.ini?fmtDate(au.ini):'—')+' a '+fdate(au.fin);
+  const b=[];
+  if(au.pdf)b.push('<button class="btn sec sm noprint" onclick="openPdf(\''+au.pdf.id+'\')">📄 Ver PDF</button>');
+  if(au.poly&&au.poly.length)b.push('<button class="btn sec sm noprint" onclick="verZonaAut(\''+au.id+'\')">🗺️ Ver zona en mapa</button>');
+  h+='<div class="btnrow" style="margin-top:8px">'+(b.length?b.join(''):'<span class="hint">Sin PDF ni polígono cargados.</span>')+'</div>';
+  el.innerHTML=h;}
+function verZonaAut(id){nav('mapa');setTimeout(()=>{const a=autById(id);if(a&&a.poly&&a.poly.length&&map){const bb=[];a.poly.forEach(p=>p.forEach(pt=>bb.push(pt)));if(bb.length){try{map.fitBounds(bb,{padding:[30,30]});}catch(e){}}}},450);}
 function onAutSelect(){const au=autById($('g_autId').value);renderAutInfo();
   $('a_rad').value=au?(au.radicado||''):'';$('a_id').value=au?(au.idAut||''):'';$('a_ini').value=au?(au.ini||''):'';$('a_fin').value=au?(au.fin||''):'';
   st.autPdf=au&&au.pdf?au.pdf:null;renderPdfRow();verdict();saveDraft();}
@@ -776,7 +786,7 @@ function discardDraft(){if(!confirm('¿Descartar el borrador en curso?'))return;
 function prepNueva(){
   const selD=$('g_dron');selD.innerHTML=flota.length?'<option value="">— dron —</option>'+flota.map(d=>`<option value="${d.id}">${esc(dronLabel(d))}</option>`).join(''):'<option value="">— sin drones —</option>';
   $('g_pilotoId').innerHTML=pilotOptions('');
-  $('g_autId').innerHTML='<option value="">— autorización —</option>'+autorizaciones.map(a=>`<option value="${a.id}">${esc(a.radicado||a.idAut||'Aut')}</option>`).join('');
+  $('g_autId').innerHTML='<option value="">— autorización —</option>'+autorizaciones.map(a=>`<option value="${a.id}">${esc(a.desc||a.radicado||'Autorización')}</option>`).join('');
   renderSiNo('chkOficina',CHK_OFICINA,'oficina');renderSiNo('chkPrevuelo',CHK_PREVUELO,'prevuelo');renderSiNo('chkPosvuelo',CHK_POSVUELO,'posvuelo');
   renderHF();renderOcurr();renderSorties();renderPhotos('pre');renderPhotos('pos');renderNamedPhoto('fotoDron');renderNamedPhoto('fotoMeteo');renderPdfRow();renderDronInfo();renderAutInfo();morCheck();
   const hasDraft=localStorage.getItem(K.draft);const sb=$('saveOpBtn');
