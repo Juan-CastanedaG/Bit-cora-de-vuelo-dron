@@ -235,20 +235,17 @@ nav#navGrid button.active svg{stroke:var(--grn-dk)}
   <div class="card">
     <h2>Mapa de zona</h2>
     <div class="btnrow" style="flex-wrap:wrap">
-      <button class="btn sec sm" onclick="document.getElementById('kmzIn').click()">📁 Cargar KMZ/KML</button>
-      <input type="file" id="kmzIn" accept=".kmz,.kml" style="display:none" onchange="loadKmz(event)">
       <button class="btn sec sm" onclick="locateMe()">📍 Mi ubicación</button>
       <button class="btn sec sm" onclick="toggleBase()">🛰️ Calles/Satélite</button>
       <button class="btn sec sm" onclick="centrarVuelos()">🔵 Ver vuelos</button>
     </div>
-    <div id="mapStatus" class="hint" style="margin-top:8px">Cargá el KMZ del polígono de la LT y tocá "Mi ubicación".</div>
-    <div id="zonaInfo" style="margin-top:8px"></div>
+    <div id="mapStatus" class="hint" style="margin-top:8px">Tocá "Mi ubicación" para verte respecto a las zonas autorizadas.</div>
     <div id="vpInfo" class="hint" style="margin-top:6px"></div>
   </div>
   <div id="map" style="height:58vh;border:1px solid var(--line);border-radius:12px;overflow:hidden"></div>
   <div class="card" style="margin-top:12px"><h2>Uso sin señal</h2>
     <button class="btn sec" onclick="downloadArea()">⬇️ Descargar zona para usar offline</button>
-    <div id="dlStatus" class="hint" style="margin-top:8px">Con internet, descargá la zona una vez; después el mapa funciona sin señal en esa área.</div></div>
+    <div id="dlStatus" class="hint" style="margin-top:8px">Con internet, encuadrá el mapa en la zona que vas a volar y tocá el botón: se guardan las teselas visibles para usarlas sin señal.</div></div>
 </section>
 
 <!-- ===== NUEVA OPERACIÓN ===== -->
@@ -1170,12 +1167,10 @@ function renderVueloPoints(){if(!map)return;if(vueloLayer)map.removeLayer(vueloL
     vueloLayer.addLayer(mk);bounds.push([la,lo]);n++;}}));
   vueloLayer.addTo(map);const el=$('vpInfo');if(el)el.textContent=n?(n+' punto(s) de vuelo registrados'):'Sin puntos de vuelo registrados aún.';return n;}
 function centrarVuelos(){if(!map)return;const b=[];operaciones.forEach(o=>(o.sorties||[]).forEach(s=>{const la=parseFloat(s.lat),lo=parseFloat(s.lon);if(isFinite(la)&&isFinite(lo))b.push([la,lo]);}));if(b.length){try{map.fitBounds(b,{padding:[30,30]});}catch(e){}}else if($('vpInfo'))$('vpInfo').textContent='No hay puntos de vuelo para centrar.';}
-function allPolys(){const out=[];load('bvd_zonas',[]).forEach(z=>(z.polys||[]).forEach(p=>out.push(p)));(autorizaciones||[]).forEach(a=>(a.poly||[]).forEach(p=>out.push(p)));return out;}
-function renderZonas(){if(!map)return;zonaLayers.forEach(l=>map.removeLayer(l));zonaLayers=[];const zonas=load('bvd_zonas',[]);const all=[];
-  zonas.forEach(z=>(z.polys||[]).forEach(poly=>{const pl=L.polygon(poly,{color:'#007934',weight:2,fillColor:'#7AD400',fillOpacity:.18}).addTo(map);zonaLayers.push(pl);poly.forEach(pt=>all.push(pt));}));
-  (autorizaciones||[]).forEach(a=>(a.poly||[]).forEach(poly=>{const pl=L.polygon(poly,{color:'#007934',weight:2,fillColor:'#7AD400',fillOpacity:.12,dashArray:'4'}).addTo(map);pl.bindPopup('<b>'+esc(a.radicado||'Autorización')+'</b>'+(a.desc?'<br>'+esc(a.desc):''));zonaLayers.push(pl);poly.forEach(pt=>all.push(pt));}));
-  if(all.length){try{map.fitBounds(all,{padding:[20,20]});}catch(e){}}
-  const zi=$('zonaInfo');if(zi)zi.innerHTML=zonas.length?zonas.map((z,i)=>`<div class="filerow"><span>🗺️</span><span class="nm">${esc(z.name||'Zona '+(i+1))}</span><button class="icon-btn del" onclick="delZona(${i})">Quitar</button></div>`).join(''):'<div class="hint">No hay zonas cargadas.</div>';}
+function allPolys(){const out=[];(autorizaciones||[]).forEach(a=>(a.poly||[]).forEach(p=>out.push(p)));return out;}
+function renderZonas(){if(!map)return;zonaLayers.forEach(l=>map.removeLayer(l));zonaLayers=[];const all=[];
+  (autorizaciones||[]).forEach(a=>(a.poly||[]).forEach(poly=>{const pl=L.polygon(poly,{color:'#007934',weight:2,fillColor:'#7AD400',fillOpacity:.18}).addTo(map);pl.bindPopup('<b>'+esc(a.desc||a.radicado||'Autorización')+'</b>'+(a.radicado?'<br>Radicado '+esc(a.radicado):''));zonaLayers.push(pl);poly.forEach(pt=>all.push(pt));}));
+  if(all.length){try{map.fitBounds(all,{padding:[20,20]});}catch(e){}}}
 function loadKmz(e){const f=e.target.files[0];e.target.value='';if(!f)return;const isKml=/\.kml$/i.test(f.name);const r=new FileReader();
   r.onload=ev=>{try{const polys=isKml?parseKmlText(ev.target.result):parseKmz(ev.target.result);
     if(!polys.length){$('mapStatus').textContent='No se encontraron polígonos en el archivo.';return;}
@@ -1196,9 +1191,9 @@ function locateMe(){if(!map){initMap();}if(!navigator.geolocation){$('mapStatus'
     $('mapStatus').textContent=msg+' · ±'+Math.round(p.coords.accuracy)+' m';
   },err=>{$('mapStatus').textContent='No se pudo ubicar: '+err.message;},{enableHighAccuracy:true,timeout:12000,maximumAge:0});}
 function toggleBase(){if(!map)return;if(curBase===baseOSM){map.removeLayer(baseOSM);baseSat.addTo(map);curBase=baseSat;}else{map.removeLayer(baseSat);baseOSM.addTo(map);curBase=baseOSM;}}
-async function downloadArea(){const zonas=load('bvd_zonas',[]);if(!zonas.length){$('dlStatus').textContent='Cargá una zona (KMZ/KML) primero.';return;}
-  if(!navigator.onLine){$('dlStatus').textContent='Necesitás internet para descargar la zona.';return;}
-  let mnLa=90,mxLa=-90,mnLo=180,mxLo=-180;zonas.forEach(z=>(z.polys||[]).forEach(poly=>poly.forEach(([la,lo])=>{mnLa=Math.min(mnLa,la);mxLa=Math.max(mxLa,la);mnLo=Math.min(mnLo,lo);mxLo=Math.max(mxLo,lo);})));
+async function downloadArea(){if(!map){$('dlStatus').textContent='Abrí el mapa primero.';return;}
+  if(!navigator.onLine){$('dlStatus').textContent='Necesitás internet para descargar.';return;}
+  const b=map.getBounds();const mnLa=b.getSouth(),mxLa=b.getNorth(),mnLo=b.getWest(),mxLo=b.getEast();
   const sat=curBase===baseSat;const tpl=sat?'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}':'https://a.tile.openstreetmap.org/{z}/{x}/{y}.png';
   const urls=[];for(let z=13;z<=16;z++){const x1=lon2tile(mnLo,z),x2=lon2tile(mxLo,z),y1=lat2tile(mxLa,z),y2=lat2tile(mnLa,z);for(let x=x1;x<=x2;x++)for(let y=y1;y<=y2;y++)urls.push(tpl.replace('{z}',z).replace('{x}',x).replace('{y}',y));}
   if(urls.length>2200){$('dlStatus').textContent='Zona muy grande ('+urls.length+' teselas). Reducila o usá menos zoom.';return;}
