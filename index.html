@@ -141,17 +141,17 @@ textarea{resize:vertical;min-height:56px}
 .meter{height:12px;background:#e2e8f0;border-radius:8px;overflow:hidden;border:1px solid var(--line)}
 .meterfill{height:100%;background:linear-gradient(90deg,var(--grn),var(--grn-dk))}
 
-#navBackdrop{position:fixed;inset:0;background:rgba(0,0,0,.28);z-index:50;opacity:0;pointer-events:none;transition:opacity .2s}
-#navBar{position:fixed;bottom:0;left:0;right:0;background:#fff;border-top:1px solid var(--line);padding:8px 12px calc(8px + env(safe-area-inset-bottom));z-index:52;display:flex;justify-content:center}
+#navBackdrop{position:fixed;inset:0;background:rgba(0,0,0,.28);z-index:1500;opacity:0;pointer-events:none;transition:opacity .2s}
+#navBar{position:fixed;bottom:0;left:0;right:0;background:#fff;border-top:1px solid var(--line);padding:8px 12px calc(8px + env(safe-area-inset-bottom));z-index:1502;display:flex;justify-content:center}
 #navToggle{background:var(--grn-dk);color:#fff;border:none;border-radius:12px;padding:11px 18px;font-size:15px;font-weight:700;display:flex;align-items:center;gap:10px;width:100%;max-width:520px;justify-content:center}
 #navToggle .ic{font-size:16px;line-height:1}
-nav#navGrid{position:fixed;left:0;right:0;bottom:calc(66px + env(safe-area-inset-bottom));background:#fff;border-top:1px solid var(--line);box-shadow:0 -10px 30px rgba(0,0,0,.14);z-index:51;display:grid;grid-template-columns:repeat(4,1fr);gap:4px;padding:10px 8px;transition:transform .22s ease,opacity .22s ease}
+nav#navGrid{position:fixed;left:0;right:0;bottom:calc(66px + env(safe-area-inset-bottom));background:#fff;border-top:1px solid var(--line);box-shadow:0 -10px 30px rgba(0,0,0,.14);z-index:1501;display:grid;grid-template-columns:repeat(4,1fr);gap:4px;padding:10px 8px;transition:transform .22s ease,opacity .22s ease}
 nav#navGrid.collapsed{transform:translateY(140%);opacity:0;pointer-events:none}
 nav#navGrid button{background:none;border:none;padding:12px 2px;display:flex;flex-direction:column;align-items:center;gap:5px;color:var(--muted);font-size:11px;font-weight:600;border-radius:11px;white-space:normal;text-align:center;line-height:1.15}
 nav#navGrid button.active{color:var(--grn-dk);background:#eaf7ef}
 nav#navGrid svg{stroke:var(--muted);stroke-width:2;fill:none;width:24px;height:24px}
 nav#navGrid button.active svg{stroke:var(--grn-dk)}
-.modal{position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:60;display:flex;align-items:center;justify-content:center;padding:20px}
+.modal{position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:1600;display:flex;align-items:center;justify-content:center;padding:20px}
 .modalCard{background:#fff;border-radius:16px;padding:20px;max-width:420px;width:100%;box-shadow:0 20px 60px rgba(0,0,0,.3)}
 .locked{opacity:.5;pointer-events:none;filter:grayscale(.3)}
 .infoBox{margin-top:6px;font-size:12.5px;line-height:1.5;color:var(--muted)}
@@ -242,7 +242,7 @@ nav#navGrid button.active svg{stroke:var(--grn-dk)}
     <div id="mapStatus" class="hint" style="margin-top:8px">Tocá "Mi ubicación" para verte respecto a las zonas autorizadas.</div>
     <div id="vpInfo" class="hint" style="margin-top:6px"></div>
   </div>
-  <div id="map" style="height:58vh;border:1px solid var(--line);border-radius:12px;overflow:hidden"></div>
+  <div id="map" style="position:relative;z-index:0;height:58vh;border:1px solid var(--line);border-radius:12px;overflow:hidden"></div>
   <div class="card" style="margin-top:12px"><h2>Uso sin señal</h2>
     <button class="btn sec" onclick="downloadArea()">⬇️ Descargar zona para usar offline</button>
     <div id="dlStatus" class="hint" style="margin-top:8px">Con internet, encuadrá el mapa en la zona que vas a volar y tocá el botón: se guardan las teselas visibles para usarlas sin señal.</div></div>
@@ -255,7 +255,7 @@ nav#navGrid button.active svg{stroke:var(--grn-dk)}
 
   <div class="card">
     <h2><span class="step">1</span>Datos generales</h2>
-    <div class="field"><label>Piloto principal</label><select id="g_pilotoId" onchange="verdict();saveDraft()"></select></div>
+    <div class="field"><label>Piloto principal</label><select id="g_pilotoId" onchange="verdict();renderPilotoInfo();saveDraft()"></select><div id="pilotoInfo" class="infoBox"></div></div>
     <div class="field"><label>Tipo de operación</label>
       <div class="pillwrap">
         <label class="pill" onclick="tgl(this);verdict();saveDraft()"><input type="checkbox" data-op="diurna" hidden><span class="dot"></span>Diurna</label>
@@ -554,6 +554,10 @@ function renderAut(){const cont=$('autList');if(!cont)return;
   cont.innerHTML=autorizaciones.length?autorizaciones.map(a=>{const v=daysTo(a.fin);const est=a.fin?(v<0?'⛔ vencida':'vence '+fmtDate(a.fin)):'sin vigencia';
     return `<div class="item"><div class="top"><div><div class="name">${esc(a.radicado||'—')}</div><div class="meta">ID ${esc(a.idAut||'—')} · ${a.ini?esc(fmtDate(a.ini)):'?'} a ${a.fin?esc(fmtDate(a.fin)):'?'} · ${est}</div>${a.desc?`<div class="meta">${esc(a.desc)}</div>`:''}${a.pdf?`<button class="btn sec sm noprint" style="margin-top:6px" onclick="openPdf('${a.pdf.id}')">Ver PDF</button>`:''}</div></div></div>`}).join(''):'<div class="card empty">No hay autorizaciones cargadas. Llegarán con el catálogo (seed).</div>';}
 function fdate(x){return x?fmtDate(x)+(daysTo(x)<0?' <span class="bad">(vencido)</span>':''):'—';}
+function renderPilotoInfo(){const el=$('pilotoInfo');if(!el)return;const p=pilotById($('g_pilotoId').value);
+  if(!p){el.innerHTML='';return;}
+  const noct=hasCert(p,'Nocturno'),bv=hasCert(p,'BVLOS');
+  el.innerHTML='<b>'+esc(p.nombre||'')+'</b><br>Certificaciones: '+((p.cipus||[]).map(c=>esc(cipuLabel(c))).join(', ')||'—')+'<br>Nocturno: '+(noct?'<b style="color:var(--verde)">✓ Sí</b>':'✕ No')+' · BVLOS: '+(bv?'<b style="color:var(--verde)">✓ Sí</b>':'✕ No')+'<br>Examen médico: '+fdate(p.med);}
 function renderDronInfo(){const el=$('dronInfo');if(!el)return;const d=dronById($('g_dron').value);
   el.innerHTML=d?`<b>${esc(dronLabel(d))}</b><br>Serial: ${esc(d.serial||'—')} · RUAS: ${esc(d.ruas||'—')} · Máximo: ${esc(d.maximo||'—')}<br>Póliza vence: ${fdate(d.polizaVence)} · Mantenimiento vence: ${fdate(d.mant)}${(d.habNocturno||d.habBVLOS)?'<br>Habilitado: '+[d.habNocturno?'nocturno':'',d.habBVLOS?'BVLOS':''].filter(Boolean).join(', '):''}`:'';}
 function renderAutInfo(){const el=$('autInfo');if(!el)return;const au=autById($('g_autId').value);
@@ -731,7 +735,7 @@ async function loadDraft(){const d=load(K.draft,null);if(!d)return false;
   renderHF();renderOcurr();renderSorties();
   await preloadAssets([].concat(st.fotosPre||[],st.fotosPos||[],st.fotoDron?[st.fotoDron]:[],st.fotoMeteo?[st.fotoMeteo]:[],(st.autPdf&&st.autPdf.id)?[st.autPdf.id]:[]));
   renderPhotos('pre');renderPhotos('pos');renderNamedPhoto('fotoDron');renderNamedPhoto('fotoMeteo');renderPdfRow();
-  setTimeout(()=>{if(d.pilotoId)$('g_pilotoId').value=d.pilotoId;if(d.dron)$('g_dron').value=d.dron;if(d.autId){$('g_autId').value=d.autId;onAutSelect();}renderDronInfo();verdict();},0);
+  setTimeout(()=>{if(d.pilotoId)$('g_pilotoId').value=d.pilotoId;if(d.dron)$('g_dron').value=d.dron;if(d.autId){$('g_autId').value=d.autId;onAutSelect();}renderDronInfo();renderPilotoInfo();verdict();},0);
   return true;}
 function discardDraft(){if(!confirm('¿Descartar el borrador en curso?'))return;
   const ids=[].concat(st.fotosPre||[],st.fotosPos||[],st.fotoDron?[st.fotoDron]:[],st.fotoMeteo?[st.fotoMeteo]:[]);
@@ -745,7 +749,7 @@ function prepNueva(){
   $('g_pilotoId').innerHTML=pilotOptions('');
   $('g_autId').innerHTML='<option value="">— autorización —</option>'+autorizaciones.map(a=>`<option value="${a.id}">${esc(a.desc||a.radicado||'Autorización')}</option>`).join('');
   renderSiNo('chkOficina',CHK_OFICINA,'oficina');renderSiNo('chkPrevuelo',CHK_PREVUELO,'prevuelo');renderSiNo('chkPosvuelo',CHK_POSVUELO,'posvuelo');
-  renderHF();renderOcurr();renderSorties();renderPhotos('pre');renderPhotos('pos');renderNamedPhoto('fotoDron');renderNamedPhoto('fotoMeteo');renderPdfRow();renderDronInfo();renderAutInfo();morCheck();
+  renderHF();renderOcurr();renderSorties();renderPhotos('pre');renderPhotos('pos');renderNamedPhoto('fotoDron');renderNamedPhoto('fotoMeteo');renderPdfRow();renderDronInfo();renderPilotoInfo();renderAutInfo();morCheck();
   const hasDraft=localStorage.getItem(K.draft);const sb=$('saveOpBtn');
   if(editingOpId){$('draftBar').innerHTML='<div class="alert info"><span>✏️</span><div>Editando una operación guardada. <a href="#" onclick="cancelEdit();return false" style="color:#065f46;font-weight:700">Cancelar edición</a></div></div>';if(sb)sb.textContent='Guardar cambios';}
   else{$('draftBar').innerHTML=hasDraft?'<div class="alert info"><span>💾</span><div>Borrador en curso (autoguardado). <a href="#" onclick="discardDraft();return false" style="color:#065f46;font-weight:700">Descartar</a></div></div>':'';if(sb)sb.textContent='Guardar operación';}

@@ -1,5 +1,5 @@
 {
- "seedVersion": 3,
+ "seedVersion": 1,
  "actualizado": "2026-09-02",
  "flota": [
   {
@@ -305,572 +305,624 @@
  "pilotos": [
   {
    "id": "plt-1020483634",
-   "codigo": "plt-1020483634",
+   "cedula": "1020483634",
    "nombre": "ALEJANDRO MARIN ORTEGA",
    "med": "2026-05-25",
    "cipus": [
     {
+     "num": "CIPU-100-24-1704",
      "tipo": "Piloto"
     }
    ]
   },
   {
    "id": "plt-91183372",
-   "codigo": "plt-91183372",
+   "cedula": "91183372",
    "nombre": "ALEXANDER CASTILLO GUDINO",
    "med": "2027-05-25",
    "cipus": [
     {
+     "num": "CIPU-100-24-0906",
      "tipo": "Piloto"
     }
    ]
   },
   {
    "id": "plt-1109383337",
-   "codigo": "plt-1109383337",
+   "cedula": "1109383337",
    "nombre": "ALVARO JULIAN QUINTERO MARROQUIN",
    "med": "2028-05-25",
    "cipus": [
     {
+     "num": "CIPU-100-24-0725",
      "tipo": "Piloto"
     }
    ]
   },
   {
    "id": "plt-1020429150",
-   "codigo": "plt-1020429150",
+   "cedula": "1020429150",
    "nombre": "ANDRES ANTONIO GUTIERREZ SERNA",
    "med": "2029-05-25",
    "cipus": [
     {
+     "num": "CIPU-100-24-1445",
      "tipo": "Piloto"
     }
    ]
   },
   {
    "id": "plt-8070515",
-   "codigo": "plt-8070515",
+   "cedula": "8070515",
    "nombre": "ANDRES FELIPE JARAMILLO CORREA",
    "med": "2030-05-25",
    "cipus": [
     {
+     "num": "CIPU-100-24-0724",
      "tipo": "Piloto"
     }
    ]
   },
   {
    "id": "plt-4339219",
-   "codigo": "plt-4339219",
+   "cedula": "4339219",
    "nombre": "ANDRES FELIPE RAMIREZ AMAYA",
    "med": "2031-05-25",
    "cipus": [
     {
+     "num": "CIPU-100-24-1446",
      "tipo": "Piloto"
     }
    ]
   },
   {
    "id": "plt-70195890",
-   "codigo": "plt-70195890",
+   "cedula": "70195890",
    "nombre": "CARLOS ANDRES BLANDON PIEDRAHITA",
    "med": "2032-05-25",
    "cipus": [
     {
+     "num": "CIPU-100-24-0710",
      "tipo": "Piloto"
     }
    ]
   },
   {
    "id": "plt-71333877",
-   "codigo": "plt-71333877",
+   "cedula": "71333877",
    "nombre": "CARLOS ANDRES GUTIERREZ GIRALDO",
    "med": "2033-05-25",
    "cipus": [
     {
+     "num": "CIPU-100-24-1827",
      "tipo": "Piloto"
     }
    ]
   },
   {
    "id": "plt-1039449000",
-   "codigo": "plt-1039449000",
+   "cedula": "1039449000",
    "nombre": "CARLOS AUGUSTO ALDANA ARBOLEDA",
    "med": "2034-05-25",
    "cipus": [
     {
+     "num": "CIPU-100-24-0873",
      "tipo": "Piloto"
     }
    ]
   },
   {
    "id": "plt-1128407603",
-   "codigo": "plt-1128407603",
+   "cedula": "1128407603",
    "nombre": "CARLOS EDUARDO USUGA JIMENEZ",
    "med": "2035-05-25",
    "cipus": [
     {
+     "num": "CIPU-100-24-0721",
      "tipo": "Piloto"
     }
    ]
   },
   {
    "id": "plt-1128625175",
-   "codigo": "plt-1128625175",
+   "cedula": "1128625175",
    "nombre": "CARLOS MARIO OSORIO TORO",
    "med": "2036-05-25",
    "cipus": [
     {
+     "num": "CIPU-100-24-0876",
      "tipo": "Piloto"
     }
    ]
   },
   {
    "id": "plt-1036618370",
-   "codigo": "plt-1036618370",
+   "cedula": "1036618370",
    "nombre": "DANIEL FELIPE ANGARITA PULGARIN",
    "med": "2037-05-25",
    "cipus": [
     {
+     "num": "CIPU-100-24-1076",
      "tipo": "Piloto"
     }
    ]
   },
   {
    "id": "plt-1037579924",
-   "codigo": "plt-1037579924",
+   "cedula": "1037579924",
    "nombre": "DAVID TRUJILLO CATANO",
    "med": "2038-05-25",
    "cipus": [
     {
+     "num": "CIPU-100-24-1745",
      "tipo": "Piloto"
     }
    ]
   },
   {
    "id": "plt-1054558261",
-   "codigo": "plt-1054558261",
+   "cedula": "1054558261",
    "nombre": "DAVID ALEJANDRO PATINO AVILA",
    "med": "2039-05-25",
    "cipus": [
     {
+     "num": "CIPU-100-24-1633",
      "tipo": "Piloto"
     }
    ]
   },
   {
    "id": "plt-1033339047",
-   "codigo": "plt-1033339047",
+   "cedula": "1033339047",
    "nombre": "DEISON ALEXANDER JARAMILLO MAZO",
    "med": "2040-05-25",
    "cipus": [
     {
+     "num": "CIPU-100-24-0717",
      "tipo": "Piloto"
     }
    ]
   },
   {
    "id": "plt-71372431",
-   "codigo": "plt-71372431",
+   "cedula": "71372431",
    "nombre": "EDER ALEXANDER MERCADO RODRIGUEZ",
    "med": "2041-05-25",
    "cipus": [
     {
+     "num": "CIPU-100-24-1353",
      "tipo": "Piloto"
     }
    ]
   },
   {
    "id": "plt-71799815",
-   "codigo": "plt-71799815",
+   "cedula": "71799815",
    "nombre": "ESTEBAN DE JESUS RAMIREZ LONDONO",
    "med": "2042-05-25",
    "cipus": [
     {
+     "num": "CIPU-100-24-0860",
      "tipo": "Piloto"
     }
    ]
   },
   {
    "id": "plt-15445508",
-   "codigo": "plt-15445508",
+   "cedula": "15445508",
    "nombre": "FREDY ANDRES GARCIA JIMENEZ",
    "med": "2043-05-25",
    "cipus": [
     {
+     "num": "CIPU-100-24-1184",
      "tipo": "Piloto"
     }
    ]
   },
   {
    "id": "plt-1057571830",
-   "codigo": "plt-1057571830",
+   "cedula": "1057571830",
    "nombre": "HAROLD IVAN URRUTIA BONILLA",
    "med": "2044-05-25",
    "cipus": [
     {
+     "num": "CIPU-100-24-1072",
      "tipo": "Piloto"
     }
    ]
   },
   {
    "id": "plt-1035521590",
-   "codigo": "plt-1035521590",
+   "cedula": "1035521590",
    "nombre": "HUBER DISNEY OSPINA GARCIA",
    "med": "2045-05-25",
    "cipus": [
     {
+     "num": "CIPU-100-24-0878",
      "tipo": "Piloto"
     }
    ]
   },
   {
    "id": "plt-1053797696",
-   "codigo": "plt-1053797696",
+   "cedula": "1053797696",
    "nombre": "JAWAD YASSER YUSEF MEJIA",
    "med": "2046-05-25",
    "cipus": [
     {
+     "num": "CIPU-100-24-0866",
      "tipo": "Piloto"
     }
    ]
   },
   {
    "id": "plt-1128396373",
-   "codigo": "plt-1128396373",
+   "cedula": "1128396373",
    "nombre": "JOAN ANDRES GOMEZ CARDONA",
    "med": "2047-05-25",
    "cipus": [
     {
+     "num": "CIPU-100-24-0737",
      "tipo": "Piloto"
     }
    ]
   },
   {
    "id": "plt-15370570",
-   "codigo": "plt-15370570",
+   "cedula": "15370570",
    "nombre": "JOHN SEBASTIAN OROZCO OSORIO",
    "med": "2048-05-25",
    "cipus": [
     {
+     "num": "CIPU-100-24-1155",
      "tipo": "Piloto"
     }
    ]
   },
   {
    "id": "plt-1040040280",
-   "codigo": "plt-1040040280",
+   "cedula": "1040040280",
    "nombre": "JOHNATAN CARMONA BEDOYA",
    "med": "2049-05-25",
    "cipus": [
     {
+     "num": "CIPU-100-24-0882",
      "tipo": "Piloto"
     }
    ]
   },
   {
    "id": "plt-98671884",
-   "codigo": "plt-98671884",
+   "cedula": "98671884",
    "nombre": "JONNY GOMEZ GALLEGO",
    "med": "2050-05-25",
    "cipus": [
     {
+     "num": "CIPU-100-24-0573",
      "tipo": "Piloto"
     }
    ]
   },
   {
    "id": "plt-1017134934",
-   "codigo": "plt-1017134934",
+   "cedula": "1017134934",
    "nombre": "JORGE IVAN ACEVEDO HENAO",
    "med": "2051-05-25",
    "cipus": [
     {
+     "num": "CIPU-100-24-0905",
      "tipo": "Piloto"
     }
    ]
   },
   {
    "id": "plt-98557219",
-   "codigo": "plt-98557219",
+   "cedula": "98557219",
    "nombre": "JOSE AICARDO VELEZ CARDONA",
    "med": "2052-05-25",
    "cipus": [
     {
+     "num": "CIPU-100-24-0709",
      "tipo": "Piloto"
     }
    ]
   },
   {
    "id": "plt-71788591",
-   "codigo": "plt-71788591",
+   "cedula": "71788591",
    "nombre": "JUAN ALEJO OSORIO MONTOYA",
    "med": "2053-05-25",
    "cipus": [
     {
+     "num": "CIPU-100-24-0728",
      "tipo": "Piloto"
     }
    ]
   },
   {
    "id": "plt-71226603",
-   "codigo": "plt-71226603",
+   "cedula": "71226603",
    "nombre": "JUAN CAMILO HERNANDEZ CELIS",
    "med": "2054-05-25",
    "cipus": [
     {
+     "num": "CIPU-100-24-0731",
      "tipo": "Piloto"
     }
    ]
   },
   {
    "id": "plt-98631108",
-   "codigo": "plt-98631108",
+   "cedula": "98631108",
    "nombre": "JUAN DAVID CORREA CASTRO",
    "med": "2055-05-25",
    "cipus": [
     {
+     "num": "CIPU-100-24-1269",
      "tipo": "Piloto"
     }
    ]
   },
   {
    "id": "plt-1017212383",
-   "codigo": "plt-1017212383",
+   "cedula": "1017212383",
    "nombre": "JUAN DAVID GUARNIZO RUIZ",
    "med": "2056-05-25",
    "cipus": [
     {
+     "num": "CIPU-100-24-0722",
      "tipo": "Piloto"
     }
    ]
   },
   {
    "id": "plt-1037596813",
-   "codigo": "plt-1037596813",
+   "cedula": "1037596813",
    "nombre": "JUAN PABLO CASTANEDA GUTIERREZ",
    "med": "2057-05-25",
    "cipus": [
     {
+     "num": "CIPU-100-24-0865",
      "tipo": "Piloto"
     }
    ]
   },
   {
    "id": "plt-1128269578",
-   "codigo": "plt-1128269578",
+   "cedula": "1128269578",
    "nombre": "LAURA CRISTINA CHAVERRA CHANCY",
    "med": "2058-05-25",
    "cipus": [
     {
+     "num": "CIPU-100-24-1756",
      "tipo": "Piloto"
     }
    ]
   },
   {
    "id": "plt-1026258710",
-   "codigo": "plt-1026258710",
+   "cedula": "1026258710",
    "nombre": "LEANDRO ENRIQUE BOJACA CHAUTA",
    "med": "2059-05-25",
    "cipus": [
     {
+     "num": "CIPU-100-24-0723",
      "tipo": "Piloto"
     }
    ]
   },
   {
    "id": "plt-71003202",
-   "codigo": "plt-71003202",
+   "cedula": "71003202",
    "nombre": "LUIS FERNANDO GIRALDO BETANCUR",
    "med": "2060-05-25",
    "cipus": [
     {
+     "num": "CIPU-100-24-0719",
      "tipo": "Piloto"
     }
    ]
   },
   {
    "id": "plt-98644704",
-   "codigo": "plt-98644704",
+   "cedula": "98644704",
    "nombre": "MARIO ALBERTO CARO MEJIA",
    "med": "2061-05-25",
    "cipus": [
     {
+     "num": "CIPU-100-24-0874",
      "tipo": "Piloto"
     }
    ]
   },
   {
    "id": "plt-1152437915",
-   "codigo": "plt-1152437915",
+   "cedula": "1152437915",
    "nombre": "MAYCOL DARIO BEDOYA ESCOBAR",
    "med": "2062-05-25",
    "cipus": [
     {
+     "num": "CIPU-100-24-0740",
      "tipo": "Piloto"
     }
    ]
   },
   {
    "id": "plt-70954096",
-   "codigo": "plt-70954096",
+   "cedula": "70954096",
    "nombre": "MENDELSSOHN MARTINEZ CASTANO",
    "med": "2063-05-25",
    "cipus": [
     {
+     "num": "CIPU-100-25-0353",
      "tipo": "Piloto"
     }
    ]
   },
   {
    "id": "plt-1026147373",
-   "codigo": "plt-1026147373",
+   "cedula": "1026147373",
    "nombre": "MICHAEL CADAVID ROJAS",
    "med": "2064-05-25",
    "cipus": [
     {
+     "num": "CIPU-100-24-0872",
      "tipo": "Piloto"
     }
    ]
   },
   {
    "id": "plt-1014267809",
-   "codigo": "plt-1014267809",
+   "cedula": "1014267809",
    "nombre": "NICOLAS LANDINEZ HERRERA",
    "med": "2065-05-25",
    "cipus": [
     {
+     "num": "CIPU-100-24-1577",
      "tipo": "Piloto"
     }
    ]
   },
   {
    "id": "plt-71261371",
-   "codigo": "plt-71261371",
+   "cedula": "71261371",
    "nombre": "NILTON DAVID LOAIZA AGUDELO",
    "med": "2066-05-25",
    "cipus": [
     {
+     "num": "CIPU-100-24-0961",
      "tipo": "Piloto"
     }
    ]
   },
   {
    "id": "plt-1123621980",
-   "codigo": "plt-1123621980",
+   "cedula": "1123621980",
    "nombre": "OSCAR ANDRES MURILLO VEGA",
    "med": "2067-05-25",
    "cipus": [
     {
+     "num": "CIPU-100-24-0716",
      "tipo": "Piloto"
     }
    ]
   },
   {
    "id": "plt-1053841674",
-   "codigo": "plt-1053841674",
+   "cedula": "1053841674",
    "nombre": "OSCAR DIEGO LOTERO MARTINEZ",
    "med": "2068-05-25",
    "cipus": [
     {
+     "num": "CIPU-100-24-1355",
      "tipo": "Piloto"
     }
    ]
   },
   {
    "id": "plt-O",
-   "codigo": "plt-O",
+   "cedula": "O",
    "nombre": "OSCAR EDUARDO CANO SEPULVEDA",
    "med": "2069-05-25",
    "cipus": [
     {
+     "num": "CIPU-100-24-0738",
      "tipo": "Piloto"
     }
    ]
   },
   {
    "id": "plt-1128391835",
-   "codigo": "plt-1128391835",
+   "cedula": "1128391835",
    "nombre": "RUBEN DARIO RODRIGUEZ SALDARRIAGA",
    "med": "2070-05-25",
    "cipus": [
     {
+     "num": "CIPU-100-24-1354",
      "tipo": "Piloto"
     }
    ]
   },
   {
    "id": "plt-8416206",
-   "codigo": "plt-8416206",
+   "cedula": "8416206",
    "nombre": "RUBIEL ANTONIO SERNA GRACIANO",
    "med": "2071-05-25",
    "cipus": [
     {
+     "num": "CIPU-100-24-0756",
      "tipo": "Piloto"
     }
    ]
   },
   {
    "id": "plt-43757047",
-   "codigo": "plt-43757047",
+   "cedula": "43757047",
    "nombre": "SANDRA LILIANA AGUDELO DUQUE",
    "med": "2072-05-25",
    "cipus": [
     {
+     "num": "CIPU-100-24-0733",
      "tipo": "Piloto"
     }
    ]
   },
   {
    "id": "plt-1039453538",
-   "codigo": "plt-1039453538",
+   "cedula": "1039453538",
    "nombre": "SANTIAGO ZAPATA HENAO",
    "med": "2073-05-25",
    "cipus": [
     {
+     "num": "CIPU-100-24-1335",
      "tipo": "Piloto"
     }
    ]
   },
   {
    "id": "plt-1036650635",
-   "codigo": "plt-1036650635",
+   "cedula": "1036650635",
    "nombre": "STEVEN PIEDRAHITA ANGEL",
    "med": "2074-05-25",
    "cipus": [
     {
+     "num": "CIPU-100-24-0720",
      "tipo": "Piloto"
     }
    ]
   },
   {
    "id": "plt-1017218071",
-   "codigo": "plt-1017218071",
+   "cedula": "1017218071",
    "nombre": "TOMAS BOTERO ARANGO",
    "med": "2075-05-25",
    "cipus": [
     {
+     "num": "CIPU-100-24-1448",
      "tipo": "Piloto"
     }
    ]
   },
   {
    "id": "plt-1020468668",
-   "codigo": "plt-1020468668",
+   "cedula": "1020468668",
    "nombre": "VALERYA LUNA MARIN",
    "med": "2076-05-25",
    "cipus": [
     {
+     "num": "CIPU-100-24-2167",
      "tipo": "Piloto"
     }
    ]
   },
   {
    "id": "plt-79973197",
-   "codigo": "plt-79973197",
+   "cedula": "79973197",
    "nombre": "WILLIAM ALFONSO RAMIREZ VERGARA",
    "med": "2077-05-25",
    "cipus": [
     {
+     "num": "CIPU-100-24-0623",
      "tipo": "Piloto"
     }
    ]
