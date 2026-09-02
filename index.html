@@ -154,6 +154,8 @@ nav#navGrid button.active svg{stroke:var(--grn-dk)}
 .modal{position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:1600;display:flex;align-items:center;justify-content:center;padding:20px}
 .modalCard{background:#fff;border-radius:16px;padding:20px;max-width:420px;width:100%;box-shadow:0 20px 60px rgba(0,0,0,.3)}
 .locked{opacity:.5;pointer-events:none;filter:grayscale(.3)}
+span.tax{display:inline-block;background:#e3f6ec;color:#007934;border:1px solid #7AD400;border-radius:6px;padding:1px 6px;font-size:11px;font-weight:700;margin-left:6px;white-space:nowrap}
+span.tax.epm{background:#e0edff;color:#1d4ed8;border-color:#93c5fd}
 input[readonly]{background:#eef3f1;color:var(--muted);cursor:not-allowed}
 .infoBox{margin-top:6px;font-size:12.5px;line-height:1.5;color:var(--muted)}
 .infoBox b{color:var(--ink)}
@@ -373,6 +375,9 @@ input[readonly]{background:#eef3f1;color:var(--muted);cursor:not-allowed}
     <div class="field"><button class="btn sec" onclick="exportJSON()">💾 Descargar respaldo (JSON)</button><div class="hint">Incluye pilotos, flota, operaciones, fotos y PDFs adjuntos.</div></div>
     <div class="field"><button class="btn sec" onclick="shareBackup()">📤 Compartir respaldo (JSON)</button><div class="hint">Abre el menú de compartir del teléfono (OneDrive, Teams, correo…) para enviar el respaldo sin buscar el archivo.</div></div>
     <div class="field"><button class="btn" onclick="exportForms()">📊 Enviar por Forms (Excel)</button><div class="hint">Genera un Excel con todo tu respaldo adentro, para subir por el formulario de EPM (es el formato que Forms acepta).</div></div>
+    <div class="field"><button class="btn" onclick="document.getElementById('privIn').click()">👥 Cargar catálogo de pilotos y drones</button>
+      <input type="file" id="privIn" accept="application/json,.json" style="display:none" onchange="importPriv(event)">
+      <div class="hint">Cargá el archivo que te envía el administrador (pilotos y drones). Queda solo en tu teléfono; no se descarga de internet.</div></div>
     <div class="field"><button class="btn sec" onclick="document.getElementById('loadIn').click()">📂 Cargar JSON</button>
       <input type="file" id="loadIn" accept="application/json,.json" style="display:none" onchange="loadJSON(event)">
       <div class="hint">Al cargarlo te pregunta si <b>adicionar</b> (consolidar sin borrar) o <b>reemplazar</b> todo.</div></div>
@@ -417,7 +422,22 @@ const EPM_LOGO="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAQQAAAB0CAYAAABjXU
 const CHK_OFICINA=[['plan','¿El plan de vuelo está detallado y actualizado?',true],['apps','¿Las aplicaciones actualizadas y cargadas en el dispositivo móvil?',false],['firmware','¿El firmware de la aeronave está actualizado?',true],['gcs','¿El software del radiocontrol/GCS está actualizado?',false],['baterias','¿Las baterías de la aeronave enumeradas y cargadas al 100%?',true],['batMovil','¿La batería del dispositivo móvil está cargada?',false],['cables','¿Cables y accesorios revisados, en buen estado y empacados?',false],['aeronave','¿Aeronave, hélices, estructura y motores en buen estado y empacados?',true],['comObs','¿Equipos de comunicación con el observador en buen estado y empacados?',false],['demarcacion','¿Accesorios para demarcación de la zona de seguridad completos y empacados?',false],['extintor','¿Extintor, botiquín y herramientas básicas completas y empacadas?',false]];
 const CHK_PREVUELO=[['aeronavegable','¿La aeronave y sus componentes están en condiciones aeronavegables?',true],['batAjustada','¿La batería de la aeronave está ajustada y con carga?',true],['batRadio','¿La batería del radiocontrol y dispositivos móviles están cargados?',false],['areaDespejada','¿El área de trabajo está despejada y delimitada?',true],['accesorios','¿Los accesorios y equipos de trabajo instalados y en buen estado?',false],['c2','¿La conexión de enlace C2 funciona correctamente?',true],['sonidos','¿Los sonidos de alerta del radiocontrol en volumen audible?',false],['meteo','¿Las condiciones meteorológicas son aceptables para el vuelo?',true],['satelital','¿La recepción satelital es aceptable para el vuelo?',true],['kp','¿El índice Kp es aceptable para el vuelo? (menor a 4.0)',true],['comObsF','¿El equipo de comunicación con el observador está funcionando?',false],['botiquin','¿El botiquín y extintor ubicados para fácil acceso?',false],['areaSegura','¿El área de operación es segura para el despegue y aterrizaje?',true]];
 const CHK_POSVUELO=[['limpios','¿La aeronave, accesorios y equipos están limpios y empacados?',false],['senal','¿Los elementos de señalización y seguridad recogidos y empacados?',false],['zonaLimpia','¿La zona de operación limpia y libre de desechos/basura?',false]];
-const OCURRENCIAS=[['aterrizoOtro','¿La aeronave aterrizó en un punto diferente al autorizado o planificado?'],['sepTripulada','¿Pérdida de separación o proximidad peligrosa con aeronave tripulada?'],['aves','¿Acercamiento peligroso o maniobra evasiva por aves u otra fauna?'],['otroUA','¿Proximidad no controlada con otro UA que generara riesgo de impacto?'],['obstaculo','¿Maniobra evasiva para evitar infraestructura u obstáculos fijos?'],['bateria','¿Descarga abrupta, caída de voltaje, sobrecalentamiento o degradación de la batería?'],['dano','¿Golpe, lesión leve o daño menor a personas o bienes de terceros?'],['perdControl','¿Pérdida total o parcial del control con riesgo severo?'],['impacto','¿La aeronave perdió el control y terminó impactando el terreno?'],['enlaceC2','¿Deterioro significativo o pérdida total del enlace C2?'],['meteoNoPrev','¿La UA estuvo expuesta a condiciones meteorológicas no previstas?'],['meteoAdversa','¿La pérdida de control estuvo asociada a meteo adversa?'],['visual','¿En VLOS o EVLOS se perdió el contacto visual requerido con la UA?']];
+const OCURRENCIAS=[
+['uArc','¿Hubo aterrizaje de emergencia o en un punto no planeado (la aeronave no llegó al punto autorizado)?','U-ARC'],
+['uMac1','¿Hubo cuasi-colisión o pérdida de separación con una aeronave tripulada?','U-MAC-1'],
+['uWild','¿Hubo cuasi-colisión o acercamiento peligroso con fauna (aves u otros animales)?','U-WILD'],
+['uCfit1','¿Hubo acercamiento no controlado a un obstáculo o infraestructura (torres, cables, edificios, terceros)?','U-CFIT-1'],
+['uMac2','¿Hubo cuasi-colisión con otra aeronave no tripulada (otro dron)?','U-MAC-2'],
+['uScfNp1','¿Hubo falla de batería (descarga abrupta, voltaje anómalo, sobrecalentamiento o degradación)?','U-SCF-NP(1)'],
+['uGti','¿Hubo lesiones o golpes a terceros, o daños leves a personas o bienes?','U-GTI'],
+['uMac3','¿Hubo pérdida de separación entre dos aeronaves (aeronave sin TCAS, el sistema de alerta y prevención de colisiones)?','U-MAC-3'],
+['uLocI','¿Hubo pérdida total del control de la aeronave, con riesgo severo (sin impacto contra el terreno)?','U-LOC-I'],
+['uCfit2','¿Hubo pérdida de control que terminó en impacto contra el terreno?','U-CFIT-2'],
+['uScfNp2','¿Hubo deterioro o pérdida del enlace de control (C2)?','U-SCF-NP(2)'],
+['meteoNoPrev','¿La UA estuvo expuesta a condiciones meteorológicas no previstas?','EPM-WX-1'],
+['meteoAdversa','¿La pérdida de control estuvo asociada a meteorología adversa?','EPM-WX-2'],
+['visual','¿En VLOS o EVLOS se perdió el contacto visual requerido con la UA?','EPM-VIS-1']
+];
 // Análisis de riesgo (EPM): cada opción lleva [valor, texto, puntaje]. La app suma internamente y solo muestra la calificación.
 const RIESGO=[
  {k:'sueno',q:'¿Cómo durmió?',opts:[['bien','Dormí bien',0],['mal','No dormí bien o dormí menos de 8 horas',2]]},
@@ -615,10 +635,7 @@ function setSN(group,k,val){st[group][k]=(st[group][k]===val?null:val);
   else if(group==='posvuelo')renderSiNo('chkPosvuelo',CHK_POSVUELO,'posvuelo');
   else if(group==='ocurr'){renderOcurr();morCheck();}
   verdict();saveDraft();}
-function renderOcurr(){$('ocurrList').innerHTML=OCURRENCIAS.map(([k,q])=>{const v=st.ocurr[k];
-  return `<div class="sino inv"><div class="q">${q}</div><div class="btns">
-    <button type="button" class="b si ${v==='si'?'on':''}" onclick="setSN('ocurr','${k}','si')">Sí</button>
-    <button type="button" class="b no ${v==='no'?'on':''}" onclick="setSN('ocurr','${k}','no')">No</button></div></div>`}).join('');}
+function renderOcurr(){$('ocurrList').innerHTML=OCURRENCIAS.map(([k,q,code])=>{const v=st.ocurr[k];return `<div class="qrow"><div class="q">${esc(q)}${code?'<span class="tax'+(String(code).indexOf('EPM')===0?' epm':'')+'">'+esc(code)+'</span>':''}</div><div class="sn"><button type="button" class="b si ${v==='si'?'on':''}" onclick="setSN('ocurr','${k}','si')">Sí</button><button type="button" class="b no ${v==='no'?'on':''}" onclick="setSN('ocurr','${k}','no')">No</button></div></div>`}).join('');}
 function riesgoResult(){let sum=0,answered=0;
   RIESGO.forEach(f=>{const o=f.opts.find(x=>x[0]===st.hf[f.k]);if(o){answered++;sum+=o[2];}});
   const complete=answered===RIESGO.length;let calif,cls;
@@ -954,7 +971,7 @@ function renderConsolDrones(){const sel=$('dronConsol');const cur=sel.value;
 /* ---------- exportes ---------- */
 function exportPDF(){if(!operaciones.length){toast('No hay operaciones');return}printReport(operaciones,'Todas las operaciones');}
 function exportProjectPDF(pid){const list=operaciones.filter(o=>o.proyectoId===pid);if(!list.length){toast('El proyecto no tiene operaciones');return}printReport(list,(proyectoById(pid)||{}).nombre||'Proyecto');}
-function siNoTable(cfg,state,invert){return `<table>${cfg.map(([k,q])=>{const val=state[k];const cls=val?(invert?(val==='si'?'no':'si'):val):'';return `<tr><td class="k">${esc(q)}</td><td class="v ${cls}">${val?val.toUpperCase():'—'}</td></tr>`}).join('')}</table>`;}
+function siNoTable(cfg,state,invert){return `<table>${cfg.map(([k,q,code])=>{const val=state[k];const cls=val?(invert?(val==='si'?'no':'si'):val):'';return `<tr><td class="k">${esc(q)}${code?' <b style="color:#007934">['+esc(code)+']</b>':''}</td><td class="v ${cls}">${val?val.toUpperCase():'—'}</td></tr>`}).join('')}</table>`;}
 function fmtDate(s){if(!s)return '';const m=String(s).match(/^(\d{4})-(\d{2})-(\d{2})/);return m?`${m[3]}-${m[2]}-${m[1]}`:s;}
 function fmtDT(s){if(!s)return '';const m=String(s).match(/^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2})/);if(m)return `${m[3]}-${m[2]}-${m[1]} ${m[4]}:${m[5]}`;return fmtDate(s);}
 async function pdfToImages(dataURL,scale){if(typeof pdfjsLib==='undefined')throw new Error('LIB');
@@ -1057,6 +1074,16 @@ async function exportForms(){toast('Preparando Excel…');const assets={};
   const u=URL.createObjectURL(blob);const a=document.createElement('a');a.href=u;a.download=name;a.click();setTimeout(()=>URL.revokeObjectURL(u),1000);
   localStorage.setItem('bvd_lastBackup',String(Date.now()));toast('Excel para Forms generado');}
 let pendingImport=null;
+function importPriv(e){const f=e.target.files[0];e.target.value='';if(!f)return;const r=new FileReader();
+  r.onload=async ev=>{try{const d=JSON.parse(ev.target.result);
+    if(!d.flota&&!d.pilotos){toast('Ese archivo no es el catálogo de pilotos/drones');return;}
+    if(d.assets)for(const[id,data]of Object.entries(d.assets))await Assets.put(id,data);
+    mergeCatalog(flota,d.flota,'serial');mergeCatalog(pilotos,d.pilotos,'codigo');
+    save(K.fl,flota);save(K.pilots,pilotos);
+    if(d.catalogoActualizado)localStorage.setItem('bvd_catalogoFecha',d.catalogoActualizado);
+    renderFleet();renderPilots();
+    toast('Catálogo cargado: '+flota.length+' drones · '+pilotos.length+' pilotos');
+  }catch(err){toast('Archivo inválido')}};r.readAsText(f);}
 function loadJSON(e){const f=e.target.files[0];e.target.value='';if(!f)return;const r=new FileReader();
   r.onload=ev=>{try{pendingImport=JSON.parse(ev.target.result);const m=$('importModal');if(m)m.style.display='flex';}catch(err){toast('Archivo inválido')}};r.readAsText(f);}
 function closeImportModal(){const m=$('importModal');if(m)m.style.display='none';pendingImport=null;}
@@ -1075,11 +1102,12 @@ async function loadSeed(){try{
   const seed=await resp.json();const localV=Number(localStorage.getItem('bvd_seedVersion')||0);
   if(!(Number(seed.seedVersion||0)>localV))return;
   if(seed.assets)for(const[id,data]of Object.entries(seed.assets))await Assets.put(id,data);
-  mergeCatalog(flota,seed.flota,'serial');mergeCatalog(pilotos,seed.pilotos,'cedula');mergeCatalog(autorizaciones,seed.autorizaciones,'radicado');
-  save(K.fl,flota);save(K.pilots,pilotos);save(K.aut,autorizaciones);
+  mergeCatalog(autorizaciones,seed.autorizaciones,'radicado');
+  save(K.aut,autorizaciones);
+  if(seed.catalogoActualizado)localStorage.setItem('bvd_catalogoFecha',seed.catalogoActualizado);
   localStorage.setItem('bvd_seedVersion',String(seed.seedVersion));
-  renderFleet();renderPilots();renderAut();
-  toast('Catálogo actualizado (seed v'+seed.seedVersion+')');
+  renderAut();
+  toast('Autorizaciones actualizadas (v'+seed.seedVersion+')');
 }catch(e){}}
 async function exportSeed(){const v=Number(localStorage.getItem('bvd_seedExportVersion')||0)+1;const assets={};
   for(const a of autorizaciones){if(a.pdf&&a.pdf.id&&!(a.pdf.id in assets)){const d=await Assets.get(a.pdf.id);if(d!=null)assets[a.pdf.id]=d;}}
