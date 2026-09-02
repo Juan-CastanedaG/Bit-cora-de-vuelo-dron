@@ -352,49 +352,13 @@ nav#navGrid button.active svg{stroke:var(--grn-dk)}
 
 <!-- ===== FLOTA ===== -->
 <section class="view" id="v-flota">
-  <div class="card" id="fleetForm">
-    <h2 id="fleetTitle">Agregar dron</h2>
-    <div class="field"><label>Modelo</label><input type="text" id="d_modelo" placeholder="Ej. DJI Matrice 4 Enterprise"></div>
-    <div class="field"><label>Código EPM (DRxxx)</label><input type="text" id="d_dr" class="mono" placeholder="Ej. DR001"></div>
-    <div class="field"><label>Serial del dron</label><input type="text" id="d_serial" class="mono"></div>
-    <div class="row2">
-      <div class="field"><label>Código RUAS</label><input type="text" id="d_ruas" class="mono"></div>
-      <div class="field"><label>Código Máximo</label><input type="text" id="d_maximo" class="mono" placeholder="Ej. DR25"></div>
-    </div>
-    <div class="row2">
-      <div class="field"><label>Póliza RC No.</label><input type="text" id="d_poliza" class="mono"></div>
-      <div class="field"><label>Póliza vence</label><input type="date" id="d_polizaVence"></div>
-    </div>
-    <div class="field"><label>Mantenimiento vence</label><input type="date" id="d_mant"></div>
-    <div class="field"><label>Habilitaciones del dron</label>
-      <div class="pillwrap">
-        <label class="pill" onclick="tgl(this)"><input type="checkbox" id="d_hnoc" hidden><span class="dot"></span>Operación nocturna</label>
-        <label class="pill" onclick="tgl(this)"><input type="checkbox" id="d_hbvlos" hidden><span class="dot"></span>BVLOS</label>
-      </div>
-    </div>
-    <button class="btn" onclick="saveDrone()" id="d_saveBtn">Agregar a la flota</button>
-    <div id="d_cancel" style="display:none;margin-top:8px"><button class="btn sec" onclick="resetDroneForm()">Cancelar</button></div>
-  </div>
+  <div class="card"><h2>Flota</h2><div class="hint">Catálogo de <b>solo consulta</b>. Los drones se administran de forma central y llegan por el seed; no se crean desde el teléfono.</div></div>
   <div id="fleetList"></div>
 </section>
 
 <!-- ===== PILOTOS ===== -->
 <section class="view" id="v-pilotos">
-  <div class="card" id="pilotForm">
-    <h2 id="pilotTitle">Agregar piloto</h2>
-    <div class="field"><label>Nombre</label><input type="text" id="pi_nombre"></div>
-    <div class="field"><label>Cédula</label><input type="text" id="pi_cedula" class="mono"></div>
-    <div class="field"><label>CIPU (uno o varios)</label>
-      <div class="row2"><input type="text" id="pi_cipuIn" class="mono" placeholder="No. CIPU">
-        <select id="pi_cipuTipo"><option value="Piloto">Piloto</option><option value="Nocturno">Operación nocturna</option><option value="BVLOS">BVLOS</option></select></div>
-      <button class="btn sec sm" onclick="addCipu()" style="margin-top:8px">＋ Agregar CIPU</button>
-      <div class="chips" id="pi_cipuChips"></div>
-      <div class="hint">Las habilitaciones nocturna y BVLOS del piloto se derivan del tipo de sus CIPU.</div>
-    </div>
-    <div class="field"><label>Vigencia examen médico</label><input type="date" id="pi_med"></div>
-    <button class="btn" onclick="savePilot()" id="pi_saveBtn">Agregar piloto</button>
-    <div id="pi_cancel" style="display:none;margin-top:8px"><button class="btn sec" onclick="resetPilotForm()">Cancelar</button></div>
-  </div>
+  <div class="card"><h2>Pilotos</h2><div class="hint">Catálogo de <b>solo consulta</b>. Los pilotos se administran de forma central y llegan por el seed; no se crean desde el teléfono.</div></div>
   <div id="pilotList"></div>
 </section>
 
@@ -413,8 +377,6 @@ nav#navGrid button.active svg{stroke:var(--grn-dk)}
   </div>
   <div class="card"><h2>Almacenamiento</h2><div id="storageInfo"><div class="hint">Cargando…</div></div></div>
   <div class="card"><h2>Catálogo (seed)</h2>
-    <div class="field"><label style="display:flex;align-items:center;gap:8px;font-size:15px"><input type="checkbox" id="modoPilotoChk" onchange="setModoPiloto(this.checked)"> Modo piloto (Pilotos y Flota de solo consulta)</label>
-      <div class="hint">Actívalo en los teléfonos de los pilotos: los catálogos pasan a solo consulta y llegan por el seed. En tu dispositivo maestro dejalo apagado para editar.</div></div>
     <div class="field"><button class="btn sec" onclick="exportSeed()">📤 Exportar catálogo (seed.json)</button>
       <div class="hint">Genera el seed (drones, pilotos y autorizaciones con sus PDF) para subir al repositorio. Cada exportación sube la versión y todos la reciben al abrir con internet.</div></div>
   </div>
@@ -537,8 +499,7 @@ function hasCert(p,tipo){return !!(p&&p.cipus&&p.cipus.some(c=>(c.tipo||c)===tip
 function nav(v){document.querySelectorAll('.view').forEach(x=>x.classList.remove('active'));$('v-'+v).classList.add('active');
   const tab=(v==='nueva')?'oper':v;
   document.querySelectorAll('nav button').forEach(b=>b.classList.toggle('active',b.dataset.view===tab));window.scrollTo(0,0);
-  if(v==='nueva')prepNueva();if(v==='oper')renderOper();
-applyModo();if(v==='vuelos')renderVuelos();if(v==='mapa')initMap();if(v==='flota')renderFleet();if(v==='aut')renderAut();if(v==='pilotos')renderPilots();if(v==='hist')renderHistory();
+  if(v==='nueva')prepNueva();if(v==='oper')renderOper();if(v==='vuelos')renderVuelos();if(v==='mapa')initMap();if(v==='flota')renderFleet();if(v==='aut')renderAut();if(v==='pilotos')renderPilots();if(v==='hist')renderHistory();
   if(v==='bitacora')renderConsolPilotos();if(v==='libro')renderConsolDrones();if(v==='datos')renderStorage();
   closeNav();}
 function toggleNav(){$('navGrid').classList.toggle('collapsed');syncNav();}
@@ -555,7 +516,7 @@ function renderPilots(){const l=$('pilotList');
     <div class="meta">CC ${esc(p.cedula||'—')}</div>
     <div class="meta">CIPU: ${cip}</div>
     <div class="meta">${hasCert(p,'Nocturno')?'✓ nocturno ':''}${hasCert(p,'BVLOS')?'✓ BVLOS ':''}· ${med}</div></div>
-    ${modoPiloto()?'':`<div class="acts"><button class="icon-btn" onclick="editPilot('${p.id}')">✎</button><button class="icon-btn del" onclick="delPilot('${p.id}')">🗑</button></div>`}</div></div>`}).join('');applyModo();}
+    </div></div>`}).join('');}
 function addCipu(){const v=$('pi_cipuIn').value.trim();if(!v)return;pendingCipus.push({num:v,tipo:$('pi_cipuTipo').value});$('pi_cipuIn').value='';renderCipuChips();}
 function renderCipuChips(){$('pi_cipuChips').innerHTML=pendingCipus.map((c,i)=>`<span class="chipx">${esc(c.num)} · ${cipuLabel(c)}<button onclick="rmCipu(${i})">×</button></span>`).join('');}
 function rmCipu(i){pendingCipus.splice(i,1);renderCipuChips();}
@@ -578,7 +539,7 @@ function renderFleet(){const l=$('fleetList');
     <div class="meta">Serial ${esc(d.serial||'—')}</div>
     <div class="meta">RUAS ${d.ruas||'—'} · Máximo ${d.maximo||'—'}</div>
     <div class="meta">${d.habNocturno?'✓ nocturno ':''}${d.habBVLOS?'✓ BVLOS ':''}· ${pol}${d.mant?' · mant '+fmtDate(d.mant)+(daysTo(d.mant)<0?' ⛔':''):''}</div></div>
-    ${modoPiloto()?'':`<div class="acts"><button class="icon-btn" onclick="editDrone('${d.id}')">✎</button><button class="icon-btn del" onclick="delDrone('${d.id}')">🗑</button></div>`}</div></div>`}).join('');applyModo();}
+    </div></div>`}).join('');}
 function attachAutPdf(e){const f=e.target.files[0];e.target.value='';if(!f)return;
   const r=new FileReader();r.onload=async ev=>{const id=uid();const ok=await Assets.put(id,ev.target.result);if(!ok){toast('Sin espacio para el PDF');return;}autFormPdf={id,name:f.name};renderAutPdfRow();};r.readAsDataURL(f);}
 function renderAutPdfRow(){const el=$('au_pdfRow');if(el)el.innerHTML=autFormPdf?`<div class="filerow"><span>📄</span><span class="nm">${esc(autFormPdf.name)}</span><button class="icon-btn" onclick="openPdf('${autFormPdf.id}')">Ver</button><button class="icon-btn del" onclick="autFormPdf=null;renderAutPdfRow()">Quitar</button></div>`:'';}
