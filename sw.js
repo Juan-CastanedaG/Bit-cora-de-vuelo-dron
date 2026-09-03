@@ -1,14 +1,15 @@
 /* Service worker de la Bitácora de Vuelo Dron.
    Subí el número de versión (bvd-vN) al publicar una versión nueva del index.html. */
-const CACHE = 'bvd-v47';
+const CACHE = 'bvd-v50';
 const TILES = 'bvd-tiles';           // caché de mapa: NO se borra al actualizar
 const ASSETS = [
   './','./index.html','./manifest.json','./icon-192.png','./icon-512.png',
   './pdf.min.js','./pdf.worker.min.js','./leaflet.js','./leaflet.css','./fflate.js'
 ];
 self.addEventListener('install', e => {
-  e.waitUntil(caches.open(CACHE).then(c => Promise.all(ASSETS.map(u => c.add(u).catch(function(){})))).then(() => self.skipWaiting()));
+  e.waitUntil(caches.open(CACHE).then(c => Promise.all(ASSETS.map(u => c.add(u).catch(function(){})))));
 });
+self.addEventListener('message', e => { if(e.data && e.data.type==='skipWaiting') self.skipWaiting(); });
 self.addEventListener('activate', e => {
   e.waitUntil(
     caches.keys().then(ks => Promise.all(ks.filter(k => k !== CACHE && k !== TILES).map(k => caches.delete(k))))

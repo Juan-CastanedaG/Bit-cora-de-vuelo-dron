@@ -415,6 +415,10 @@ input[readonly]{background:#eef3f1;color:var(--muted);cursor:not-allowed}
   <button class="btn sec" style="margin-top:8px" onclick="applyImport('replace')">↩️ Reemplazar todo</button>
   <button class="btn sec" style="margin-top:8px" onclick="closeImportModal()">Cancelar</button>
 </div></div>
+<div id="updBanner" style="display:none;position:fixed;left:12px;right:12px;bottom:calc(78px + env(safe-area-inset-bottom));z-index:1600;background:#007934;color:#fff;border-radius:12px;padding:12px 14px;box-shadow:0 8px 24px rgba(0,0,0,.28);align-items:center;justify-content:space-between;gap:10px">
+  <span style="font-size:14px">Hay una versión nueva de la app.</span>
+  <button onclick="applyUpdate()" style="background:#7AD400;color:#053d1a;border:none;border-radius:8px;padding:8px 14px;font-weight:700;font-size:14px">Actualizar</button>
+</div>
 <div class="toast" id="toast"></div>
 
 <script>
@@ -1107,10 +1111,11 @@ function modoPiloto(){return localStorage.getItem('bvd_modoPiloto')==='1';}
 function applyModo(){const on=modoPiloto();['fleetForm','pilotForm'].forEach(id=>{const el=$(id);if(el)el.style.display=on?'none':'';});const c=$('modoPilotoChk');if(c)c.checked=on;}
 function setModoPiloto(on){localStorage.setItem('bvd_modoPiloto',on?'1':'');applyModo();renderFleet();renderPilots();toast(on?'Modo piloto activado (solo consulta)':'Modo maestro (edición habilitada)');}
 function mergeCatalog(local,incoming,key){if(!incoming)return 0;let n=0;incoming.forEach(item=>{let i=local.findIndex(x=>x.id===item.id);if(i<0&&key&&item[key])i=local.findIndex(x=>String(x[key]||'').trim()===String(item[key]||'').trim());if(i<0){local.push(item);n++;}else local[i]=item;});return n;}
+const APP_VER='v50';
 function renderSyncInfo(){const el=$('syncInfo');if(!el)return;const t=Number(localStorage.getItem('bvd_lastSync')||0);const v=localStorage.getItem('bvd_seedVerShown')||localStorage.getItem('bvd_seedVersion')||'';const cf=localStorage.getItem('bvd_catalogoFecha')||'';
-  if(!t){el.innerHTML='Sin sincronizar con GitHub todavía. Abrí la app con internet para recibir el catálogo.';return;}
+  if(!t){el.innerHTML='<b>App '+APP_VER+'</b> · Sin sincronizar con GitHub todavía. Abrí la app con internet para recibir el catálogo.';return;}
   const d=new Date(t),p=n=>String(n).padStart(2,'0');const ts=p(d.getDate())+'-'+p(d.getMonth()+1)+'-'+d.getFullYear()+' '+p(d.getHours())+':'+p(d.getMinutes());
-  el.innerHTML='Última actualización con GitHub: <b>'+ts+'</b>'+(v?' · catálogo v'+esc(v):'')+(cf?' · datos al '+esc(fmtDate(cf)):'');}
+  el.innerHTML='<b>App '+APP_VER+'</b> · Última actualización con GitHub: <b>'+ts+'</b>'+(v?' · catálogo v'+esc(v):'')+(cf?' · datos al '+esc(fmtDate(cf)):'');}
 async function loadSeed(){try{
   const resp=await fetch('seed.json?ts='+Date.now(),{cache:'no-store'});if(!resp.ok)return;
   const seed=await resp.json();const localV=Number(localStorage.getItem('bvd_seedVersion')||0);
@@ -1132,11 +1137,13 @@ async function exportSeed(){const v=Number(localStorage.getItem('bvd_seedExportV
   dl('seed.json',JSON.stringify(seed,null,1),'application/json');
   localStorage.setItem('bvd_seedExportVersion',String(v));
   toast('seed.json v'+v+' generado. Subilo al repositorio.');}
+function showUpdateBanner(reg){window._updReg=reg;const b=$('updBanner');if(b)b.style.display='flex';}
+function applyUpdate(){const b=$('updBanner');if(b)b.style.display='none';const reg=window._updReg;if(reg&&reg.waiting){reg.waiting.postMessage({type:'skipWaiting'});}else{location.href=location.href.split('#')[0].split('?')[0]+'?u='+Date.now();}}
 async function forceUpdate(){if(!navigator.onLine){toast('Necesitás internet para actualizar');return;}
   if(!confirm('Se descargará la última versión publicada. Tus datos no se borran. ¿Continuar?'))return;
   try{if('serviceWorker' in navigator){const rs=await navigator.serviceWorker.getRegistrations();await Promise.all(rs.map(r=>r.unregister()));}
-    if(window.caches){const ks=await caches.keys();await Promise.all(ks.map(k=>caches.delete(k)));}}catch(e){}
-  location.reload(true);}
+    if(window.caches){const ks=await caches.keys();await Promise.all(ks.filter(k=>k!=='bvd-tiles').map(k=>caches.delete(k)));}}catch(e){}
+  location.href=location.href.split('#')[0].split('?')[0]+'?u='+Date.now();}
 async function doMerge(d){
     if(d.assets)for(const[id,data]of Object.entries(d.assets)){await Assets.put(id,data);}
     let nOps=0,nUpd=0,nPro=0,nPil=0,nFl=0,nAut=0;
@@ -1245,7 +1252,18 @@ async function downloadArea(){if(!map){$('dlStatus').textContent='Abrí el mapa 
   for(let i=0;i<urls.length;i+=8){await Promise.all(urls.slice(i,i+8).map(u=>fetch(u,{mode:'no-cors'}).then(()=>done++).catch(()=>fail++)));$('dlStatus').textContent='Descargando… '+done+'/'+urls.length;}
   $('dlStatus').textContent='✓ Zona descargada ('+done+' teselas'+(fail?', '+fail+' fallaron':'')+'). Disponible offline.';}
 
-if('serviceWorker' in navigator){window.addEventListener('load',()=>navigator.serviceWorker.register('sw.js').catch(()=>{}));}
+if('serviceWorker' in navigator){
+  let _refreshing=false;
+  navigator.serviceWorker.addEventListener('controllerchange',()=>{if(_refreshing)return;_refreshing=true;location.reload();});
+  window.addEventListener('load',()=>{
+    navigator.serviceWorker.register('sw.js').then(reg=>{
+      if(reg.waiting&&navigator.serviceWorker.controller)showUpdateBanner(reg);
+      reg.addEventListener('updatefound',()=>{const nw=reg.installing;if(!nw)return;nw.addEventListener('statechange',()=>{if(nw.state==='installed'&&navigator.serviceWorker.controller)showUpdateBanner(reg);});});
+    }).catch(()=>{});
+    setInterval(()=>{navigator.serviceWorker.getRegistration().then(r=>{if(r)r.update();}).catch(()=>{});},60000);
+    document.addEventListener('visibilitychange',()=>{if(!document.hidden)navigator.serviceWorker.getRegistration().then(r=>{if(r)r.update();}).catch(()=>{});});
+  });
+}
 
 Assets.init().then(async()=>{await migrateAssets();await loadSeed();});
 var _el=document.getElementById("epmLogo");if(_el)_el.src=EPM_LOGO;
