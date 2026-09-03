@@ -630,7 +630,7 @@ function pilotName(id){const p=pilotById(id);return p?(p.nombre||''):'';}
 function habilMap(){try{return JSON.parse(localStorage.getItem('bvd_habil')||'{}')}catch(e){return{}}}
 function medMap(){try{return JSON.parse(localStorage.getItem('bvd_med')||'{}')}catch(e){return{}}}
 function pilotMed(p){if(!p)return '';const m=medMap();const k=p.codigo||p.id;return (k in m&&m[k])?m[k]:(p.med||'');}
-function pilotHabil(p){if(!p)return true;const m=habilMap();const k=p.codigo||p.id;return !(k in m)||m[k]!==false;}
+function pilotHabil(p){if(!p)return true;const m=habilMap();const k=p.codigo||p.id;const flag=!(k in m)||m[k]!==false;const md=pilotMed(p);return flag&&!(md&&daysTo(md)<0);}
 function fillDeptos(){const s=$('g_depto');if(!s)return;s.innerHTML='<option value="">— departamento —</option>'+Object.keys(COL).map(d=>`<option value="${esc(d)}">${esc(d)}</option>`).join('');}
 function onDeptoChange(){const s=$('g_muni');if(!s)return;const munis=COL[$('g_depto').value]||[];s.innerHTML='<option value="">— municipio —</option>'+munis.map(m=>`<option value="${esc(m)}">${esc(m)}</option>`).join('');}
 function resolvePilot(q){const v=(q||'').trim();return pilotos.find(p=>(p.nombre||'').trim()===v)||null;}
@@ -1117,7 +1117,7 @@ function modoPiloto(){return localStorage.getItem('bvd_modoPiloto')==='1';}
 function applyModo(){const on=modoPiloto();['fleetForm','pilotForm'].forEach(id=>{const el=$(id);if(el)el.style.display=on?'none':'';});const c=$('modoPilotoChk');if(c)c.checked=on;}
 function setModoPiloto(on){localStorage.setItem('bvd_modoPiloto',on?'1':'');applyModo();renderFleet();renderPilots();toast(on?'Modo piloto activado (solo consulta)':'Modo maestro (edición habilitada)');}
 function mergeCatalog(local,incoming,key){if(!incoming)return 0;let n=0;incoming.forEach(item=>{let i=local.findIndex(x=>x.id===item.id);if(i<0&&key&&item[key])i=local.findIndex(x=>String(x[key]||'').trim()===String(item[key]||'').trim());if(i<0){local.push(item);n++;}else local[i]=item;});return n;}
-const APP_VER='v59';
+const APP_VER='v60';
 function renderSyncInfo(){const t=Number(localStorage.getItem('bvd_lastSync')||0);const v=localStorage.getItem('bvd_seedVerShown')||localStorage.getItem('bvd_seedVersion')||'';const cf=localStorage.getItem('bvd_catalogoFecha')||'';const p=n=>String(n).padStart(2,'0');
   let ts='',short='';if(t){const d=new Date(t);ts=p(d.getDate())+'-'+p(d.getMonth()+1)+'-'+d.getFullYear()+' '+p(d.getHours())+':'+p(d.getMinutes());short=p(d.getDate())+'-'+p(d.getMonth()+1)+' '+p(d.getHours())+':'+p(d.getMinutes());}
   const hv=$('hdrVer');if(hv)hv.innerHTML='App '+APP_VER+(short?'<br>'+short:'');
