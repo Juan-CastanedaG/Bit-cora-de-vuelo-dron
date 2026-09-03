@@ -376,9 +376,9 @@ input[readonly]{background:#eef3f1;color:var(--muted);cursor:not-allowed}
   <div class="card"><h2>Respaldo</h2>
     <div class="field"><button class="btn sec" onclick="exportJSON()">💾 Descargar respaldo (JSON)</button><div class="hint">Incluye pilotos, flota, operaciones, fotos y PDFs adjuntos.</div></div>
     <div class="field"><button class="btn" onclick="exportForms()">📊 Enviar por Forms (Excel)</button><div class="hint">Genera un Excel con todo tu respaldo adentro, para subir por el formulario de EPM (es el formato que Forms acepta).</div></div>
-    <div class="field"><button class="btn" onclick="document.getElementById('privIn').click()">👥 Cargar catálogo de pilotos y drones</button>
+    <div class="field"><button class="btn" onclick="document.getElementById('privIn').click()">👥 Cargar catálogo de pilotos</button>
       <input type="file" id="privIn" accept="application/json,.json" style="display:none" onchange="importPriv(event)">
-      <div class="hint">Cargá el archivo que te envía el administrador (pilotos y drones). Queda solo en tu teléfono; no se descarga de internet.</div></div>
+      <div class="hint">Cargá el archivo de <b>pilotos</b> que te envía el administrador. Queda solo en tu teléfono. Los drones ahora llegan por internet (GitHub).</div></div>
   </div>
   <div class="card"><h2>Almacenamiento</h2><div id="storageInfo"><div class="hint">Cargando…</div></div></div>
   <div class="card"><h2>Actualización</h2>
@@ -1105,7 +1105,7 @@ function modoPiloto(){return localStorage.getItem('bvd_modoPiloto')==='1';}
 function applyModo(){const on=modoPiloto();['fleetForm','pilotForm'].forEach(id=>{const el=$(id);if(el)el.style.display=on?'none':'';});const c=$('modoPilotoChk');if(c)c.checked=on;}
 function setModoPiloto(on){localStorage.setItem('bvd_modoPiloto',on?'1':'');applyModo();renderFleet();renderPilots();toast(on?'Modo piloto activado (solo consulta)':'Modo maestro (edición habilitada)');}
 function mergeCatalog(local,incoming,key){if(!incoming)return 0;let n=0;incoming.forEach(item=>{let i=local.findIndex(x=>x.id===item.id);if(i<0&&key&&item[key])i=local.findIndex(x=>String(x[key]||'').trim()===String(item[key]||'').trim());if(i<0){local.push(item);n++;}else local[i]=item;});return n;}
-const APP_VER='v52';
+const APP_VER='v53';
 function renderSyncInfo(){const t=Number(localStorage.getItem('bvd_lastSync')||0);const v=localStorage.getItem('bvd_seedVerShown')||localStorage.getItem('bvd_seedVersion')||'';const cf=localStorage.getItem('bvd_catalogoFecha')||'';const p=n=>String(n).padStart(2,'0');
   let ts='',short='';if(t){const d=new Date(t);ts=p(d.getDate())+'-'+p(d.getMonth()+1)+'-'+d.getFullYear()+' '+p(d.getHours())+':'+p(d.getMinutes());short=p(d.getDate())+'-'+p(d.getMonth()+1)+' '+p(d.getHours())+':'+p(d.getMinutes());}
   const hv=$('hdrVer');if(hv)hv.innerHTML='App '+APP_VER+(short?'<br>'+short:'');
@@ -1120,11 +1120,12 @@ async function loadSeed(){try{
   if(seed.assets)for(const[id,data]of Object.entries(seed.assets))await Assets.put(id,data);
   mergeCatalog(autorizaciones,seed.autorizaciones,'radicado');
   save(K.aut,autorizaciones);
+  if(seed.flota){mergeCatalog(flota,seed.flota,'serial');save(K.fl,flota);}
   if(seed.habil)localStorage.setItem('bvd_habil',JSON.stringify(seed.habil));
   if(seed.med)localStorage.setItem('bvd_med',JSON.stringify(seed.med));
   if(seed.catalogoActualizado)localStorage.setItem('bvd_catalogoFecha',seed.catalogoActualizado);
   localStorage.setItem('bvd_seedVersion',String(seed.seedVersion));
-  renderAut();renderSyncInfo();
+  renderAut();renderFleet();renderSyncInfo();
   toast('Autorizaciones actualizadas (v'+seed.seedVersion+')');
 }catch(e){}}
 async function exportSeed(){const v=Number(localStorage.getItem('bvd_seedExportVersion')||0)+1;const assets={};
