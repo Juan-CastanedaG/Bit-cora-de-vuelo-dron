@@ -1,5 +1,5 @@
 {
- "seedVersion": 6,
+ "seedVersion": 7,
  "actualizado": "2026-09-03",
  "catalogoActualizado": "2026-09-03",
  "autorizaciones": [
@@ -1875,15 +1875,15 @@
   {
    "id": "drn-DR2",
    "dr": "DR2",
-   "maximo": "DR2",
    "modelo": "DJI MATRICE 300 RTK",
    "serial": "1ZNBKC900C00NM",
    "ruas": "RUAS-100-24-0029",
+   "maximo": "DR2",
    "poliza": "900001438028",
-   "polizaVence": "",
+   "polizaVence": "2026-09-26",
    "mant": "2026-09-28",
-   "habBVLOS": true,
-   "habNocturno": false
+   "habNocturno": false,
+   "habBVLOS": true
   },
   {
    "id": "drn-DR3",
