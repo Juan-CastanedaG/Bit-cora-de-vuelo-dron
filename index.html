@@ -534,9 +534,9 @@ function cipuLabel(c){const t=(c.tipo||c);return t==='Nocturno'?'Vuelo nocturno'
 let pilotFilterP='todos';
 function setPilotFilterP(f){pilotFilterP=f;renderPilots();}
 function renderPilots(){const l=$('pilotList');
-  const bar='<div class="btnrow" style="margin-bottom:10px">'+[['todos','Todos'],['hab','Habilitados'],['inh','Inhabilitados']].map(x=>'<button class="btn sec sm" style="'+(pilotFilterP===x[0]?'background:#007934;color:#fff':'')+'" onclick="setPilotFilterP(\''+x[0]+'\')">'+x[1]+'</button>').join('')+'</div>';
+  const bar='<div class="btnrow" style="margin-bottom:10px">'+[['todos','Todos'],['hab','Habilitados'],['inh','Inhabilitados'],['bvlos','BVLOS'],['noct','Vuelo nocturno']].map(x=>'<button class="btn sec sm" style="'+(pilotFilterP===x[0]?'background:#007934;color:#fff':'')+'" onclick="setPilotFilterP(\''+x[0]+'\')">'+x[1]+'</button>').join('')+'</div>';
   if(!pilotos.length){l.innerHTML='<div class="card empty">No hay pilotos cargados. Cargá el catálogo en Datos.</div>';return}
-  let list=pilotos.slice();if(pilotFilterP==='hab')list=list.filter(p=>pilotHabil(p));else if(pilotFilterP==='inh')list=list.filter(p=>!pilotHabil(p));
+  let list=pilotos.slice();if(pilotFilterP==='hab')list=list.filter(p=>pilotHabil(p));else if(pilotFilterP==='inh')list=list.filter(p=>!pilotHabil(p));else if(pilotFilterP==='bvlos')list=list.filter(p=>hasCert(p,'BVLOS'));else if(pilotFilterP==='noct')list=list.filter(p=>hasCert(p,'Nocturno'));
   l.innerHTML=bar+(list.length?list.map(p=>{const mm=pilotMed(p);const mv=daysTo(mm);const med=mm?(mv<0?'⛔ certificado médico vencido':'certificado médico vence '+fmtDate(mm)):'sin certificado médico';
     const cip=(p.cipus||[]).map(c=>cipuLabel(c)).join(', ')||'—';
     const inh=!pilotHabil(p);return `<div class="item"><div class="top"><div><div class="name">${esc(p.nombre)} ${inh?'<span style="color:var(--rojo);font-size:12px">⛔ INHABILITADO</span>':'<span style="color:var(--verde);font-size:12px">✓ HABILITADO</span>'}</div>
@@ -561,9 +561,9 @@ function delPilot(id){if(!confirm('¿Eliminar este piloto?'))return;pilotos=pilo
 let droneFilterP='todos';
 function setDroneFilterP(f){droneFilterP=f;renderFleet();}
 function renderFleet(){const l=$('fleetList');
-  const bar='<div class="btnrow" style="margin-bottom:10px">'+[['todos','Todos'],['act','Activos'],['ina','Inactivos']].map(x=>'<button class="btn sec sm" style="'+(droneFilterP===x[0]?'background:#007934;color:#fff':'')+'" onclick="setDroneFilterP(\''+x[0]+'\')">'+x[1]+'</button>').join('')+'</div>';
+  const bar='<div class="btnrow" style="margin-bottom:10px">'+[['todos','Todos'],['act','Activos'],['ina','Inactivos'],['bvlos','BVLOS'],['noct','Vuelo nocturno']].map(x=>'<button class="btn sec sm" style="'+(droneFilterP===x[0]?'background:#007934;color:#fff':'')+'" onclick="setDroneFilterP(\''+x[0]+'\')">'+x[1]+'</button>').join('')+'</div>';
   if(!flota.length){l.innerHTML='<div class="card empty">La flota llega por el seed (con internet).</div>';return}
-  let list=flota.slice();if(droneFilterP==='act')list=list.filter(d=>d.activo!==false);else if(droneFilterP==='ina')list=list.filter(d=>d.activo===false);
+  let list=flota.slice();if(droneFilterP==='act')list=list.filter(d=>d.activo!==false);else if(droneFilterP==='ina')list=list.filter(d=>d.activo===false);else if(droneFilterP==='bvlos')list=list.filter(d=>d.habBVLOS);else if(droneFilterP==='noct')list=list.filter(d=>d.habNocturno);
   l.innerHTML=bar+(list.length?list.map(d=>{const pv=daysTo(d.polizaVence);const pol=d.polizaVence?(pv<0?'⛔ póliza vencida':'póliza vence '+d.polizaVence):'sin póliza';const est=d.activo===false?'<span style="color:var(--rojo);font-size:12px">⛔ INACTIVO</span>':'<span style="color:var(--verde);font-size:12px">✓ ACTIVO</span>';
     return `<div class="item"><div class="top"><div><div class="name">${esc(dronLabel(d))} ${est}</div>
     <div class="meta">Serial ${esc(d.serial||'—')}</div>
@@ -583,7 +583,7 @@ function resetAutForm(){editAutId=null;autFormPdf=null;['au_rad','au_id','au_ini
 function delAut(id){if(!confirm('¿Eliminar esta autorización?'))return;autorizaciones=autorizaciones.filter(x=>x.id!==id);save(K.aut,autorizaciones);renderAut();}
 function renderAut(){const cont=$('autList');if(!cont)return;
   cont.innerHTML=autorizaciones.length?autorizaciones.map(a=>{const venc=autVencida(a);const est=venc?'<span style="color:#6b7280;font-weight:700">VENCIDA</span>':(a.fin?'<span style="color:var(--verde);font-weight:700">VIGENTE</span> · vence '+fmtDate(a.fin):'sin vigencia');
-    return `<div class="item"${venc?' style="opacity:.55;background:#f3f4f6"':''}><div class="top"><div><div class="name">${esc(a.radicado||'—')} ${est}</div><div class="meta">ID ${esc(a.idAut||'—')} · ${a.ini?esc(fmtDate(a.ini)):'?'} a ${a.fin?esc(fmtDate(a.fin)):'?'}</div>${a.desc?`<div class="meta">${esc(a.desc)}</div>`:''}${a.pdf?`<button class="btn sec sm noprint" style="margin-top:6px" onclick="openPdf('${a.pdf.id}')">Ver PDF</button>`:''}</div></div></div>`}).join(''):'<div class="card empty">No hay autorizaciones cargadas. Llegarán con el catálogo (seed).</div>';}
+    return `<div class="item"${venc?' style="opacity:.55;background:#f3f4f6"':''}><div class="top"><div><div class="name">${esc(a.radicado||'—')} ${est}</div><div class="meta">ID ${esc(a.idAut||'—')} · ${a.ini?esc(fmtDate(a.ini)):'?'} a ${a.fin?esc(fmtDate(a.fin)):'?'}</div>${a.desc?`<div class="meta">${esc(a.desc)}</div>`:''}<div class="btnrow" style="margin-top:6px">${a.pdf?`<button class="btn sec sm noprint" onclick="openPdf('${a.pdf.id}')">📄 Documento</button>`:''}${a.pdfInfo?`<button class="btn sec sm noprint" onclick="openPdf('${a.pdfInfo.id}')">📄 Información</button>`:''}${(a.poly&&a.poly.length&&!venc)?`<button class="btn sec sm noprint" onclick="verZonaAut('${a.id}')">🗺️ Ver zona</button>`:''}</div></div></div></div>`}).join(''):'<div class="card empty">No hay autorizaciones cargadas. Llegarán con el catálogo (seed).</div>';}
 function fdate(x){return x?fmtDate(x)+(daysTo(x)<0?' <span class="bad">(vencido)</span>':''):'—';}
 function renderPilotoInfo(){const el=$('pilotoInfo');if(!el)return;const p=pilotById($('g_pilotoId').value);if(p&&!pilotHabil(p))block.push('Piloto inhabilitado (revisá con el administrador)');
   if(!p){el.innerHTML='';return;}
@@ -1117,7 +1117,7 @@ function modoPiloto(){return localStorage.getItem('bvd_modoPiloto')==='1';}
 function applyModo(){const on=modoPiloto();['fleetForm','pilotForm'].forEach(id=>{const el=$(id);if(el)el.style.display=on?'none':'';});const c=$('modoPilotoChk');if(c)c.checked=on;}
 function setModoPiloto(on){localStorage.setItem('bvd_modoPiloto',on?'1':'');applyModo();renderFleet();renderPilots();toast(on?'Modo piloto activado (solo consulta)':'Modo maestro (edición habilitada)');}
 function mergeCatalog(local,incoming,key){if(!incoming)return 0;let n=0;incoming.forEach(item=>{let i=local.findIndex(x=>x.id===item.id);if(i<0&&key&&item[key])i=local.findIndex(x=>String(x[key]||'').trim()===String(item[key]||'').trim());if(i<0){local.push(item);n++;}else local[i]=item;});return n;}
-const APP_VER='v60';
+const APP_VER='v61';
 function renderSyncInfo(){const t=Number(localStorage.getItem('bvd_lastSync')||0);const v=localStorage.getItem('bvd_seedVerShown')||localStorage.getItem('bvd_seedVersion')||'';const cf=localStorage.getItem('bvd_catalogoFecha')||'';const p=n=>String(n).padStart(2,'0');
   let ts='',short='';if(t){const d=new Date(t);ts=p(d.getDate())+'-'+p(d.getMonth()+1)+'-'+d.getFullYear()+' '+p(d.getHours())+':'+p(d.getMinutes());short=p(d.getDate())+'-'+p(d.getMonth()+1)+' '+p(d.getHours())+':'+p(d.getMinutes());}
   const hv=$('hdrVer');if(hv)hv.innerHTML='App '+APP_VER+(short?'<br>'+short:'');
