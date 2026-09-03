@@ -154,6 +154,8 @@ nav#navGrid button.active svg{stroke:var(--grn-dk)}
 .modal{position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:1600;display:flex;align-items:center;justify-content:center;padding:20px}
 .modalCard{background:#fff;border-radius:16px;padding:20px;max-width:420px;width:100%;box-shadow:0 20px 60px rgba(0,0,0,.3)}
 .locked{opacity:.5;pointer-events:none;filter:grayscale(.3)}
+span.hdrverX{}
+.hdrver{margin-left:auto;text-align:right;font-size:11px;color:rgba(255,255,255,.85);line-height:1.35;white-space:nowrap;align-self:flex-start}
 span.tax{display:inline-block;background:#e3f6ec;color:#007934;border:1px solid #7AD400;border-radius:6px;padding:1px 6px;font-size:11px;font-weight:700;margin-left:6px;white-space:nowrap}
 span.tax.epm{background:#e0edff;color:#1d4ed8;border-color:#93c5fd}
 input[readonly]{background:#eef3f1;color:var(--muted);cursor:not-allowed}
@@ -182,6 +184,7 @@ input[readonly]{background:#eef3f1;color:var(--muted);cursor:not-allowed}
   <div class="brand">
     <img class="logoEPM" id="epmLogo" alt="EPM">
     <div><h1>Bitácora de Vuelo Dron</h1><div class="sub">F-EPM-03 · RAC 100</div></div>
+    <div id="hdrVer" class="hdrver"></div>
   </div>
   <div class="dash">
     <div class="chip"><div class="n" id="dTot">0</div><div class="l">Operac.</div></div>
@@ -368,25 +371,16 @@ input[readonly]{background:#eef3f1;color:var(--muted);cursor:not-allowed}
 <!-- ===== DATOS ===== -->
 <section class="view" id="v-datos">
   <div class="card"><h2>Exportar</h2>
-    <div class="field"><button class="btn sec" onclick="exportCSV()">📊 CSV para Power BI</button><div class="hint">Una fila por vuelo con el contexto de la operación. Dejá los CSV en una carpeta y usá el conector <b>Carpeta</b> de Power BI.</div></div>
     <div class="field"><button class="btn dark" onclick="exportPDF()">📄 Reporte PDF (fondo blanco)</button></div>
   </div>
   <div class="card"><h2>Respaldo</h2>
     <div class="field"><button class="btn sec" onclick="exportJSON()">💾 Descargar respaldo (JSON)</button><div class="hint">Incluye pilotos, flota, operaciones, fotos y PDFs adjuntos.</div></div>
-    <div class="field"><button class="btn sec" onclick="shareBackup()">📤 Compartir respaldo (JSON)</button><div class="hint">Abre el menú de compartir del teléfono (OneDrive, Teams, correo…) para enviar el respaldo sin buscar el archivo.</div></div>
     <div class="field"><button class="btn" onclick="exportForms()">📊 Enviar por Forms (Excel)</button><div class="hint">Genera un Excel con todo tu respaldo adentro, para subir por el formulario de EPM (es el formato que Forms acepta).</div></div>
     <div class="field"><button class="btn" onclick="document.getElementById('privIn').click()">👥 Cargar catálogo de pilotos y drones</button>
       <input type="file" id="privIn" accept="application/json,.json" style="display:none" onchange="importPriv(event)">
       <div class="hint">Cargá el archivo que te envía el administrador (pilotos y drones). Queda solo en tu teléfono; no se descarga de internet.</div></div>
-    <div class="field"><button class="btn sec" onclick="document.getElementById('loadIn').click()">📂 Cargar JSON</button>
-      <input type="file" id="loadIn" accept="application/json,.json" style="display:none" onchange="loadJSON(event)">
-      <div class="hint">Al cargarlo te pregunta si <b>adicionar</b> (consolidar sin borrar) o <b>reemplazar</b> todo.</div></div>
   </div>
   <div class="card"><h2>Almacenamiento</h2><div id="storageInfo"><div class="hint">Cargando…</div></div></div>
-  <div class="card"><h2>Catálogo (seed)</h2>
-    <div class="field"><button class="btn sec" onclick="exportSeed()">📤 Exportar catálogo (seed.json)</button>
-      <div class="hint">Genera el seed (drones, pilotos y autorizaciones con sus PDF) para subir al repositorio. Cada exportación sube la versión y todos la reciben al abrir con internet.</div></div>
-  </div>
   <div class="card"><h2>Actualización</h2>
     <div id="syncInfo" class="hint" style="margin-bottom:8px"></div>
     <div class="field"><button class="btn sec" onclick="forceUpdate()">🔄 Buscar actualización</button>
@@ -1111,10 +1105,12 @@ function modoPiloto(){return localStorage.getItem('bvd_modoPiloto')==='1';}
 function applyModo(){const on=modoPiloto();['fleetForm','pilotForm'].forEach(id=>{const el=$(id);if(el)el.style.display=on?'none':'';});const c=$('modoPilotoChk');if(c)c.checked=on;}
 function setModoPiloto(on){localStorage.setItem('bvd_modoPiloto',on?'1':'');applyModo();renderFleet();renderPilots();toast(on?'Modo piloto activado (solo consulta)':'Modo maestro (edición habilitada)');}
 function mergeCatalog(local,incoming,key){if(!incoming)return 0;let n=0;incoming.forEach(item=>{let i=local.findIndex(x=>x.id===item.id);if(i<0&&key&&item[key])i=local.findIndex(x=>String(x[key]||'').trim()===String(item[key]||'').trim());if(i<0){local.push(item);n++;}else local[i]=item;});return n;}
-const APP_VER='v50';
-function renderSyncInfo(){const el=$('syncInfo');if(!el)return;const t=Number(localStorage.getItem('bvd_lastSync')||0);const v=localStorage.getItem('bvd_seedVerShown')||localStorage.getItem('bvd_seedVersion')||'';const cf=localStorage.getItem('bvd_catalogoFecha')||'';
+const APP_VER='v52';
+function renderSyncInfo(){const t=Number(localStorage.getItem('bvd_lastSync')||0);const v=localStorage.getItem('bvd_seedVerShown')||localStorage.getItem('bvd_seedVersion')||'';const cf=localStorage.getItem('bvd_catalogoFecha')||'';const p=n=>String(n).padStart(2,'0');
+  let ts='',short='';if(t){const d=new Date(t);ts=p(d.getDate())+'-'+p(d.getMonth()+1)+'-'+d.getFullYear()+' '+p(d.getHours())+':'+p(d.getMinutes());short=p(d.getDate())+'-'+p(d.getMonth()+1)+' '+p(d.getHours())+':'+p(d.getMinutes());}
+  const hv=$('hdrVer');if(hv)hv.innerHTML='App '+APP_VER+(short?'<br>'+short:'');
+  const el=$('syncInfo');if(!el)return;
   if(!t){el.innerHTML='<b>App '+APP_VER+'</b> · Sin sincronizar con GitHub todavía. Abrí la app con internet para recibir el catálogo.';return;}
-  const d=new Date(t),p=n=>String(n).padStart(2,'0');const ts=p(d.getDate())+'-'+p(d.getMonth()+1)+'-'+d.getFullYear()+' '+p(d.getHours())+':'+p(d.getMinutes());
   el.innerHTML='<b>App '+APP_VER+'</b> · Última actualización con GitHub: <b>'+ts+'</b>'+(v?' · catálogo v'+esc(v):'')+(cf?' · datos al '+esc(fmtDate(cf)):'');}
 async function loadSeed(){try{
   const resp=await fetch('seed.json?ts='+Date.now(),{cache:'no-store'});if(!resp.ok)return;
