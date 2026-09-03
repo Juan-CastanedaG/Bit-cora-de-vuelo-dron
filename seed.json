@@ -1,5 +1,5 @@
 {
- "seedVersion": 9,
+ "seedVersion": 6,
  "actualizado": "2026-09-03",
  "catalogoActualizado": "2026-09-03",
  "autorizaciones": [
@@ -1862,30 +1862,28 @@
   {
    "id": "drn-DR1",
    "dr": "DR1",
+   "maximo": "DR1",
    "modelo": "DJI MAVIC 3 THERMAL",
    "serial": "1581F5FJC243K00DYXLN",
    "ruas": "Sin iniciar trámite",
-   "maximo": "DR1",
    "poliza": "",
    "polizaVence": "",
    "mant": "2026-09-28",
-   "habNocturno": true,
    "habBVLOS": true,
-   "activo": false
+   "habNocturno": true
   },
   {
    "id": "drn-DR2",
    "dr": "DR2",
+   "maximo": "DR2",
    "modelo": "DJI MATRICE 300 RTK",
    "serial": "1ZNBKC900C00NM",
    "ruas": "RUAS-100-24-0029",
-   "maximo": "DR2",
    "poliza": "900001438028",
    "polizaVence": "",
    "mant": "2026-09-28",
-   "habNocturno": false,
    "habBVLOS": true,
-   "activo": false
+   "habNocturno": false
   },
   {
    "id": "drn-DR3",
@@ -1968,16 +1966,15 @@
   {
    "id": "drn-DR11",
    "dr": "DR11",
+   "maximo": "DR11",
    "modelo": "DJI MAVIC 2 ENTERPRISE ADVANCE",
    "serial": "4GCCK6FR0B0KRK",
    "ruas": "RUAS-100-24-0354",
-   "maximo": "DR11",
    "poliza": "",
    "polizaVence": "",
    "mant": "",
-   "habNocturno": true,
    "habBVLOS": true,
-   "activo": false
+   "habNocturno": true
   },
   {
    "id": "drn-DR12",
@@ -2151,30 +2148,15 @@
   {
    "id": "drn-DR29",
    "dr": "DR29",
+   "maximo": "DR29",
    "modelo": "DJI MAVIC 3 PRO",
    "serial": "1581F67QC24BJ015B26P",
    "ruas": "Sin iniciar trámite",
-   "maximo": "DR29",
    "poliza": "",
    "polizaVence": "",
    "mant": "",
-   "habNocturno": true,
    "habBVLOS": true,
-   "activo": false
-  },
-  {
-   "id": "drn-DR23",
-   "dr": "DR23",
-   "modelo": "DJI MATRICE 350 RTK",
-   "serial": "1581F6GKB24910040089",
-   "ruas": "RUAS-100-25-0462",
-   "maximo": "DR23",
-   "poliza": "900001438021",
-   "polizaVence": "2026-09-26",
-   "mant": "2026-09-28",
-   "habNocturno": false,
-   "habBVLOS": true,
-   "activo": false
+   "habNocturno": true
   }
  ],
  "habil": {
@@ -2271,7 +2253,7 @@
   "CIPU-100-24-1269": "2026-05-25",
   "CIPU-100-24-0722": "2026-05-25",
   "CIPU-100-24-1781": "2026-05-25",
-  "CIPU-100-24-0865": "2027-06-20",
+  "CIPU-100-24-0865": "2026-05-25",
   "CIPU-100-24-1756": "2026-05-25",
   "CIPU-100-24-0723": "2026-05-25",
   "CIPU-100-24-0874": "2026-05-25",
