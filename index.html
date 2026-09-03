@@ -513,6 +513,7 @@ function daysTo(d){if(!d)return null;const x=new Date(d+'T00:00:00'),n=new Date(
 function pilotById(id){return pilotos.find(p=>p.id===id)}
 function dronById(id){return flota.find(d=>d.id===id)}
 function autById(id){return autorizaciones.find(a=>a.id===id)}
+function autVencida(a){return !!(a&&a.fin&&daysTo(a.fin)<0);}
 function dronLabel(d){return d?((d.modelo||'')+(d.dr?' -'+d.dr:'')):''}
 function proyectoById(id){return proyectos.find(p=>p.id===id)}
 function projName(o){const p=proyectoById(o.proyectoId);return p?p.nombre:(o.proyecto||'Sin proyecto')}
@@ -529,15 +530,19 @@ function closeNav(){const g=$('navGrid');if(g)g.classList.add('collapsed');syncN
 function syncNav(){const g=$('navGrid');if(!g)return;const open=!g.classList.contains('collapsed');const i=$('navToggleIcon');if(i)i.textContent=open?'✕':'☰';const bd=$('navBackdrop');if(bd){bd.style.opacity=open?'1':'0';bd.style.pointerEvents=open?'auto':'none';}}
 
 /* ---------- pilotos ---------- */
-function cipuLabel(c){return (c.tipo||c)==='Nocturno'?'Nocturno':(c.tipo||c)==='BVLOS'?'BVLOS':'Piloto';}
+function cipuLabel(c){const t=(c.tipo||c);return t==='Nocturno'?'Vuelo nocturno':t==='BVLOS'?'BVLOS':'Piloto UAS';}
+let pilotFilterP='todos';
+function setPilotFilterP(f){pilotFilterP=f;renderPilots();}
 function renderPilots(){const l=$('pilotList');
-  if(!pilotos.length){l.innerHTML='<div class="card empty">No hay pilotos. Agregá el primero arriba para que aparezca en los desplegables.</div>';return}
-  l.innerHTML=pilotos.map(p=>{const mm=pilotMed(p);const mv=daysTo(mm);const med=mm?(mv<0?'⛔ certificado médico vencido':'certificado médico vence '+fmtDate(mm)):'sin certificado médico';
+  const bar='<div class="btnrow" style="margin-bottom:10px">'+[['todos','Todos'],['hab','Habilitados'],['inh','Inhabilitados']].map(x=>'<button class="btn sec sm" style="'+(pilotFilterP===x[0]?'background:#007934;color:#fff':'')+'" onclick="setPilotFilterP(\''+x[0]+'\')">'+x[1]+'</button>').join('')+'</div>';
+  if(!pilotos.length){l.innerHTML='<div class="card empty">No hay pilotos cargados. Cargá el catálogo en Datos.</div>';return}
+  let list=pilotos.slice();if(pilotFilterP==='hab')list=list.filter(p=>pilotHabil(p));else if(pilotFilterP==='inh')list=list.filter(p=>!pilotHabil(p));
+  l.innerHTML=bar+(list.length?list.map(p=>{const mm=pilotMed(p);const mv=daysTo(mm);const med=mm?(mv<0?'⛔ certificado médico vencido':'certificado médico vence '+fmtDate(mm)):'sin certificado médico';
     const cip=(p.cipus||[]).map(c=>cipuLabel(c)).join(', ')||'—';
-    const inh=!pilotHabil(p);return `<div class="item"><div class="top"><div><div class="name">${esc(p.nombre)}${inh?' <span style="color:var(--rojo);font-size:12px">⛔ INHABILITADO</span>':''}</div>
-    <div class="meta">CIPU: ${cip}</div>
-    <div class="meta">${hasCert(p,'Nocturno')?'✓ nocturno ':''}${hasCert(p,'BVLOS')?'✓ BVLOS ':''}· ${med}</div></div>
-    </div></div>`}).join('');}
+    const inh=!pilotHabil(p);return `<div class="item"><div class="top"><div><div class="name">${esc(p.nombre)} ${inh?'<span style="color:var(--rojo);font-size:12px">⛔ INHABILITADO</span>':'<span style="color:var(--verde);font-size:12px">✓ HABILITADO</span>'}</div>
+    <div class="meta">Certificaciones: ${cip}</div>
+    <div class="meta">${hasCert(p,'Nocturno')?'✓ Vuelo nocturno ':''}${hasCert(p,'BVLOS')?'✓ BVLOS ':''}· ${med}</div></div>
+    </div></div>`}).join(''):'<div class="card empty">No hay pilotos en este filtro.</div>');}
 function addCipu(){const v=$('pi_cipuIn').value.trim();if(!v)return;pendingCipus.push({num:v,tipo:$('pi_cipuTipo').value});$('pi_cipuIn').value='';renderCipuChips();}
 function renderCipuChips(){$('pi_cipuChips').innerHTML=pendingCipus.map((c,i)=>`<span class="chipx">${esc(c.num)} · ${cipuLabel(c)}<button onclick="rmCipu(${i})">×</button></span>`).join('');}
 function rmCipu(i){pendingCipus.splice(i,1);renderCipuChips();}
@@ -553,14 +558,18 @@ function resetPilotForm(){editPilotId=null;pendingCipus=[];['pi_nombre','pi_cedu
 function delPilot(id){if(!confirm('¿Eliminar este piloto?'))return;pilotos=pilotos.filter(x=>x.id!==id);save(K.pilots,pilotos);renderPilots();}
 
 /* ---------- flota ---------- */
+let droneFilterP='todos';
+function setDroneFilterP(f){droneFilterP=f;renderFleet();}
 function renderFleet(){const l=$('fleetList');
-  if(!flota.length){l.innerHTML='<div class="card empty">La flota está vacía. Agregá tu primer dron arriba.</div>';return}
-  l.innerHTML=flota.map(d=>{const pv=daysTo(d.polizaVence);const pol=d.polizaVence?(pv<0?'⛔ póliza vencida':'póliza vence '+d.polizaVence):'sin póliza';
-    return `<div class="item"><div class="top"><div><div class="name">${esc(dronLabel(d))}</div>
+  const bar='<div class="btnrow" style="margin-bottom:10px">'+[['todos','Todos'],['act','Activos'],['ina','Inactivos']].map(x=>'<button class="btn sec sm" style="'+(droneFilterP===x[0]?'background:#007934;color:#fff':'')+'" onclick="setDroneFilterP(\''+x[0]+'\')">'+x[1]+'</button>').join('')+'</div>';
+  if(!flota.length){l.innerHTML='<div class="card empty">La flota llega por el seed (con internet).</div>';return}
+  let list=flota.slice();if(droneFilterP==='act')list=list.filter(d=>d.activo!==false);else if(droneFilterP==='ina')list=list.filter(d=>d.activo===false);
+  l.innerHTML=bar+(list.length?list.map(d=>{const pv=daysTo(d.polizaVence);const pol=d.polizaVence?(pv<0?'⛔ póliza vencida':'póliza vence '+d.polizaVence):'sin póliza';const est=d.activo===false?'<span style="color:var(--rojo);font-size:12px">⛔ INACTIVO</span>':'<span style="color:var(--verde);font-size:12px">✓ ACTIVO</span>';
+    return `<div class="item"><div class="top"><div><div class="name">${esc(dronLabel(d))} ${est}</div>
     <div class="meta">Serial ${esc(d.serial||'—')}</div>
     <div class="meta">RUAS ${d.ruas||'—'} · Máximo ${d.maximo||'—'}</div>
-    <div class="meta">${d.habNocturno?'✓ nocturno ':''}${d.habBVLOS?'✓ BVLOS ':''}· ${pol}${d.mant?' · mant '+fmtDate(d.mant)+(daysTo(d.mant)<0?' ⛔':''):''}</div></div>
-    </div></div>`}).join('');}
+    <div class="meta">${d.habNocturno?'✓ Vuelo nocturno ':''}${d.habBVLOS?'✓ BVLOS ':''}· ${pol}${d.mant?' · mant '+fmtDate(d.mant)+(daysTo(d.mant)<0?' ⛔':''):''}</div></div>
+    </div></div>`}).join(''):'<div class="card empty">No hay drones en este filtro.</div>');}
 function attachAutPdf(e){const f=e.target.files[0];e.target.value='';if(!f)return;
   const r=new FileReader();r.onload=async ev=>{const id=uid();const ok=await Assets.put(id,ev.target.result);if(!ok){toast('Sin espacio para el PDF');return;}autFormPdf={id,name:f.name};renderAutPdfRow();};r.readAsDataURL(f);}
 function renderAutPdfRow(){const el=$('au_pdfRow');if(el)el.innerHTML=autFormPdf?`<div class="filerow"><span>📄</span><span class="nm">${esc(autFormPdf.name)}</span><button class="icon-btn" onclick="openPdf('${autFormPdf.id}')">Ver</button><button class="icon-btn del" onclick="autFormPdf=null;renderAutPdfRow()">Quitar</button></div>`:'';}
@@ -573,16 +582,16 @@ function editAut(id){const a=autById(id);if(!a)return;editAutId=id;$('au_rad').v
 function resetAutForm(){editAutId=null;autFormPdf=null;['au_rad','au_id','au_ini','au_fin','au_desc'].forEach(i=>$(i).value='');renderAutPdfRow();$('autTitle').textContent='Nueva autorización';$('au_saveBtn').textContent='Crear autorización';$('au_cancel').style.display='none';}
 function delAut(id){if(!confirm('¿Eliminar esta autorización?'))return;autorizaciones=autorizaciones.filter(x=>x.id!==id);save(K.aut,autorizaciones);renderAut();}
 function renderAut(){const cont=$('autList');if(!cont)return;
-  cont.innerHTML=autorizaciones.length?autorizaciones.map(a=>{const v=daysTo(a.fin);const est=a.fin?(v<0?'⛔ vencida':'vence '+fmtDate(a.fin)):'sin vigencia';
-    return `<div class="item"><div class="top"><div><div class="name">${esc(a.radicado||'—')}</div><div class="meta">ID ${esc(a.idAut||'—')} · ${a.ini?esc(fmtDate(a.ini)):'?'} a ${a.fin?esc(fmtDate(a.fin)):'?'} · ${est}</div>${a.desc?`<div class="meta">${esc(a.desc)}</div>`:''}${a.pdf?`<button class="btn sec sm noprint" style="margin-top:6px" onclick="openPdf('${a.pdf.id}')">Ver PDF</button>`:''}</div></div></div>`}).join(''):'<div class="card empty">No hay autorizaciones cargadas. Llegarán con el catálogo (seed).</div>';}
+  cont.innerHTML=autorizaciones.length?autorizaciones.map(a=>{const venc=autVencida(a);const est=venc?'<span style="color:#6b7280;font-weight:700">VENCIDA</span>':(a.fin?'<span style="color:var(--verde);font-weight:700">VIGENTE</span> · vence '+fmtDate(a.fin):'sin vigencia');
+    return `<div class="item"${venc?' style="opacity:.55;background:#f3f4f6"':''}><div class="top"><div><div class="name">${esc(a.radicado||'—')} ${est}</div><div class="meta">ID ${esc(a.idAut||'—')} · ${a.ini?esc(fmtDate(a.ini)):'?'} a ${a.fin?esc(fmtDate(a.fin)):'?'}</div>${a.desc?`<div class="meta">${esc(a.desc)}</div>`:''}${a.pdf?`<button class="btn sec sm noprint" style="margin-top:6px" onclick="openPdf('${a.pdf.id}')">Ver PDF</button>`:''}</div></div></div>`}).join(''):'<div class="card empty">No hay autorizaciones cargadas. Llegarán con el catálogo (seed).</div>';}
 function fdate(x){return x?fmtDate(x)+(daysTo(x)<0?' <span class="bad">(vencido)</span>':''):'—';}
 function renderPilotoInfo(){const el=$('pilotoInfo');if(!el)return;const p=pilotById($('g_pilotoId').value);if(p&&!pilotHabil(p))block.push('Piloto inhabilitado (revisá con el administrador)');
   if(!p){el.innerHTML='';return;}
   const noct=hasCert(p,'Nocturno'),bv=hasCert(p,'BVLOS');
   const inhab=!pilotHabil(p);
   el.innerHTML=(inhab?'<b style="color:var(--rojo)">⛔ PILOTO INHABILITADO</b><br>':'')+'<b>'+esc(p.nombre||'')+'</b><br>Certificaciones: '+((p.cipus||[]).map(c=>esc(cipuLabel(c))).join(', ')||'—')+'<br>Nocturno: '+(noct?'<b style="color:var(--verde)">✓ Sí</b>':'✕ No')+' · BVLOS: '+(bv?'<b style="color:var(--verde)">✓ Sí</b>':'✕ No')+'<br>Examen médico: '+fdate(pilotMed(p));}
-function renderDronInfo(){const el=$('dronInfo');if(!el)return;const d=dronById($('g_dron').value);
-  el.innerHTML=d?`<b>${esc(dronLabel(d))}</b><br>Serial: ${esc(d.serial||'—')} · RUAS: ${esc(d.ruas||'—')} · Máximo: ${esc(d.maximo||'—')}<br>Póliza vence: ${fdate(d.polizaVence)} · Mantenimiento vence: ${fdate(d.mant)}${(d.habNocturno||d.habBVLOS)?'<br>Habilitado: '+[d.habNocturno?'nocturno':'',d.habBVLOS?'BVLOS':''].filter(Boolean).join(', '):''}`:'';}
+function renderDronInfo(){const el=$('dronInfo');if(!el)return;const d=dronById($('g_dron').value);const _inact=d&&d.activo===false?'<b style="color:var(--rojo)">⛔ DRON INACTIVO</b><br>':'';
+  el.innerHTML=d?_inact+`<b>${esc(dronLabel(d))}</b><br>Serial: ${esc(d.serial||'—')} · RUAS: ${esc(d.ruas||'—')} · Máximo: ${esc(d.maximo||'—')}<br>Póliza vence: ${fdate(d.polizaVence)} · Mantenimiento vence: ${fdate(d.mant)}${(d.habNocturno||d.habBVLOS)?'<br>Habilitado: '+[d.habNocturno?'nocturno':'',d.habBVLOS?'BVLOS':''].filter(Boolean).join(', '):''}`:'';}
 function renderAutInfo(){const el=$('autInfo');if(!el)return;const au=autById($('g_autId').value);
   if(!au){el.innerHTML='<span>Se consultan en la pestaña Autorizaciones.</span>';return;}
   let h='';
@@ -626,10 +635,10 @@ function fillDeptos(){const s=$('g_depto');if(!s)return;s.innerHTML='<option val
 function onDeptoChange(){const s=$('g_muni');if(!s)return;const munis=COL[$('g_depto').value]||[];s.innerHTML='<option value="">— municipio —</option>'+munis.map(m=>`<option value="${esc(m)}">${esc(m)}</option>`).join('');}
 function resolvePilot(q){const v=(q||'').trim();return pilotos.find(p=>(p.nombre||'').trim()===v)||null;}
 function onPilotoQ(){const p=resolvePilot($('g_pilotoQ').value);$('g_pilotoId').value=p?p.id:'';verdict();renderPilotoInfo();saveDraft();}
-function setSPilot(i,field,q){const p=resolvePilot(q);setS(i,field,p?p.id:'');}
+function setSPilot(i,field,q){const p=resolvePilot(q);if(p&&!pilotHabil(p)){toast((field==='observadorId'?'El observador':'El piloto')+' está INHABILITADO, no puede ir en el vuelo');setS(i,field,'');renderSorties();return;}setS(i,field,p?p.id:'');}
 function autLabel(a){return a?((a.radicado||'')+(a.desc?' — '+a.desc:'')):'';}
 function resolveAut(q){const v=(q||'').trim();return autorizaciones.find(a=>autLabel(a)===v)||autorizaciones.find(a=>(a.radicado||'').trim()===v)||null;}
-function onAutQ(){const a=resolveAut($('g_autQ').value);$('g_autId').value=a?a.id:'';onAutSelect();}
+function onAutQ(){const a=resolveAut($('g_autQ').value);if(a&&autVencida(a)){toast('Esa autorización está vencida, no se puede usar');$('g_autQ').value='';$('g_autId').value='';onAutSelect();return;}$('g_autId').value=a?a.id:'';onAutSelect();}
 
 /* ---------- checklists ---------- */
 function renderSiNo(cont,cfg,group){$(cont).innerHTML=cfg.map(([k,q,crit])=>{const v=st[group][k];
@@ -704,7 +713,7 @@ function verdict(){const box=$('verdictBox'),word=$('vWord'),desc=$('vDesc'),lig
   if(p){const _md=pilotMed(p);if(_md&&daysTo(_md)<0)block.push('Examen médico del piloto vencido');}
   else warn.push('Sin piloto principal seleccionado');
   const d=dronById($('g_dron').value);
-  if(d){if(d.polizaVence&&daysTo(d.polizaVence)<0)block.push('Póliza del dron vencida');
+  if(d){if(d.activo===false)block.push('Dron inactivo');if(d.polizaVence&&daysTo(d.polizaVence)<0)block.push('Póliza del dron vencida');
     if(noc&&!d.habNocturno)block.push('Dron no habilitado para operación nocturna');
     if(bv&&!d.habBVLOS)block.push('Dron no habilitado para BVLOS');}
   // Observador obligatorio en cada vuelo
@@ -781,7 +790,7 @@ function discardDraft(){if(!confirm('¿Descartar el borrador en curso?'))return;
 function prepNueva(){
   const selD=$('g_dron');selD.innerHTML=flota.length?'<option value="">— dron —</option>'+flota.map(d=>`<option value="${d.id}">${esc(dronLabel(d))}</option>`).join(''):'<option value="">— sin drones —</option>';
   $('dlPilotos').innerHTML=pilotos.map(p=>`<option value="${esc(p.nombre)}">`).join('');
-  $('dlAut').innerHTML=autorizaciones.map(a=>`<option value="${esc(autLabel(a))}">`).join('');
+  $('dlAut').innerHTML=autorizaciones.filter(a=>!autVencida(a)).map(a=>`<option value="${esc(autLabel(a))}">`).join('');
   $('g_pilotoQ').value='';$('g_pilotoId').value='';$('g_autQ').value='';$('g_autId').value='';
   fillDeptos();onDeptoChange();
   renderSiNo('chkOficina',CHK_OFICINA,'oficina');renderSiNo('chkPrevuelo',CHK_PREVUELO,'prevuelo');renderSiNo('chkPosvuelo',CHK_POSVUELO,'posvuelo');
@@ -798,6 +807,9 @@ function prepNueva(){
 function nextCodigo(base){let n=0;operaciones.forEach(o=>{if(o.codigo&&o.codigo.indexOf(base+'-')===0){const m=o.codigo.slice(base.length+1).match(/^(\d+)/);if(m)n=Math.max(n,+m[1]);}});return base+'-'+(n+1);}
 function saveOp(){
   if(!st.fotoDron||!st.fotoMeteo){toast('Faltan las fotos obligatorias: dron/puerto y app de meteorología');nav('nueva');return;}
+  const _pp=pilotById($('g_pilotoId').value);if(_pp&&!pilotHabil(_pp)){toast('No se puede registrar: el piloto está INHABILITADO');return;}
+  const _dd=dronById($('g_dron').value);if(_dd&&_dd.activo===false){toast('No se puede registrar: el dron está INACTIVO');return;}
+  for(const s of (st.sorties||[])){const _sp=pilotById(s.pilotoId);if(_sp&&!pilotHabil(_sp)){toast('No se puede registrar: hay un piloto de vuelo INHABILITADO');return;}const _so=pilotById(s.observadorId);if(_so&&!pilotHabil(_so)){toast('No se puede registrar: hay un observador INHABILITADO');return;}}
   const v=verdict();
   const d=dronById($('g_dron').value);const pp=pilotById($('g_pilotoId').value);
   const nm=id=>{const p=pilotById(id);return p?p.nombre:''};
@@ -1011,7 +1023,7 @@ async function printReport(list,titulo){const w=window.open('','_blank');if(w)w.
   .rz{background:#fee2e2;border-radius:8px;padding:8px 12px;margin-top:8px;font-size:11.5px;color:#991b1b}
   .imgs{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}.imgs img{width:110px;height:110px;object-fit:cover;border-radius:6px}
   @media print{.blk{page-break-inside:avoid}}</style></head><body>
-  <div class="hd"><img src="${EPM_LOGO}" style="height:44px;display:block"><div><h1>Bitácora de Vuelo Dron</h1><div class="s">F-EPM-03 · RAC 100 · ${esc(titulo)}</div></div></div>
+  <div class="hd"><img src="${EPM_LOGO}" style="width:99px;height:44px;object-fit:contain;display:block"><div><h1>Bitácora de Vuelo Dron</h1><div class="s">F-EPM-03 · RAC 100 · ${esc(titulo)}</div></div></div>
   ${body}${annex}<p style="font-size:10px;color:#999;margin-top:18px">Generado ${(function(){const n=new Date(),p=x=>String(x).padStart(2,'0');return p(n.getDate())+'-'+p(n.getMonth()+1)+'-'+n.getFullYear()+' '+p(n.getHours())+':'+p(n.getMinutes());})()} · Documento de soporte operacional</p></body></html>`);
   w.document.close();setTimeout(()=>w.print(),400);}
 function opBlock(o){const kv=(k,val)=>val?`<tr><td class="k">${k}</td><td>${esc(String(val))}</td></tr>`:'';
@@ -1105,7 +1117,7 @@ function modoPiloto(){return localStorage.getItem('bvd_modoPiloto')==='1';}
 function applyModo(){const on=modoPiloto();['fleetForm','pilotForm'].forEach(id=>{const el=$(id);if(el)el.style.display=on?'none':'';});const c=$('modoPilotoChk');if(c)c.checked=on;}
 function setModoPiloto(on){localStorage.setItem('bvd_modoPiloto',on?'1':'');applyModo();renderFleet();renderPilots();toast(on?'Modo piloto activado (solo consulta)':'Modo maestro (edición habilitada)');}
 function mergeCatalog(local,incoming,key){if(!incoming)return 0;let n=0;incoming.forEach(item=>{let i=local.findIndex(x=>x.id===item.id);if(i<0&&key&&item[key])i=local.findIndex(x=>String(x[key]||'').trim()===String(item[key]||'').trim());if(i<0){local.push(item);n++;}else local[i]=item;});return n;}
-const APP_VER='v53';
+const APP_VER='v59';
 function renderSyncInfo(){const t=Number(localStorage.getItem('bvd_lastSync')||0);const v=localStorage.getItem('bvd_seedVerShown')||localStorage.getItem('bvd_seedVersion')||'';const cf=localStorage.getItem('bvd_catalogoFecha')||'';const p=n=>String(n).padStart(2,'0');
   let ts='',short='';if(t){const d=new Date(t);ts=p(d.getDate())+'-'+p(d.getMonth()+1)+'-'+d.getFullYear()+' '+p(d.getHours())+':'+p(d.getMinutes());short=p(d.getDate())+'-'+p(d.getMonth()+1)+' '+p(d.getHours())+':'+p(d.getMinutes());}
   const hv=$('hdrVer');if(hv)hv.innerHTML='App '+APP_VER+(short?'<br>'+short:'');
@@ -1216,8 +1228,8 @@ function renderVueloPoints(){if(!map)return;if(vueloLayer)map.removeLayer(vueloL
 function centrarVuelos(){if(!map)return;const b=[];operaciones.forEach(o=>(o.sorties||[]).forEach(s=>{const la=parseFloat(s.lat),lo=parseFloat(s.lon);if(isFinite(la)&&isFinite(lo))b.push([la,lo]);}));if(b.length){try{map.fitBounds(b,{padding:[30,30]});}catch(e){}}else if($('vpInfo'))$('vpInfo').textContent='No hay puntos de vuelo para centrar.';}
 function allPolys(){const out=[];(autorizaciones||[]).forEach(a=>(a.poly||[]).forEach(p=>out.push(p)));return out;}
 function renderZonas(){if(!map)return;zonaLayers.forEach(l=>map.removeLayer(l));zonaLayers=[];const all=[];
-  (autorizaciones||[]).forEach((a,ai)=>{const col=AUT_COLORS[ai%AUT_COLORS.length];(a.poly||[]).forEach(poly=>{const pl=L.polygon(poly,{color:col,weight:2,fillColor:col,fillOpacity:.16,interactive:false}).addTo(map);zonaLayers.push(pl);poly.forEach(pt=>all.push(pt));});});
-  if(!map._zoneClick){map._zoneClick=true;map.on('click',e=>{const zs=[],seen={};(autorizaciones||[]).forEach((a,ai)=>{const hit=(a.poly||[]).some(poly=>pointInPoly([e.latlng.lat,e.latlng.lng],poly));const k=a.id||a.radicado;if(hit&&!seen[k]){seen[k]=1;zs.push({a,col:AUT_COLORS[ai%AUT_COLORS.length]});}});if(!zs.length)return;const html='<div style="max-height:190px;overflow:auto;min-width:160px">'+zs.map(z=>'<div style="border-left:4px solid '+z.col+';padding:2px 0 2px 7px;margin:3px 0"><b>'+esc(z.a.desc||z.a.radicado||'Autorización')+'</b>'+(z.a.radicado?'<br><span style="font-size:11px;color:#64748b">Radicado '+esc(z.a.radicado)+'</span>':'')+'</div>').join('')+'</div>';L.popup({maxWidth:260}).setLatLng(e.latlng).setContent(html).openOn(map);});}
+  (autorizaciones||[]).forEach((a,ai)=>{if(autVencida(a))return;const col=AUT_COLORS[ai%AUT_COLORS.length];(a.poly||[]).forEach(poly=>{const pl=L.polygon(poly,{color:col,weight:2,fillColor:col,fillOpacity:.16,interactive:false}).addTo(map);zonaLayers.push(pl);poly.forEach(pt=>all.push(pt));});});
+  if(!map._zoneClick){map._zoneClick=true;map.on('click',e=>{const zs=[],seen={};(autorizaciones||[]).forEach((a,ai)=>{if(autVencida(a))return;const hit=(a.poly||[]).some(poly=>pointInPoly([e.latlng.lat,e.latlng.lng],poly));const k=a.id||a.radicado;if(hit&&!seen[k]){seen[k]=1;zs.push({a,col:AUT_COLORS[ai%AUT_COLORS.length]});}});if(!zs.length)return;const html='<div style="max-height:190px;overflow:auto;min-width:160px">'+zs.map(z=>'<div style="border-left:4px solid '+z.col+';padding:2px 0 2px 7px;margin:3px 0"><b>'+esc(z.a.desc||z.a.radicado||'Autorización')+'</b>'+(z.a.radicado?'<br><span style="font-size:11px;color:#64748b">Radicado '+esc(z.a.radicado)+'</span>':'')+'</div>').join('')+'</div>';L.popup({maxWidth:260}).setLatLng(e.latlng).setContent(html).openOn(map);});}
   if(all.length){try{map.fitBounds(all,{padding:[20,20]});}catch(e){}}}
 function loadKmz(e){const f=e.target.files[0];e.target.value='';if(!f)return;const isKml=/\.kml$/i.test(f.name);const r=new FileReader();
   r.onload=ev=>{try{const polys=isKml?parseKmlText(ev.target.result):parseKmz(ev.target.result);
