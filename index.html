@@ -278,6 +278,10 @@ input[readonly]{background:#eef3f1;color:var(--muted);cursor:not-allowed}
       <div class="pillwrap">
         <label class="pill" onclick="tgl(this);verdict();saveDraft()"><input type="checkbox" data-op="diurna" hidden><span class="dot"></span>Diurna</label>
         <label class="pill" onclick="tgl(this);verdict();saveDraft()"><input type="checkbox" data-op="nocturna" hidden><span class="dot"></span>Nocturna</label>
+      </div>
+    </div>
+    <div class="field"><label>Tipo de contacto visual</label>
+      <div class="pillwrap">
         <label class="pill" onclick="tgl(this);verdict();saveDraft()"><input type="checkbox" data-op="vlos" hidden><span class="dot"></span>VLOS</label>
         <label class="pill" onclick="tgl(this);verdict();saveDraft()"><input type="checkbox" data-op="evlos" hidden><span class="dot"></span>EVLOS</label>
         <label class="pill" onclick="tgl(this);verdict();saveDraft()"><input type="checkbox" data-op="bvlos" hidden><span class="dot"></span>BVLOS</label>
@@ -558,9 +562,11 @@ function renderPilots(){const l=$('pilotList');
   let list=pilotos.slice();if(pilotFilterP==='hab')list=list.filter(p=>pilotHabil(p));else if(pilotFilterP==='inh')list=list.filter(p=>!pilotHabil(p));else if(pilotFilterP==='bvlos')list=list.filter(p=>hasCert(p,'BVLOS'));else if(pilotFilterP==='noct')list=list.filter(p=>hasCert(p,'Nocturno'));
   l.innerHTML=bar+(list.length?list.map(p=>{const mm=pilotMed(p);const mv=daysTo(mm);const med=mm?(mv<0?'⛔ certificado médico vencido':'certificado médico vence '+fmtDate(mm)):'sin certificado médico';
     const cip=pilotCipus(p).map(c=>cipuLabel(c)).join(', ')||'—';
-    const inh=!pilotHabil(p);return `<div class="item"><div class="top"><div><div class="name">${esc(p.nombre)} ${inh?'<span style="color:var(--rojo);font-size:12px">⛔ INHABILITADO</span>':'<span style="color:var(--verde);font-size:12px">✓ HABILITADO</span>'}</div>
+    const inh=!pilotHabil(p);const adic=`${hasCert(p,'Nocturno')?'✓ Vuelo nocturno ':''}${hasCert(p,'BVLOS')?'✓ BVLOS':''}`.trim();return `<div class="item"><div class="top"><div style="width:100%"><div class="name">${esc(p.nombre)}</div>
+    <div class="meta">${inh?'<span style="color:var(--rojo);font-weight:700">⛔ INHABILITADO</span>':'<span style="color:var(--verde);font-weight:700">✓ HABILITADO</span>'}</div>
     <div class="meta">Certificaciones: ${cip}</div>
-    <div class="meta">${hasCert(p,'Nocturno')?'✓ Vuelo nocturno ':''}${hasCert(p,'BVLOS')?'✓ BVLOS ':''}· ${med}</div></div>
+    ${adic?`<div class="meta">${adic}</div>`:''}
+    <div class="meta">${med}</div></div>
     </div></div>`}).join(''):'<div class="card empty">No hay pilotos en este filtro.</div>');}
 function addCipu(){const v=$('pi_cipuIn').value.trim();if(!v)return;pendingCipus.push({num:v,tipo:$('pi_cipuTipo').value});$('pi_cipuIn').value='';renderCipuChips();}
 function renderCipuChips(){$('pi_cipuChips').innerHTML=pendingCipus.map((c,i)=>`<span class="chipx">${esc(c.num)} · ${cipuLabel(c)}<button onclick="rmCipu(${i})">×</button></span>`).join('');}
@@ -584,10 +590,13 @@ function renderFleet(){const l=$('fleetList');
   if(!flota.length){l.innerHTML='<div class="card empty">La flota llega por el seed (con internet).</div>';return}
   let list=flota.slice();if(droneFilterP==='act')list=list.filter(d=>d.activo!==false);else if(droneFilterP==='ina')list=list.filter(d=>d.activo===false);else if(droneFilterP==='bvlos')list=list.filter(d=>d.habBVLOS);else if(droneFilterP==='noct')list=list.filter(d=>d.habNocturno);
   l.innerHTML=bar+(list.length?list.map(d=>{const pv=daysTo(d.polizaVence);const pol=d.polizaVence?(pv<0?'⛔ póliza vencida':'póliza vence '+d.polizaVence):'sin póliza';const est=d.activo===false?'<span style="color:var(--rojo);font-size:12px">⛔ INACTIVO</span>':'<span style="color:var(--verde);font-size:12px">✓ ACTIVO</span>';
-    return `<div class="item"><div class="top"><div><div class="name">${esc(dronLabel(d))} ${est}</div>
+    const adicD=`${d.habNocturno?'✓ Vuelo nocturno ':''}${d.habBVLOS?'✓ BVLOS':''}`.trim();return `<div class="item"><div class="top"><div style="width:100%"><div class="name">${esc(dronLabel(d))}</div>
+    <div class="meta">${est}</div>
     <div class="meta">Serial ${esc(d.serial||'—')}</div>
     <div class="meta">RUAS ${d.ruas||'—'} · Máximo ${d.maximo||'—'}</div>
-    <div class="meta">${d.habNocturno?'✓ Vuelo nocturno ':''}${d.habBVLOS?'✓ BVLOS ':''}· ${pol}${d.mant?' · mant '+fmtDate(d.mant)+(daysTo(d.mant)<0?' ⛔':''):''}</div></div>
+    ${adicD?`<div class="meta">${adicD}</div>`:''}
+    <div class="meta">${pol}</div>
+    ${d.mant?`<div class="meta">Mantenimiento ${fmtDate(d.mant)}${daysTo(d.mant)<0?' ⛔':''}</div>`:''}</div>
     </div></div>`}).join(''):'<div class="card empty">No hay drones en este filtro.</div>');}
 function attachAutPdf(e){const f=e.target.files[0];e.target.value='';if(!f)return;
   const r=new FileReader();r.onload=async ev=>{const id=uid();const ok=await Assets.put(id,ev.target.result);if(!ok){toast('Sin espacio para el PDF');return;}autFormPdf={id,name:f.name};renderAutPdfRow();};r.readAsDataURL(f);}
@@ -679,21 +688,21 @@ function fillDeptos(){const s=$('g_depto');if(!s)return;s.innerHTML='<option val
 function onDeptoChange(){const s=$('g_muni');if(!s)return;const munis=COL[$('g_depto').value]||[];s.innerHTML='<option value="">— municipio —</option>'+munis.map(m=>`<option value="${esc(m)}">${esc(m)}</option>`).join('');}
 function resolvePilot(q){const v=(q||'').trim();return pilotos.find(p=>(p.nombre||'').trim()===v)||null;}
 function onPilotoQ(){const p=resolvePilot($('g_pilotoQ').value);$('g_pilotoId').value=p?p.id:'';verdict();renderPilotoInfo();saveDraft();}
-function setSPilot(i,field,q){const p=resolvePilot(q);if(!antesDelCorte()&&p&&!pilotHabil(p)){toast((field==='observadorId'?'El observador':'El piloto')+' está INHABILITADO, no puede ir en el vuelo');setS(i,field,'');renderSorties();return;}setS(i,field,p?p.id:'');}
+function setSPilot(i,field,q){const p=resolvePilot(q);setS(i,field,p?p.id:'');}
 function autLabel(a){return a?((a.radicado||'')+(a.desc?' — '+a.desc:'')):'';}
 function resolveAut(q){const v=(q||'').trim();return autorizaciones.find(a=>autLabel(a)===v)||autorizaciones.find(a=>(a.radicado||'').trim()===v)||null;}
-function onAutQ(){const a=resolveAut($('g_autQ').value);if(a&&autVencida(a)&&!antesDelCorte()){toast('Esa autorización está vencida, no se puede usar');$('g_autQ').value='';$('g_autId').value='';onAutSelect();return;}$('g_autId').value=a?a.id:'';onAutSelect();}
+function onAutQ(){const a=resolveAut($('g_autQ').value);$('g_autId').value=a?a.id:'';onAutSelect();}
 let comboState=null;
 function comboRender(filter){if(!comboState)return;const pop=$('comboPop');const f=(filter||'').toLowerCase().trim();const opts=comboState.opts;let html='';opts.forEach((o,i)=>{if(f&&!o.label.toLowerCase().includes(f))return;html+='<div class="cbo'+(o.dis?' dis':'')+'" data-i="'+i+'">'+esc(o.label)+(o.dis?' <span style="color:var(--rojo);font-size:11px">('+esc(o.dis)+')</span>':'')+'</div>';});pop.innerHTML=html||'<div class="cbo dis">Sin resultados</div>';const r=comboState.input.getBoundingClientRect();pop.style.left=r.left+'px';pop.style.top=(r.bottom+2)+'px';pop.style.width=r.width+'px';pop.style.display='block';}
 function comboOpen(input,opts,onPick){comboState={input,opts,onPick};comboRender('');}
 function comboFilter(input){if(comboState&&comboState.input===input)comboRender(input.value);}
 function comboClose(){const p=$('comboPop');if(p)p.style.display='none';comboState=null;}
 function comboPick(e){if(!comboState)return;const it=e.target.closest('.cbo');if(!it||it.classList.contains('dis'))return;e.preventDefault();const o=comboState.opts[+it.dataset.i];const fn=comboState.onPick;comboState.input.value=o.label;comboClose();fn(o.value);}
-function pilotOpts(){const antes=antesDelCorte();return pilotos.map(p=>({value:p.id,label:p.nombre||'(sin nombre)',dis:(!antes&&!pilotHabil(p))?'inhabilitado':''}));}
-function autOpts(){const antes=antesDelCorte();return autorizaciones.filter(a=>antes||!autVencida(a)).map(a=>({value:a.id,label:autLabel(a)}));}
+function pilotOpts(){return pilotos.map(p=>({value:p.id,label:(p.nombre||'(sin nombre)')+(!pilotHabil(p)?' — inhabilitado':''),dis:''}));}
+function autOpts(){return autorizaciones.map(a=>({value:a.id,label:autLabel(a)+(autVencida(a)?' — vencida':'')}));}
 function pickPiloto(id){$('g_pilotoId').value=id;$('g_pilotoQ').value=pilotName(id);verdict();renderPilotoInfo();saveDraft();}
 function pickAut(id){const a=autById(id);$('g_autId').value=id;$('g_autQ').value=a?autLabel(a):'';onAutSelect();}
-function pickSortie(i,field,id){const p=pilotById(id);if(!antesDelCorte()&&p&&!pilotHabil(p)){toast((field==='observadorId'?'El observador':'El piloto')+' está INHABILITADO');return;}setS(i,field,id);renderSorties();}
+function pickSortie(i,field,id){setS(i,field,id);renderSorties();}
 
 /* ---------- checklists ---------- */
 function renderSiNo(cont,cfg,group){$(cont).innerHTML=cfg.map(([k,q,crit])=>{const v=st[group][k];
@@ -1205,7 +1214,7 @@ function modoPiloto(){return localStorage.getItem('bvd_modoPiloto')==='1';}
 function applyModo(){const on=modoPiloto();['fleetForm','pilotForm'].forEach(id=>{const el=$(id);if(el)el.style.display=on?'none':'';});const c=$('modoPilotoChk');if(c)c.checked=on;}
 function setModoPiloto(on){localStorage.setItem('bvd_modoPiloto',on?'1':'');applyModo();renderFleet();renderPilots();toast(on?'Modo piloto activado (solo consulta)':'Modo maestro (edición habilitada)');}
 function mergeCatalog(local,incoming,key){if(!incoming)return 0;let n=0;incoming.forEach(item=>{let i=local.findIndex(x=>x.id===item.id);if(i<0&&key&&item[key])i=local.findIndex(x=>String(x[key]||'').trim()===String(item[key]||'').trim());if(i<0){local.push(item);n++;}else local[i]=item;});return n;}
-const APP_VER='v77';
+const APP_VER='v78';
 function renderSyncInfo(){const t=Number(localStorage.getItem('bvd_lastSync')||0);const v=localStorage.getItem('bvd_seedVerShown')||localStorage.getItem('bvd_seedVersion')||'';const cf=localStorage.getItem('bvd_catalogoFecha')||'';const p=n=>String(n).padStart(2,'0');
   let ts='',short='';if(t){const d=new Date(t);ts=p(d.getDate())+'-'+p(d.getMonth()+1)+'-'+d.getFullYear()+' '+p(d.getHours())+':'+p(d.getMinutes());short=p(d.getDate())+'-'+p(d.getMonth()+1)+' '+p(d.getHours())+':'+p(d.getMinutes());}
   const hv=$('hdrVer');if(hv)hv.innerHTML='App '+APP_VER+(short?'<br>'+short:'');
