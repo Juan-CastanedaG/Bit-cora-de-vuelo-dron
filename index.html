@@ -677,21 +677,21 @@ function fillDeptos(){const s=$('g_depto');if(!s)return;s.innerHTML='<option val
 function onDeptoChange(){const s=$('g_muni');if(!s)return;const munis=COL[$('g_depto').value]||[];s.innerHTML='<option value="">— municipio —</option>'+munis.map(m=>`<option value="${esc(m)}">${esc(m)}</option>`).join('');}
 function resolvePilot(q){const v=(q||'').trim();return pilotos.find(p=>(p.nombre||'').trim()===v)||null;}
 function onPilotoQ(){const p=resolvePilot($('g_pilotoQ').value);$('g_pilotoId').value=p?p.id:'';verdict();renderPilotoInfo();saveDraft();}
-function setSPilot(i,field,q){const p=resolvePilot(q);if(p&&!pilotHabil(p)){toast((field==='observadorId'?'El observador':'El piloto')+' está INHABILITADO, no puede ir en el vuelo');setS(i,field,'');renderSorties();return;}setS(i,field,p?p.id:'');}
+function setSPilot(i,field,q){const p=resolvePilot(q);if(!antesDelCorte()&&p&&!pilotHabil(p)){toast((field==='observadorId'?'El observador':'El piloto')+' está INHABILITADO, no puede ir en el vuelo');setS(i,field,'');renderSorties();return;}setS(i,field,p?p.id:'');}
 function autLabel(a){return a?((a.radicado||'')+(a.desc?' — '+a.desc:'')):'';}
 function resolveAut(q){const v=(q||'').trim();return autorizaciones.find(a=>autLabel(a)===v)||autorizaciones.find(a=>(a.radicado||'').trim()===v)||null;}
-function onAutQ(){const a=resolveAut($('g_autQ').value);if(a&&autVencida(a)){toast('Esa autorización está vencida, no se puede usar');$('g_autQ').value='';$('g_autId').value='';onAutSelect();return;}$('g_autId').value=a?a.id:'';onAutSelect();}
+function onAutQ(){const a=resolveAut($('g_autQ').value);if(a&&autVencida(a)&&!antesDelCorte()){toast('Esa autorización está vencida, no se puede usar');$('g_autQ').value='';$('g_autId').value='';onAutSelect();return;}$('g_autId').value=a?a.id:'';onAutSelect();}
 let comboState=null;
 function comboRender(filter){if(!comboState)return;const pop=$('comboPop');const f=(filter||'').toLowerCase().trim();const opts=comboState.opts;let html='';opts.forEach((o,i)=>{if(f&&!o.label.toLowerCase().includes(f))return;html+='<div class="cbo'+(o.dis?' dis':'')+'" data-i="'+i+'">'+esc(o.label)+(o.dis?' <span style="color:var(--rojo);font-size:11px">('+esc(o.dis)+')</span>':'')+'</div>';});pop.innerHTML=html||'<div class="cbo dis">Sin resultados</div>';const r=comboState.input.getBoundingClientRect();pop.style.left=r.left+'px';pop.style.top=(r.bottom+2)+'px';pop.style.width=r.width+'px';pop.style.display='block';}
 function comboOpen(input,opts,onPick){comboState={input,opts,onPick};comboRender('');}
 function comboFilter(input){if(comboState&&comboState.input===input)comboRender(input.value);}
 function comboClose(){const p=$('comboPop');if(p)p.style.display='none';comboState=null;}
 function comboPick(e){if(!comboState)return;const it=e.target.closest('.cbo');if(!it||it.classList.contains('dis'))return;e.preventDefault();const o=comboState.opts[+it.dataset.i];const fn=comboState.onPick;comboState.input.value=o.label;comboClose();fn(o.value);}
-function pilotOpts(){return pilotos.map(p=>({value:p.id,label:p.nombre||'(sin nombre)',dis:!pilotHabil(p)?'inhabilitado':''}));}
-function autOpts(){return autorizaciones.filter(a=>!autVencida(a)).map(a=>({value:a.id,label:autLabel(a)}));}
+function pilotOpts(){const antes=antesDelCorte();return pilotos.map(p=>({value:p.id,label:p.nombre||'(sin nombre)',dis:(!antes&&!pilotHabil(p))?'inhabilitado':''}));}
+function autOpts(){const antes=antesDelCorte();return autorizaciones.filter(a=>antes||!autVencida(a)).map(a=>({value:a.id,label:autLabel(a)}));}
 function pickPiloto(id){$('g_pilotoId').value=id;$('g_pilotoQ').value=pilotName(id);verdict();renderPilotoInfo();saveDraft();}
 function pickAut(id){const a=autById(id);$('g_autId').value=id;$('g_autQ').value=a?autLabel(a):'';onAutSelect();}
-function pickSortie(i,field,id){const p=pilotById(id);if(p&&!pilotHabil(p)){toast((field==='observadorId'?'El observador':'El piloto')+' está INHABILITADO');return;}setS(i,field,id);renderSorties();}
+function pickSortie(i,field,id){const p=pilotById(id);if(!antesDelCorte()&&p&&!pilotHabil(p)){toast((field==='observadorId'?'El observador':'El piloto')+' está INHABILITADO');return;}setS(i,field,id);renderSorties();}
 
 /* ---------- checklists ---------- */
 function renderSiNo(cont,cfg,group){$(cont).innerHTML=cfg.map(([k,q,crit])=>{const v=st[group][k];
@@ -754,19 +754,24 @@ async function openPdf(id){try{const data=await Assets.get(id);if(!data){toast('
 function dataURLtoBlob(du){const[meta,b64]=du.split(',');const mime=(meta.match(/:(.*?);/)||[])[1]||'application/pdf';const bin=atob(b64);const a=new Uint8Array(bin.length);for(let i=0;i<bin.length;i++)a[i]=bin.charCodeAt(i);return new Blob([a],{type:mime});}
 
 /* ---------- veredicto ---------- */
-function verdict(){const box=$('verdictBox'),word=$('vWord'),desc=$('vDesc'),light=$('vLight'),ul=$('vReasons');
+const CORTE='2026-09-02';
+const CORTE2='2026-03-09';
+function antesDelCorte2(){return opFechaRef()<CORTE2;}
+function opFechaRef(){const cands=[($('p_inicio')&&$('p_inicio').value)||'',($('q_fin')&&$('q_fin').value)||''];((typeof st!=='undefined'&&st.sorties)||[]).forEach(s=>{cands.push(s.inicio||'',s.fin||'');});const ds=cands.map(x=>{const m=String(x).match(/\d{4}-\d{2}-\d{2}/);return m?m[0]:'';}).filter(Boolean);return ds.length?ds.sort()[0]:new Date().toISOString().slice(0,10);}
+function antesDelCorte(){return opFechaRef()<CORTE;}
+function verdict(){const box=$('verdictBox'),word=$('vWord'),desc=$('vDesc'),light=$('vLight'),ul=$('vReasons');const antes=antesDelCorte();const antes2=antesDelCorte2();
   const block=[],pend=[],warn=[];
   const ini=$('a_ini').value,fin=$('a_fin').value,fecha=($('p_inicio').value||'').slice(0,10)||new Date().toISOString().slice(0,10);
   if(ini&&fecha<ini)block.push('Operación antes del inicio de la autorización');
   if(fin&&fecha>fin)block.push('Operación después del vencimiento de la autorización');
-  if(!$('a_rad').value.trim())warn.push('Sin radicado de autorización');
+  if(!antes2&&!$('a_rad').value.trim())block.push('Debe asociar una autorización de vuelo');
   if(fin&&daysTo(fin)!==null&&daysTo(fin)>=0&&daysTo(fin)<=7)warn.push('La autorización vence en '+daysTo(fin)+' día(s)');
   const noc=isOp('nocturna'),bv=isOp('bvlos');
   const p=pilotById($('g_pilotoId').value);
-  if(p){const _md=pilotMed(p);if(_md&&daysTo(_md)<0)block.push('Examen médico del piloto vencido');}
+  if(p){if(!antes){const _md=pilotMed(p);if(_md&&daysTo(_md)<0)block.push('Examen médico del piloto vencido');}}
   else warn.push('Sin piloto principal seleccionado');
   const d=dronById($('g_dron').value);
-  if(d){if(d.activo===false)block.push('Dron inactivo');if(d.polizaVence&&daysTo(d.polizaVence)<0)block.push('Póliza del dron vencida');
+  if(d){if(!antes&&d.activo===false)block.push('Dron inactivo');if(!antes&&d.polizaVence&&daysTo(d.polizaVence)<0)block.push('Póliza del dron vencida');
     if(noc&&!d.habNocturno)block.push('Dron no habilitado para operación nocturna');
     if(bv&&!d.habBVLOS)block.push('Dron no habilitado para BVLOS');}
   const _au=autById($('g_autId').value);
@@ -863,10 +868,12 @@ function prepNueva(){
 /* ---------- guardar operación ---------- */
 function nextCodigo(base){let n=0;operaciones.forEach(o=>{if(o.codigo&&o.codigo.indexOf(base+'-')===0){const m=o.codigo.slice(base.length+1).match(/^(\d+)/);if(m)n=Math.max(n,+m[1]);}});return base+'-'+(n+1);}
 function saveOp(){
-  if(!st.fotoDron||!st.fotoMeteo){toast('Faltan las fotos obligatorias: dron/puerto y app de meteorología');nav('nueva');return;}
-  const _pp=pilotById($('g_pilotoId').value);if(_pp&&!pilotHabil(_pp)){toast('No se puede registrar: el piloto está INHABILITADO');return;}
+  const antes=antesDelCorte();
+  if(!antesDelCorte2()&&!$('a_rad').value.trim()){toast('No se puede registrar: debe asociar una autorización de vuelo');return;}
+  if(!antes&&(!st.fotoDron||!st.fotoMeteo)){toast('Faltan las fotos obligatorias: dron/puerto y app de meteorología');nav('nueva');return;}
+  if(!antes){const _pp=pilotById($('g_pilotoId').value);if(_pp&&!pilotHabil(_pp)){toast('No se puede registrar: el piloto está INHABILITADO');return;}
   const _dd=dronById($('g_dron').value);if(_dd&&_dd.activo===false){toast('No se puede registrar: el dron está INACTIVO');return;}
-  for(const s of (st.sorties||[])){const _sp=pilotById(s.pilotoId);if(_sp&&!pilotHabil(_sp)){toast('No se puede registrar: hay un piloto de vuelo INHABILITADO');return;}const _so=pilotById(s.observadorId);if(_so&&!pilotHabil(_so)){toast('No se puede registrar: hay un observador INHABILITADO');return;}}
+  for(const s of (st.sorties||[])){const _sp=pilotById(s.pilotoId);if(_sp&&!pilotHabil(_sp)){toast('No se puede registrar: hay un piloto de vuelo INHABILITADO');return;}const _so=pilotById(s.observadorId);if(_so&&!pilotHabil(_so)){toast('No se puede registrar: hay un observador INHABILITADO');return;}}}
   const _au=autById($('g_autId').value);
   if(_au){const _tm=opTipoMsgs(_au);if(_tm.length){toast('No se puede registrar: '+_tm[0]);return;}
     const _dd2=dronById($('g_dron').value);if(_dd2&&!dronAutOK(_au,_dd2)){toast('No se puede registrar: el dron no está autorizado en esta autorización');return;}
@@ -879,7 +886,7 @@ function saveOp(){
   const fechaCod=(($('p_inicio').value||new Date().toISOString().slice(0,10)).slice(0,10)).replace(/-/g,'');
   const codBase=fechaCod+'-'+((d&&d.maximo)||'SINMAX');
   const codigo=editingOpId?((operaciones.find(x=>x.id===editingOpId)||{}).codigo||nextCodigo(codBase)):nextCodigo(codBase);
-  const rec={id:uid(),ts:Date.now(),codigo:codigo,pilotoId:$('g_pilotoId').value,piloto:pp?pp.nombre:'',
+  const rec={id:uid(),ts:Date.now(),historico:antesDelCorte(),codigo:codigo,pilotoId:$('g_pilotoId').value,piloto:pp?pp.nombre:'',
     tipoOp:{diurna:isOp('diurna'),nocturna:isOp('nocturna'),vlos:isOp('vlos'),evlos:isOp('evlos'),bvlos:isOp('bvlos')},
     municipio:$('g_muni').value.trim(),departamento:$('g_depto').value.trim(),
     dronId:d?d.id:'',dronModelo:d?d.modelo:'',dronSerial:d?d.serial:'',dronRuas:d?d.ruas:'',dronMaximo:d?d.maximo:'',dronDR:d?(d.dr||''):'',dronPolizaVence:d?(d.polizaVence||''):'',dronMant:d?(d.mant||''):'',
@@ -1196,7 +1203,7 @@ function modoPiloto(){return localStorage.getItem('bvd_modoPiloto')==='1';}
 function applyModo(){const on=modoPiloto();['fleetForm','pilotForm'].forEach(id=>{const el=$(id);if(el)el.style.display=on?'none':'';});const c=$('modoPilotoChk');if(c)c.checked=on;}
 function setModoPiloto(on){localStorage.setItem('bvd_modoPiloto',on?'1':'');applyModo();renderFleet();renderPilots();toast(on?'Modo piloto activado (solo consulta)':'Modo maestro (edición habilitada)');}
 function mergeCatalog(local,incoming,key){if(!incoming)return 0;let n=0;incoming.forEach(item=>{let i=local.findIndex(x=>x.id===item.id);if(i<0&&key&&item[key])i=local.findIndex(x=>String(x[key]||'').trim()===String(item[key]||'').trim());if(i<0){local.push(item);n++;}else local[i]=item;});return n;}
-const APP_VER='v69';
+const APP_VER='v74';
 function renderSyncInfo(){const t=Number(localStorage.getItem('bvd_lastSync')||0);const v=localStorage.getItem('bvd_seedVerShown')||localStorage.getItem('bvd_seedVersion')||'';const cf=localStorage.getItem('bvd_catalogoFecha')||'';const p=n=>String(n).padStart(2,'0');
   let ts='',short='';if(t){const d=new Date(t);ts=p(d.getDate())+'-'+p(d.getMonth()+1)+'-'+d.getFullYear()+' '+p(d.getHours())+':'+p(d.getMinutes());short=p(d.getDate())+'-'+p(d.getMonth()+1)+' '+p(d.getHours())+':'+p(d.getMinutes());}
   const hv=$('hdrVer');if(hv)hv.innerHTML='App '+APP_VER+(short?'<br>'+short:'');
