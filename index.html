@@ -56,10 +56,6 @@ textarea{resize:vertical;min-height:56px}
 .mono{font-family:var(--mono)}
 .row2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
 .hint{font-size:12.5px;color:var(--muted);margin-top:5px}
-.auttbl{width:100%;border-collapse:collapse;font-size:13px;margin:2px 0 4px}
-.auttbl th,.auttbl td{text-align:left;padding:5px 6px;border-bottom:1px solid #eee}
-.auttbl th{color:var(--muted);font-weight:600;font-size:11px;text-transform:uppercase;letter-spacing:.3px}
-.auth4{margin:14px 0 4px;font-size:14px;color:var(--verde)}
 .sectlabel{font-size:11.5px;font-weight:800;text-transform:uppercase;letter-spacing:.6px;color:var(--grn-dk);margin:16px 0 10px}
 .divider{height:1px;background:var(--line);margin:14px 0}
 
@@ -145,33 +141,20 @@ textarea{resize:vertical;min-height:56px}
 .meter{height:12px;background:#e2e8f0;border-radius:8px;overflow:hidden;border:1px solid var(--line)}
 .meterfill{height:100%;background:linear-gradient(90deg,var(--grn),var(--grn-dk))}
 
-#navBackdrop{position:fixed;inset:0;background:rgba(0,0,0,.28);z-index:1500;opacity:0;pointer-events:none;transition:opacity .2s}
-#navBar{position:fixed;bottom:0;left:0;right:0;background:#fff;border-top:1px solid var(--line);padding:8px 12px calc(8px + env(safe-area-inset-bottom));z-index:1502;display:flex;justify-content:center}
+#navBackdrop{position:fixed;inset:0;background:rgba(0,0,0,.28);z-index:50;opacity:0;pointer-events:none;transition:opacity .2s}
+#navBar{position:fixed;bottom:0;left:0;right:0;background:#fff;border-top:1px solid var(--line);padding:8px 12px calc(8px + env(safe-area-inset-bottom));z-index:52;display:flex;justify-content:center}
 #navToggle{background:var(--grn-dk);color:#fff;border:none;border-radius:12px;padding:11px 18px;font-size:15px;font-weight:700;display:flex;align-items:center;gap:10px;width:100%;max-width:520px;justify-content:center}
 #navToggle .ic{font-size:16px;line-height:1}
-nav#navGrid{position:fixed;left:0;right:0;bottom:calc(66px + env(safe-area-inset-bottom));background:#fff;border-top:1px solid var(--line);box-shadow:0 -10px 30px rgba(0,0,0,.14);z-index:1501;display:grid;grid-template-columns:repeat(4,1fr);gap:4px;padding:10px 8px;transition:transform .22s ease,opacity .22s ease}
+nav#navGrid{position:fixed;left:0;right:0;bottom:calc(66px + env(safe-area-inset-bottom));background:#fff;border-top:1px solid var(--line);box-shadow:0 -10px 30px rgba(0,0,0,.14);z-index:51;display:grid;grid-template-columns:repeat(4,1fr);gap:4px;padding:10px 8px;transition:transform .22s ease,opacity .22s ease}
 nav#navGrid.collapsed{transform:translateY(140%);opacity:0;pointer-events:none}
 nav#navGrid button{background:none;border:none;padding:12px 2px;display:flex;flex-direction:column;align-items:center;gap:5px;color:var(--muted);font-size:11px;font-weight:600;border-radius:11px;white-space:normal;text-align:center;line-height:1.15}
 nav#navGrid button.active{color:var(--grn-dk);background:#eaf7ef}
 nav#navGrid svg{stroke:var(--muted);stroke-width:2;fill:none;width:24px;height:24px}
 nav#navGrid button.active svg{stroke:var(--grn-dk)}
-.modal{position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:1600;display:flex;align-items:center;justify-content:center;padding:20px}
-.expOvl{position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:1600;display:none;align-items:center;justify-content:center;padding:16px}
-.expCard{background:#fff;border-radius:14px;padding:16px;width:100%;max-width:460px;max-height:88vh;overflow:auto}
-.exprow{display:flex;align-items:center;gap:10px;padding:10px 12px;border-bottom:1px solid #f1f5f9}
-.exprow input{width:18px;height:18px;flex:none}
+.modal{position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:60;display:flex;align-items:center;justify-content:center;padding:20px}
 .modalCard{background:#fff;border-radius:16px;padding:20px;max-width:420px;width:100%;box-shadow:0 20px 60px rgba(0,0,0,.3)}
 .locked{opacity:.5;pointer-events:none;filter:grayscale(.3)}
-span.hdrverX{}
-.hdrver{margin-left:auto;text-align:right;font-size:11px;color:rgba(255,255,255,.85);line-height:1.35;white-space:nowrap;align-self:flex-start}
-span.tax{display:inline-block;background:#e3f6ec;color:#007934;border:1px solid #7AD400;border-radius:6px;padding:1px 6px;font-size:11px;font-weight:700;margin-left:6px;white-space:nowrap}
-span.tax.epm{background:#e0edff;color:#1d4ed8;border-color:#93c5fd}
-input[readonly]{background:#eef3f1;color:var(--muted);cursor:not-allowed}
 .infoBox{margin-top:6px;font-size:12.5px;line-height:1.5;color:var(--muted)}
-#comboPop{position:fixed;z-index:300;background:#fff;border:1px solid var(--line);border-radius:10px;box-shadow:0 8px 24px rgba(0,0,0,.18);max-height:280px;overflow:auto;display:none}
-.cbo{padding:11px 12px;font-size:14px;border-bottom:1px solid #f1f5f9;cursor:pointer}
-.cbo:active,.cbo:hover{background:#f0fdf4}
-.cbo.dis{color:#9ca3af;cursor:default}
 .infoBox b{color:var(--ink)}
 .infoBox .bad{color:var(--rojo);font-weight:700}
 
@@ -196,7 +179,6 @@ input[readonly]{background:#eef3f1;color:var(--muted);cursor:not-allowed}
   <div class="brand">
     <img class="logoEPM" id="epmLogo" alt="EPM">
     <div><h1>Bitácora de Vuelo Dron</h1><div class="sub">F-EPM-03 · RAC 100</div></div>
-    <div id="hdrVer" class="hdrver"></div>
   </div>
   <div class="dash">
     <div class="chip"><div class="n" id="dTot">0</div><div class="l">Operac.</div></div>
@@ -253,17 +235,20 @@ input[readonly]{background:#eef3f1;color:var(--muted);cursor:not-allowed}
   <div class="card">
     <h2>Mapa de zona</h2>
     <div class="btnrow" style="flex-wrap:wrap">
+      <button class="btn sec sm" onclick="document.getElementById('kmzIn').click()">📁 Cargar KMZ/KML</button>
+      <input type="file" id="kmzIn" accept=".kmz,.kml" style="display:none" onchange="loadKmz(event)">
       <button class="btn sec sm" onclick="locateMe()">📍 Mi ubicación</button>
       <button class="btn sec sm" onclick="toggleBase()">🛰️ Calles/Satélite</button>
       <button class="btn sec sm" onclick="centrarVuelos()">🔵 Ver vuelos</button>
     </div>
-    <div id="mapStatus" class="hint" style="margin-top:8px">Tocá "Mi ubicación" para verte respecto a las zonas autorizadas.</div>
+    <div id="mapStatus" class="hint" style="margin-top:8px">Cargá el KMZ del polígono de la LT y tocá "Mi ubicación".</div>
+    <div id="zonaInfo" style="margin-top:8px"></div>
     <div id="vpInfo" class="hint" style="margin-top:6px"></div>
   </div>
-  <div id="map" style="position:relative;z-index:0;height:58vh;border:1px solid var(--line);border-radius:12px;overflow:hidden"></div>
+  <div id="map" style="height:58vh;border:1px solid var(--line);border-radius:12px;overflow:hidden"></div>
   <div class="card" style="margin-top:12px"><h2>Uso sin señal</h2>
     <button class="btn sec" onclick="downloadArea()">⬇️ Descargar zona para usar offline</button>
-    <div id="dlStatus" class="hint" style="margin-top:8px">Con internet, encuadrá el mapa en la zona que vas a volar y tocá el botón: se guardan las teselas visibles para usarlas sin señal.</div></div>
+    <div id="dlStatus" class="hint" style="margin-top:8px">Con internet, descargá la zona una vez; después el mapa funciona sin señal en esa área.</div></div>
 </section>
 
 <!-- ===== NUEVA OPERACIÓN ===== -->
@@ -273,7 +258,7 @@ input[readonly]{background:#eef3f1;color:var(--muted);cursor:not-allowed}
 
   <div class="card">
     <h2><span class="step">1</span>Datos generales</h2>
-    <div class="field"><label>Piloto principal</label><input id="g_pilotoQ" placeholder="Tocá para ver la lista o escribí…" autocomplete="off" onfocus="comboOpen(this,pilotOpts(),pickPiloto)" oninput="comboFilter(this)" onchange="onPilotoQ()" onblur="setTimeout(comboClose,150)"><input type="hidden" id="g_pilotoId"><div id="pilotoInfo" class="infoBox"></div></div><datalist id="dlPilotos"></datalist>
+    <div class="field"><label>Piloto principal</label><select id="g_pilotoId" onchange="verdict();saveDraft()"></select></div>
     <div class="field"><label>Tipo de operación</label>
       <div class="pillwrap">
         <label class="pill" onclick="tgl(this);verdict();saveDraft()"><input type="checkbox" data-op="diurna" hidden><span class="dot"></span>Diurna</label>
@@ -284,15 +269,15 @@ input[readonly]{background:#eef3f1;color:var(--muted);cursor:not-allowed}
       </div>
     </div>
     <div class="row2">
-      <div class="field"><label>Departamento</label><select id="g_depto" onchange="onDeptoChange();saveDraft()"></select></div>
-      <div class="field"><label>Municipio</label><select id="g_muni" onchange="saveDraft()"></select></div>
+      <div class="field"><label>Municipio</label><input type="text" id="g_muni" oninput="saveDraft()"></div>
+      <div class="field"><label>Departamento</label><input type="text" id="g_depto" oninput="saveDraft()"></div>
     </div>
     <div class="field"><label>Dron</label><select id="g_dron" onchange="verdict();renderSorties();renderDronInfo();saveDraft()"></select><div id="dronInfo" class="infoBox"></div></div>
   </div>
 
   <div class="card">
     <h2><span class="step">2</span>Autorización de vuelo</h2>
-    <div class="field"><label>Autorización</label><input id="g_autQ" placeholder="Tocá para ver la lista o escribí…" autocomplete="off" onfocus="comboOpen(this,autOpts(),pickAut)" oninput="comboFilter(this)" onchange="onAutQ()" onblur="setTimeout(comboClose,150)"><input type="hidden" id="g_autId"><div id="autInfo" class="infoBox"></div></div><datalist id="dlAut"></datalist>
+    <div class="field"><label>Autorización</label><select id="g_autId" onchange="onAutSelect()"></select><div id="autInfo" class="infoBox"></div></div>
     <div class="row2">
       <div class="field"><label>Radicado</label><input type="text" id="a_rad" class="mono" readonly></div>
       <div class="field"><label>ID</label><input type="text" id="a_id" class="mono" readonly></div>
@@ -343,7 +328,7 @@ input[readonly]{background:#eef3f1;color:var(--muted);cursor:not-allowed}
     <h2><span class="step">6</span>Chequeo pos-vuelo</h2>
     <div id="chkPosvuelo"></div>
     <div class="field" style="margin-top:10px"><label>Fin de la operación</label><input type="datetime-local" id="q_fin" oninput="saveDraft()"></div>
-    <div class="sectlabel">Eventos de seguridad</div>
+    <div class="sectlabel">Ocurrencias de seguridad</div>
     <div class="hint" style="margin:-4px 0 10px">Marcá "Sí" si el evento ocurrió durante la operación.</div>
     <div id="ocurrList"></div><div id="morFlag"></div>
     <div class="field" style="margin-top:10px"><label>Observaciones pos-vuelo</label><textarea id="q_obs" oninput="saveDraft()"></textarea></div>
@@ -370,31 +355,73 @@ input[readonly]{background:#eef3f1;color:var(--muted);cursor:not-allowed}
 
 <!-- ===== FLOTA ===== -->
 <section class="view" id="v-flota">
-  <div class="card"><h2>Flota</h2><div class="hint">Catálogo de <b>solo consulta</b>. Los drones se administran de forma central y llegan por el seed; no se crean desde el teléfono.</div></div>
+  <div class="card" id="fleetForm">
+    <h2 id="fleetTitle">Agregar dron</h2>
+    <div class="field"><label>Modelo</label><input type="text" id="d_modelo" placeholder="Ej. DJI Matrice 4 Enterprise"></div>
+    <div class="field"><label>Código EPM (DRxxx)</label><input type="text" id="d_dr" class="mono" placeholder="Ej. DR001"></div>
+    <div class="field"><label>Serial del dron</label><input type="text" id="d_serial" class="mono"></div>
+    <div class="row2">
+      <div class="field"><label>Código RUAS</label><input type="text" id="d_ruas" class="mono"></div>
+      <div class="field"><label>Código Máximo</label><input type="text" id="d_maximo" class="mono" placeholder="Ej. DR25"></div>
+    </div>
+    <div class="row2">
+      <div class="field"><label>Póliza RC No.</label><input type="text" id="d_poliza" class="mono"></div>
+      <div class="field"><label>Póliza vence</label><input type="date" id="d_polizaVence"></div>
+    </div>
+    <div class="field"><label>Mantenimiento vence</label><input type="date" id="d_mant"></div>
+    <div class="field"><label>Habilitaciones del dron</label>
+      <div class="pillwrap">
+        <label class="pill" onclick="tgl(this)"><input type="checkbox" id="d_hnoc" hidden><span class="dot"></span>Operación nocturna</label>
+        <label class="pill" onclick="tgl(this)"><input type="checkbox" id="d_hbvlos" hidden><span class="dot"></span>BVLOS</label>
+      </div>
+    </div>
+    <button class="btn" onclick="saveDrone()" id="d_saveBtn">Agregar a la flota</button>
+    <div id="d_cancel" style="display:none;margin-top:8px"><button class="btn sec" onclick="resetDroneForm()">Cancelar</button></div>
+  </div>
   <div id="fleetList"></div>
 </section>
 
 <!-- ===== PILOTOS ===== -->
 <section class="view" id="v-pilotos">
-  <div class="card"><h2>Pilotos</h2><div class="hint">Catálogo de <b>solo consulta</b>. Los pilotos se administran de forma central y llegan por el seed; no se crean desde el teléfono.</div></div>
+  <div class="card" id="pilotForm">
+    <h2 id="pilotTitle">Agregar piloto</h2>
+    <div class="field"><label>Nombre</label><input type="text" id="pi_nombre"></div>
+    <div class="field"><label>Cédula</label><input type="text" id="pi_cedula" class="mono"></div>
+    <div class="field"><label>CIPU (uno o varios)</label>
+      <div class="row2"><input type="text" id="pi_cipuIn" class="mono" placeholder="No. CIPU">
+        <select id="pi_cipuTipo"><option value="Piloto">Piloto</option><option value="Nocturno">Operación nocturna</option><option value="BVLOS">BVLOS</option></select></div>
+      <button class="btn sec sm" onclick="addCipu()" style="margin-top:8px">＋ Agregar CIPU</button>
+      <div class="chips" id="pi_cipuChips"></div>
+      <div class="hint">Las habilitaciones nocturna y BVLOS del piloto se derivan del tipo de sus CIPU.</div>
+    </div>
+    <div class="field"><label>Vigencia examen médico</label><input type="date" id="pi_med"></div>
+    <button class="btn" onclick="savePilot()" id="pi_saveBtn">Agregar piloto</button>
+    <div id="pi_cancel" style="display:none;margin-top:8px"><button class="btn sec" onclick="resetPilotForm()">Cancelar</button></div>
+  </div>
   <div id="pilotList"></div>
 </section>
 
 <!-- ===== DATOS ===== -->
 <section class="view" id="v-datos">
   <div class="card"><h2>Exportar</h2>
+    <div class="field"><button class="btn sec" onclick="exportCSV()">📊 CSV para Power BI</button><div class="hint">Una fila por vuelo con el contexto de la operación. Dejá los CSV en una carpeta y usá el conector <b>Carpeta</b> de Power BI.</div></div>
     <div class="field"><button class="btn dark" onclick="exportPDF()">📄 Reporte PDF (fondo blanco)</button></div>
   </div>
   <div class="card"><h2>Respaldo</h2>
     <div class="field"><button class="btn sec" onclick="exportJSON()">💾 Descargar respaldo (JSON)</button><div class="hint">Incluye pilotos, flota, operaciones, fotos y PDFs adjuntos.</div></div>
-    <div class="field"><button class="btn" onclick="exportSelectOpen()">📊 Enviar por Forms (Excel)</button><div class="hint">Elegís qué operaciones enviar (por defecto solo las cerradas). Genera el Excel que acepta el formulario de EPM.</div></div>
-    <div class="field"><button class="btn" onclick="document.getElementById('privIn').click()">👥 Cargar catálogo de pilotos</button>
-      <input type="file" id="privIn" accept="application/json,.json" style="display:none" onchange="importPriv(event)">
-      <div class="hint">Cargá el archivo de <b>pilotos</b> que te envía el administrador. Queda solo en tu teléfono. Los drones ahora llegan por internet (GitHub).</div></div>
+    <div class="field"><button class="btn sec" onclick="shareBackup()">📤 Compartir respaldo (JSON)</button><div class="hint">Abre el menú de compartir del teléfono (OneDrive, Teams, correo…) para enviar el respaldo sin buscar el archivo.</div></div>
+    <div class="field"><button class="btn sec" onclick="document.getElementById('loadIn').click()">📂 Cargar JSON</button>
+      <input type="file" id="loadIn" accept="application/json,.json" style="display:none" onchange="loadJSON(event)">
+      <div class="hint">Al cargarlo te pregunta si <b>adicionar</b> (consolidar sin borrar) o <b>reemplazar</b> todo.</div></div>
   </div>
   <div class="card"><h2>Almacenamiento</h2><div id="storageInfo"><div class="hint">Cargando…</div></div></div>
+  <div class="card"><h2>Catálogo (seed)</h2>
+    <div class="field"><label style="display:flex;align-items:center;gap:8px;font-size:15px"><input type="checkbox" id="modoPilotoChk" onchange="setModoPiloto(this.checked)"> Modo piloto (Pilotos y Flota de solo consulta)</label>
+      <div class="hint">Actívalo en los teléfonos de los pilotos: los catálogos pasan a solo consulta y llegan por el seed. En tu dispositivo maestro dejalo apagado para editar.</div></div>
+    <div class="field"><button class="btn sec" onclick="exportSeed()">📤 Exportar catálogo (seed.json)</button>
+      <div class="hint">Genera el seed (drones, pilotos y autorizaciones con sus PDF) para subir al repositorio. Cada exportación sube la versión y todos la reciben al abrir con internet.</div></div>
+  </div>
   <div class="card"><h2>Actualización</h2>
-    <div id="syncInfo" class="hint" style="margin-bottom:8px"></div>
     <div class="field"><button class="btn sec" onclick="forceUpdate()">🔄 Buscar actualización</button>
       <div class="hint">Descarga la última versión publicada. No borra tus datos; solo actualiza la app. Requiere internet.</div></div></div>
 </section>
@@ -421,36 +448,15 @@ input[readonly]{background:#eef3f1;color:var(--muted);cursor:not-allowed}
   <button class="btn sec" style="margin-top:8px" onclick="applyImport('replace')">↩️ Reemplazar todo</button>
   <button class="btn sec" style="margin-top:8px" onclick="closeImportModal()">Cancelar</button>
 </div></div>
-<div id="updBanner" style="display:none;position:fixed;left:12px;right:12px;bottom:calc(78px + env(safe-area-inset-bottom));z-index:1600;background:#007934;color:#fff;border-radius:12px;padding:12px 14px;box-shadow:0 8px 24px rgba(0,0,0,.28);align-items:center;justify-content:space-between;gap:10px">
-  <span style="font-size:14px">Hay una versión nueva de la app.</span>
-  <button onclick="applyUpdate()" style="background:#7AD400;color:#053d1a;border:none;border-radius:8px;padding:8px 14px;font-weight:700;font-size:14px">Actualizar</button>
-</div>
 <div class="toast" id="toast"></div>
 
-<div id="comboPop" onmousedown="comboPick(event)"></div>
 <script>
 "use strict";
 const EPM_LOGO="data:image/png;base64,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";
-const CHK_OFICINA=[['plan','¿El plan de vuelo está detallado y actualizado?',true],['apps','¿Las aplicaciones actualizadas y cargadas en el dispositivo móvil?',false],['firmware','¿El firmware de la aeronave está actualizado?',true],['gcs','¿El software del radiocontrol/GCS está actualizado?',false],['baterias','¿Las baterías de la aeronave enumeradas y cargadas al 100%?',true],['batMovil','¿La batería del dispositivo móvil está cargada?',false],['cables','¿Cables y accesorios revisados, en buen estado y empacados?',false],['aeronave','¿Aeronave, hélices, estructura y motores en buen estado y empacados?',true],['comObs','¿Equipos de comunicación con el observador en buen estado y empacados?',false],['demarcacion','¿Accesorios para demarcación de la zona de seguridad completos y empacados?',false],['extintor','¿Extintor, botiquín y herramientas básicas completas y empacadas?',false],['etiqueta','¿La aeronave tiene pegada la etiqueta de identificación?',true]];
-const CHK_PREVUELO=[['aeronavegable','¿La aeronave y sus componentes están en condiciones aeronavegables?',true],['batAjustada','¿La batería de la aeronave está ajustada y con carga?',true],['batRadio','¿La batería del radiocontrol y dispositivos móviles están cargados?',false],['areaDespejada','¿El área de trabajo está despejada y delimitada?',true],['accesorios','¿Los accesorios y equipos de trabajo instalados y en buen estado?',false],['c2','¿La conexión de enlace C2 funciona correctamente?',true],['sonidos','¿Los sonidos de alerta del radiocontrol en volumen audible?',false],['meteo','¿Las condiciones meteorológicas son aceptables para el vuelo?',true],['satelital','¿La recepción satelital es aceptable para el vuelo?',true],['kp','¿El índice Kp es aceptable para el vuelo? (menor a 4.0)',true],['comObsF','¿El equipo de comunicación con el observador está funcionando?',false],['botiquin','¿El botiquín y extintor ubicados para fácil acceso?',false],['areaSegura','¿El área de operación es segura para el despegue y aterrizaje?',true],['etiquetaF','¿La aeronave tiene pegada la etiqueta de identificación?',true]];
+const CHK_OFICINA=[['plan','¿El plan de vuelo está detallado y actualizado?',true],['apps','¿Las aplicaciones actualizadas y cargadas en el dispositivo móvil?',false],['firmware','¿El firmware de la aeronave está actualizado?',true],['gcs','¿El software del radiocontrol/GCS está actualizado?',false],['baterias','¿Las baterías de la aeronave enumeradas y cargadas al 100%?',true],['batMovil','¿La batería del dispositivo móvil está cargada?',false],['cables','¿Cables y accesorios revisados, en buen estado y empacados?',false],['aeronave','¿Aeronave, hélices, estructura y motores en buen estado y empacados?',true],['comObs','¿Equipos de comunicación con el observador en buen estado y empacados?',false],['demarcacion','¿Accesorios para demarcación de la zona de seguridad completos y empacados?',false],['extintor','¿Extintor, botiquín y herramientas básicas completas y empacadas?',false]];
+const CHK_PREVUELO=[['aeronavegable','¿La aeronave y sus componentes están en condiciones aeronavegables?',true],['batAjustada','¿La batería de la aeronave está ajustada y con carga?',true],['batRadio','¿La batería del radiocontrol y dispositivos móviles están cargados?',false],['areaDespejada','¿El área de trabajo está despejada y delimitada?',true],['accesorios','¿Los accesorios y equipos de trabajo instalados y en buen estado?',false],['c2','¿La conexión de enlace C2 funciona correctamente?',true],['sonidos','¿Los sonidos de alerta del radiocontrol en volumen audible?',false],['meteo','¿Las condiciones meteorológicas son aceptables para el vuelo?',true],['satelital','¿La recepción satelital es aceptable para el vuelo?',true],['kp','¿El índice Kp es aceptable para el vuelo? (menor a 4.0)',true],['comObsF','¿El equipo de comunicación con el observador está funcionando?',false],['botiquin','¿El botiquín y extintor ubicados para fácil acceso?',false],['areaSegura','¿El área de operación es segura para el despegue y aterrizaje?',true]];
 const CHK_POSVUELO=[['limpios','¿La aeronave, accesorios y equipos están limpios y empacados?',false],['senal','¿Los elementos de señalización y seguridad recogidos y empacados?',false],['zonaLimpia','¿La zona de operación limpia y libre de desechos/basura?',false]];
-const COL={"Amazonas":["Leticia", "Puerto Nariño"],"Antioquia":["Abejorral", "Abriaquí", "Alejandría", "Amagá", "Amalfi", "Andes", "Angelópolis", "Angostura", "Anorí", "Anzá", "Apartadó", "Arboletes", "Argelia", "Armenia", "Barbosa", "Bello", "Belmira", "Betania", "Betulia", "Briceño", "Buriticá", "Caicedo", "Caldas", "Campamento", "Caracolí", "Caramanta", "Carepa", "Carolina del Príncipe", "Caucasia", "Cañasgordas", "Chigorodó", "Cisneros", "Ciudad Bolívar", "Cocorná", "Concepción", "Concordia", "Copacabana", "Cáceres", "Dabeiba", "Donmatías", "Ebéjico", "El Bagre", "El Carmen de Viboral", "El Peñol", "El Retiro", "El Santuario", "Entrerríos", "Envigado", "Fredonia", "Frontino", "Giraldo", "Girardota", "Granada", "Guadalupe", "Guarne", "Guatapé", "Gómez Plata", "Heliconia", "Hispania", "Itagüí", "Ituango", "Jardín", "Jericó", "La Ceja", "La Estrella", "La Pintada", "La Unión", "Liborina", "Maceo", "Marinilla", "Medellín", "Montebello", "Murindó", "Mutatá", "Nariño", "Nechí", "Necoclí", "Olaya", "Peque", "Pueblorrico", "Puerto Berrío", "Puerto Nare", "Puerto Triunfo", "Remedios", "Rionegro", "Sabanalarga", "Sabaneta", "Salgar", "San Andrés de Cuerquia", "San Carlos", "San Francisco", "San Jerónimo", "San José de la Montaña", "San Juan de Urabá", "San Luis", "San Pedro de Urabá", "San Pedro de los Milagros", "San Rafael", "San Roque", "San Vicente", "Santa Bárbara", "Santa Fe de Antioquia", "Santa Rosa de Osos", "Santo Domingo", "Segovia", "Sonsón", "Sopetrán", "Tarazá", "Tarso", "Titiribí", "Toledo", "Turbo", "Támesis", "Uramita", "Urrao", "Valdivia", "Valparaíso", "Vegachí", "Venecia", "Vigía del Fuerte", "Yalí", "Yarumal", "Yolombó", "Yondó", "Zaragoza"],"Arauca":["Arauca", "Arauquita", "Cravo Norte", "Fortul", "Puerto Rondón", "Saravena", "Tame"],"Atlántico":["Baranoa", "Barranquilla", "Campo de la Cruz", "Candelaria", "Galapa", "Juan de Acosta", "Luruaco", "Malambo", "Manatí", "Palmar de Varela", "Piojó", "Polonuevo", "Ponedera", "Puerto Colombia", "Repelón", "Sabanagrande", "Sabanalarga", "Santa Lucía", "Santo Tomás", "Soledad", "Suán", "Tubará", "Usiacurí"],"Bogotá D.C.":["Bogotá D.C."],"Bolívar":["Achí", "Altos del Rosario", "Arenal", "Arjona", "Arroyohondo", "Barranco de Loba", "Brazuelo de Papayal", "Calamar", "Cantagallo", "Cartagena de Indias", "Cicuco", "Clemencia", "Córdoba", "El Carmen de Bolívar", "El Guamo", "El Peñón", "Hatillo de Loba", "Magangué", "Mahates", "Margarita", "María la Baja", "Mompós", "Montecristo", "Morales", "Norosí", "Pinillos", "Regidor", "Río Viejo", "San Cristóbal", "San Estanislao", "San Fernando", "San Jacinto", "San Jacinto del Cauca", "San Juan Nepomuceno", "San Martín de Loba", "San Pablo", "Santa Catalina", "Santa Rosa", "Santa Rosa del Sur", "Simití", "Soplaviento", "Talaigua Nuevo", "Tiquisio", "Turbaco", "Turbaná", "Villanueva", "Zambrano"],"Boyacá":["Almeida", "Aquitania", "Arcabuco", "Belén", "Berbeo", "Betéitiva", "Boavita", "Boyacá", "Briceño", "Buenavista", "Busbanzá", "Caldas", "Campohermoso", "Cerinza", "Chinavita", "Chiquinquirá", "Chiscas", "Chita", "Chitaraque", "Chivatá", "Chivor", "Chíquiza", "Ciénega", "Coper", "Corrales", "Covarachía", "Cubará", "Cucaita", "Cuítiva", "Cómbita", "Duitama", "El Cocuy", "El Espino", "Firavitoba", "Floresta", "Gachantivá", "Garagoa", "Guacamayas", "Guateque", "Guayatá", "Gámeza", "Güicán", "Iza", "Jenesano", "Jericó", "La Capilla", "La Uvita", "La Victoria", "Labranzagrande", "Macanal", "Maripí", "Miraflores", "Mongua", "Monguí", "Moniquirá", "Motavita", "Muzo", "Nobsa", "Nuevo Colón", "Oicatá", "Otanche", "Pachavita", "Paipa", "Pajarito", "Panqueba", "Pauna", "Paya", "Paz del Río", "Pesca", "Pisba", "Puerto Boyacá", "Páez", "Quípama", "Ramiriquí", "Rondón", "Ráquira", "Saboyá", "Samacá", "San Eduardo", "San José de Pare", "San Luis de Gaceno", "San Mateo", "San Miguel de Sema", "San Pablo de Borbur", "Santa María", "Santa Rosa de Viterbo", "Santa Sofía", "Santana", "Sativanorte", "Sativasur", "Siachoque", "Soatá", "Socha", "Socotá", "Sogamoso", "Somondoco", "Sora", "Soracá", "Sotaquirá", "Susacón", "Sutamarchán", "Sutatenza", "Sáchica", "Tasco", "Tenza", "Tibaná", "Tibasosa", "Tinjacá", "Tipacoque", "Toca", "Togüí", "Tota", "Tunja", "Tununguá", "Turmequé", "Tuta", "Tutazá", "Tópaga", "Ventaquemada", "Villa de Leyva", "Viracachá", "Zetaquira", "Úmbita"],"Caldas":["Aguadas", "Anserma", "Aranzazu", "Belalcázar", "Chinchiná", "Filadelfia", "La Dorada", "La Merced", "Manizales", "Manzanares", "Marmato", "Marquetalia", "Marulanda", "Neira", "Norcasia", "Palestina", "Pensilvania", "Pácora", "Riosucio", "Risaralda", "Salamina", "Samaná", "San José", "Supía", "Victoria", "Villamaría", "Viterbo"],"Caquetá":["Albania", "Belén de los Andaquíes", "Cartagena del Chairá", "Curillo", "El Doncello", "El Paujil", "Florencia", "La Montañita", "Milán", "Morelia", "Puerto Rico", "San José del Fragua", "San Vicente del Caguán", "Solano", "Solita", "Valparaíso"],"Casanare":["Aguazul", "Chámeza", "Hato Corozal", "La Salina", "Maní", "Monterrey", "Nunchía", "Orocué", "Paz de Ariporo", "Pore", "Recetor", "Sabanalarga", "San Luis de Palenque", "Sácama", "Tauramena", "Trinidad", "Támara", "Villanueva", "Yopal"],"Cauca":["Almaguer", "Argelia", "Balboa", "Bolívar", "Buenos Aires", "Cajibío", "Caldono", "Caloto", "Corinto", "El Tambo", "Florencia", "Guachené", "Guapí", "Inzá", "Jambaló", "La Sierra", "La Vega", "López de Micay", "Mercaderes", "Miranda", "Morales", "Padilla", "Patía", "Piamonte", "Piendamó", "Popayán", "Puerto Tejada", "Puracé", "Páez", "Rosas", "San Sebastián", "Santa Rosa", "Santander de Quilichao", "Silvia", "Sotará", "Sucre", "Suárez", "Timbiquí", "Timbío", "Toribío", "Totoró", "Villa Rica"],"Cesar":["Aguachica", "Agustín Codazzi", "Astrea", "Becerril", "Bosconia", "Chimichagua", "Chiriguaná", "Curumaní", "El Copey", "El Paso", "Gamarra", "González", "La Gloria (Cesar)", "La Jagua de Ibirico", "La Paz", "Manaure Balcón del Cesar", "Pailitas", "Pelaya", "Pueblo Bello", "Río de Oro", "San Alberto", "San Diego", "San Martín", "Tamalameque", "Valledupar"],"Chocó":["Acandí", "Alto Baudó", "Bagadó", "Bahía Solano", "Bajo Baudó", "Bojayá", "Cantón de San Pablo", "Condoto", "Cértegui", "El Atrato", "El Carmen de Atrato", "El Carmen del Darién", "Istmina", "Juradó", "Litoral de San Juan", "Lloró", "Medio Atrato", "Medio Baudó", "Medio San Juan", "Nuquí", "Nóvita", "Quibdó", "Riosucio", "Río Iró", "Río Quito", "San José del Palmar", "Sipí", "Tadó", "Unguía", "Unión Panamericana"],"Cundinamarca":["Agua de Dios", "Albán", "Anapoima", "Anolaima", "Apulo", "Arbeláez", "Beltrán", "Bituima", "Bogotá", "Bojacá", "Cabrera", "Cachipay", "Cajicá", "Caparrapí", "Carmen de Carupa", "Chaguaní", "Chipaque", "Choachí", "Chocontá", "Chía", "Cogua", "Cota", "Cucunubá", "Cáqueza", "El Colegio", "El Peñón", "El Rosal", "Facatativá", "Fosca", "Funza", "Fusagasugá", "Fómeque", "Fúquene", "Gachalá", "Gachancipá", "Gachetá", "Gama", "Girardot", "Granada", "Guachetá", "Guaduas", "Guasca", "Guataquí", "Guatavita", "Guayabal de Síquima", "Guayabetal", "Gutiérrez", "Jerusalén", "Junín", "La Calera", "La Mesa", "La Palma", "La Peña", "La Vega", "Lenguazaque", "Machetá", "Madrid", "Manta", "Medina", "Mosquera", "Nariño", "Nemocón", "Nilo", "Nimaima", "Nocaima", "Pacho", "Paime", "Pandi", "Paratebueno", "Pasca", "Puerto Salgar", "Pulí", "Quebradanegra", "Quetame", "Quipile", "Ricaurte", "San Antonio del Tequendama", "San Bernardo", "San Cayetano", "San Francisco", "San Juan de Rioseco", "Sasaima", "Sesquilé", "Sibaté", "Silvania", "Simijaca", "Soacha", "Sopó", "Subachoque", "Suesca", "Supatá", "Susa", "Sutatausa", "Tabio", "Tausa", "Tena", "Tenjo", "Tibacuy", "Tibirita", "Tocaima", "Tocancipá", "Topaipí", "Ubalá", "Ubaque", "Ubaté", "Une", "Venecia", "Vergara", "Vianí", "Villagómez", "Villapinzón", "Villeta", "Viotá", "Yacopí", "Zipacón", "Zipaquirá", "Útica"],"Córdoba":["Ayapel", "Buenavista", "Canalete", "Cereté", "Chimá", "Chinú", "Ciénaga de Oro", "Cotorra", "La Apartada", "Lorica", "Los Córdobas", "Momil", "Montelíbano", "Montería", "Moñitos", "Planeta Rica", "Pueblo Nuevo", "Puerto Escondido", "Puerto Libertador", "Purísima", "Sahagún", "San Andrés de Sotavento", "San Antero", "San Bernardo del Viento", "San Carlos", "San José de Uré", "San Pelayo", "Tierralta", "Tuchín", "Valencia"],"Guainía":["Inírida"],"Guaviare":["Calamar", "El Retorno", "Miraflores", "San José del Guaviare"],"Huila":["Acevedo", "Agrado", "Aipe", "Algeciras", "Altamira", "Baraya", "Campoalegre", "Colombia", "El Pital", "Elías", "Garzón", "Gigante", "Guadalupe", "Hobo", "Isnos", "La Argentina", "La Plata", "Neiva", "Nátaga", "Oporapa", "Paicol", "Palermo", "Palestina", "Pitalito", "Rivera", "Saladoblanco", "San Agustín", "Santa María", "Suaza", "Tarqui", "Tello", "Teruel", "Tesalia", "Timaná", "Villavieja", "Yaguará", "Íquira"],"La Guajira":["Albania", "Barrancas", "Dibulla", "Distracción", "El Molino", "Fonseca", "Hatonuevo", "La Jagua del Pilar", "Maicao", "Manaure", "Riohacha", "San Juan del Cesar", "Uribia", "Urumita", "Villanueva"],"Magdalena":["Algarrobo", "Aracataca", "Ariguaní", "Cerro de San Antonio", "Chibolo", "Chibolo", "Ciénaga", "Concordia", "El Banco", "El Piñón", "El Retén", "Fundación", "Guamal", "Nueva Granada", "Pedraza", "Pijiño del Carmen", "Pivijay", "Plato", "Pueblo Viejo", "Remolino", "Sabanas de San Ángel", "Salamina", "San Sebastián de Buenavista", "San Zenón", "Santa Ana", "Santa Bárbara de Pinto", "Santa Marta", "Sitionuevo", "Tenerife", "Zapayán", "Zona Bananera"],"Meta":["Acacías", "Barranca de Upía", "Cabuyaro", "Castilla la Nueva", "Cubarral", "Cumaral", "El Calvario", "El Castillo", "El Dorado", "Fuente de Oro", "Granada", "Guamal", "La Macarena", "La Uribe", "Lejanías", "Mapiripán", "Mesetas", "Puerto Concordia", "Puerto Gaitán", "Puerto Lleras", "Puerto López", "Puerto Rico", "Restrepo", "San Carlos de Guaroa", "San Juan de Arama", "San Juanito", "San Martín", "Villavicencio", "Vista Hermosa"],"Nariño":["Aldana", "Ancuyá", "Arboleda", "Barbacoas", "Belén", "Buesaco", "Chachagüí", "Colón", "Consacá", "Contadero", "Cuaspud", "Cumbal", "Cumbitara", "Córdoba", "El Charco", "El Peñol", "El Rosario", "El Tablón", "El Tambo", "Francisco Pizarro", "Funes", "Guachucal", "Guaitarilla", "Gualmatán", "Iles", "Imués", "Ipiales", "La Cruz", "La Florida", "La Llanada", "La Tola", "La Unión", "Leiva", "Linares", "Los Andes", "Magüí Payán", "Mallama", "Mosquera", "Nariño", "Olaya Herrera", "Ospina", "Pasto", "Policarpa", "Potosí", "Providencia", "Puerres", "Pupiales", "Ricaurte", "Roberto Payán", "Samaniego", "San Bernardo", "San José de Albán", "San Lorenzo", "San Pablo", "San Pedro de Cartago", "Sandoná", "Santa Bárbara", "Santacruz", "Sapuyes", "Taminango", "Tangua", "Tumaco", "Túquerres", "Yacuanquer"],"Norte de Santander":["Arboledas", "Bochalema", "Bucarasica", "Chinácota", "Chitagá", "Convención", "Cucutilla", "Cáchira", "Cácota", "Cúcuta", "Duranía", "El Carmen", "El Tarra", "El Zulia", "Gramalote", "Hacarí", "Herrán", "La Esperanza", "La Playa de Belén", "Labateca", "Los Patios", "Lourdes", "Mutiscua", "Ocaña", "Pamplona", "Pamplonita", "Puerto Santander", "Ragonvalia", "Salazar de Las Palmas", "San Calixto", "San Cayetano", "Santiago", "Santo Domingo de Silos", "Sardinata", "Teorama", "Tibú", "Toledo", "Villa Caro", "Villa del Rosario", "Ábrego"],"Putumayo":["Colón", "Mocoa", "Orito", "Puerto Asís", "Puerto Caicedo", "Puerto Guzmán", "Puerto Leguízamo", "San Francisco", "San Miguel", "Santiago", "Sibundoy", "Valle del Guamuez", "Villagarzón"],"Quindío":["Armenia", "Buenavista", "Calarcá", "Circasia", "Córdoba", "Filandia", "Génova", "La Tebaida", "Montenegro", "Pijao", "Quimbaya", "Salento"],"Risaralda":["Apía", "Balboa", "Belén de Umbría", "Dosquebradas", "Guática", "La Celia", "La Virginia", "Marsella", "Mistrató", "Pereira", "Pueblo Rico", "Quinchía", "Santa Rosa de Cabal", "Santuario"],"San Andrés y Providencia":["Providencia y Santa Catalina Islas", "San Andrés"],"Santander":["Aguada", "Albania", "Aratoca", "Barbosa", "Barichara", "Barrancabermeja", "Betulia", "Bolívar", "Bucaramanga", "Cabrera", "California", "Capitanejo", "Carcasí", "Cepitá", "Cerrito", "Charalá", "Charta", "Chima", "Chipatá", "Cimitarra", "Concepción", "Confines", "Contratación", "Coromoro", "Curití", "El Carmen de Chucurí", "El Guacamayo", "El Peñón", "El Playón", "El Socorro", "Encino", "Enciso", "Floridablanca", "Florián", "Galán", "Girón", "Guaca", "Guadalupe", "Guapotá", "Guavatá", "Gámbita", "Güepsa", "Hato", "Jesús María", "Jordán", "La Belleza", "La Paz", "Landázuri", "Lebrija", "Los Santos", "Macaravita", "Matanza", "Mogotes", "Molagavita", "Málaga", "Ocamonte", "Oiba", "Onzaga", "Palmar", "Palmas del Socorro", "Piedecuesta", "Pinchote", "Puente Nacional", "Puerto Parra", "Puerto Wilches", "Páramo", "Rionegro", "Sabana de Torres", "San Andrés", "San Benito", "San Gil", "San Joaquín", "San José de Miranda", "San Miguel", "San Vicente de Chucurí", "Santa Bárbara", "Santa Helena del Opón", "Simacota", "Suaita", "Sucre", "Suratá", "Tona", "Valle de San José", "Vetas", "Villanueva", "Vélez", "Zapatoca"],"Sucre":["Buenavista", "Caimito", "Chalán", "Colosó", "Corozal", "Coveñas", "El Roble", "Galeras", "Guaranda", "La Unión", "Los Palmitos", "Majagual", "Morroa", "Ovejas", "Sampués", "San Antonio de Palmito", "San Benito Abad", "San Juan de Betulia", "San Marcos", "San Onofre", "San Pedro", "Sincelejo", "Sincé", "Sucre", "Tolú", "Tolú Viejo"],"Tolima":["Alpujarra", "Alvarado", "Ambalema", "Anzoátegui", "Armero", "Ataco", "Cajamarca", "Carmen de Apicalá", "Casabianca", "Chaparral", "Coello", "Coyaima", "Cunday", "Dolores", "El Espinal", "Falán", "Flandes", "Fresno", "Guamo", "Herveo", "Honda", "Ibagué", "Icononzo", "Lérida", "Líbano", "Mariquita", "Melgar", "Murillo", "Natagaima", "Ortega", "Palocabildo", "Piedras", "Planadas", "Prado", "Purificación", "Rioblanco", "Roncesvalles", "Rovira", "Saldaña", "San Antonio", "San Luis", "Santa Isabel", "Suárez", "Valle de San Juan", "Venadillo", "Villahermosa", "Villarrica"],"Valle del Cauca":["Alcalá", "Andalucía", "Ansermanuevo", "Argelia", "Bolívar", "Buenaventura", "Buga", "Bugalagrande", "Caicedonia", "Cali", "Calima", "Candelaria", "Cartago", "Dagua", "El Cairo", "El Cerrito", "El Dovio", "El Águila", "Florida", "Ginebra", "Guacarí", "Jamundí", "La Cumbre", "La Unión", "La Victoria", "Obando", "Palmira", "Pradera", "Restrepo", "Riofrío", "Roldanillo", "San Pedro", "Sevilla", "Toro", "Trujillo", "Tuluá", "Ulloa", "Versalles", "Vijes", "Yotoco", "Yumbo", "Zarzal"],"Vaupés":["Carurú", "Mitú", "Taraira"],"Vichada":["Cumaribo", "La Primavera", "Puerto Carreño", "Santa Rosalía"]};
-const OCURRENCIAS=[
-['uArc','¿Hubo aterrizaje de emergencia o en un punto no planeado (la aeronave no llegó al punto autorizado)?','U-ARC'],
-['uMac1','¿Hubo cuasi-colisión o pérdida de separación con una aeronave tripulada?','U-MAC-1'],
-['uWild','¿Hubo cuasi-colisión o acercamiento peligroso con fauna (aves u otros animales)?','U-WILD'],
-['uCfit1','¿Hubo acercamiento no controlado a un obstáculo o infraestructura (torres, cables, edificios, terceros)?','U-CFIT-1'],
-['uMac2','¿Hubo cuasi-colisión con otra aeronave no tripulada (otro dron)?','U-MAC-2'],
-['uScfNp1','¿Hubo falla de batería (descarga abrupta, voltaje anómalo, sobrecalentamiento o degradación)?','U-SCF-NP(1)'],
-['uGti','¿Hubo lesiones o golpes a terceros, o daños leves a personas o bienes?','U-GTI'],
-['uMac3','¿Hubo pérdida de separación entre dos aeronaves (aeronave sin TCAS, el sistema de alerta y prevención de colisiones)?','U-MAC-3'],
-['uLocI','¿Hubo pérdida total del control de la aeronave, con riesgo severo (sin impacto contra el terreno)?','U-LOC-I'],
-['uCfit2','¿Hubo pérdida de control que terminó en impacto contra el terreno?','U-CFIT-2'],
-['uScfNp2','¿Hubo deterioro o pérdida del enlace de control (C2)?','U-SCF-NP(2)'],
-['meteoNoPrev','¿La UA estuvo expuesta a condiciones meteorológicas no previstas?','EPM-WX-1'],
-['meteoAdversa','¿La pérdida de control estuvo asociada a meteorología adversa?','EPM-WX-2'],
-['visual','¿En VLOS o EVLOS se perdió el contacto visual requerido con la UA?','EPM-VIS-1']
-];
+const OCURRENCIAS=[['aterrizoOtro','¿La aeronave aterrizó en un punto diferente al autorizado o planificado?'],['sepTripulada','¿Pérdida de separación o proximidad peligrosa con aeronave tripulada?'],['aves','¿Acercamiento peligroso o maniobra evasiva por aves u otra fauna?'],['otroUA','¿Proximidad no controlada con otro UA que generara riesgo de impacto?'],['obstaculo','¿Maniobra evasiva para evitar infraestructura u obstáculos fijos?'],['bateria','¿Descarga abrupta, caída de voltaje, sobrecalentamiento o degradación de la batería?'],['dano','¿Golpe, lesión leve o daño menor a personas o bienes de terceros?'],['perdControl','¿Pérdida total o parcial del control con riesgo severo?'],['impacto','¿La aeronave perdió el control y terminó impactando el terreno?'],['enlaceC2','¿Deterioro significativo o pérdida total del enlace C2?'],['meteoNoPrev','¿La UA estuvo expuesta a condiciones meteorológicas no previstas?'],['meteoAdversa','¿La pérdida de control estuvo asociada a meteo adversa?'],['visual','¿En VLOS o EVLOS se perdió el contacto visual requerido con la UA?']];
 // Análisis de riesgo (EPM): cada opción lleva [valor, texto, puntaje]. La app suma internamente y solo muestra la calificación.
 const RIESGO=[
  {k:'sueno',q:'¿Cómo durmió?',opts:[['bien','Dormí bien',0],['mal','No dormí bien o dormí menos de 8 horas',2]]},
@@ -499,7 +505,7 @@ const Assets={readyP:null,useIDB:false,db:null,cache:{},
 function isDataURL(v){return typeof v==='string'&&v.slice(0,5)==='data:'}
 function assetSrc(v){return isDataURL(v)?v:(Assets.cache[v]||'')}
 async function preloadAssets(ids){for(const v of (ids||[])){if(v&&!isDataURL(v))await Assets.get(v);}}
-function opAssetIds(o){return[].concat(o.fotosPre||[],o.fotosPos||[],o.fotoDron?[o.fotoDron]:[],o.fotoMeteo?[o.fotoMeteo]:[],(o.aut&&o.aut.pdf&&o.aut.pdf.id)?[o.aut.pdf.id]:[],(o.aut&&o.aut.pdfInfo&&o.aut.pdfInfo.id)?[o.aut.pdfInfo.id]:[])}
+function opAssetIds(o){return[].concat(o.fotosPre||[],o.fotosPos||[],o.fotoDron?[o.fotoDron]:[],o.fotoMeteo?[o.fotoMeteo]:[],(o.aut&&o.aut.pdf&&o.aut.pdf.id)?[o.aut.pdf.id]:[])}
 function opOwnedAssetIds(o){return[].concat(o.fotosPre||[],o.fotosPos||[],o.fotoDron?[o.fotoDron]:[],o.fotoMeteo?[o.fotoMeteo]:[])}
 // Migra binarios embebidos (dataURL) de operaciones antiguas a Assets, dejando ids en localStorage
 async function migrateAssets(){let ch=false;
@@ -514,7 +520,7 @@ async function storageInfo(){let idb=0,quota=0;
   return{idb,quota,ls,mode:Assets.useIDB?'IndexedDB':'localStorage'};}
 function fmtMB(b){return (b/1048576).toFixed(1)+' MB'}
 let st=blankState();
-function blankState(){return{oficina:{},prevuelo:{},posvuelo:{},ocurr:{},hf:{},sorties:[],fotosPre:[],fotosPos:[],fotoDron:null,fotoMeteo:null,autPdf:null,autPdfInfo:null}}
+function blankState(){return{oficina:{},prevuelo:{},posvuelo:{},ocurr:{},hf:{},sorties:[],fotosPre:[],fotosPos:[],fotoDron:null,fotoMeteo:null,autPdf:null}}
 
 const $=id=>document.getElementById(id);
 const uid=()=>Date.now().toString(36)+Math.random().toString(36).slice(2,6);
@@ -526,22 +532,16 @@ function daysTo(d){if(!d)return null;const x=new Date(d+'T00:00:00'),n=new Date(
 function pilotById(id){return pilotos.find(p=>p.id===id)}
 function dronById(id){return flota.find(d=>d.id===id)}
 function autById(id){return autorizaciones.find(a=>a.id===id)}
-function autVencida(a){return !!(a&&a.fin&&daysTo(a.fin)<0);}
-function dronAutOK(au,d){if(!au||!au.dronesAut||!au.dronesAut.length||!d)return true;return au.dronesAut.includes((d.serial||'').trim());}
-function pilotAutOK(au,p){if(!au||!au.pilotosAut||!au.pilotosAut.length||!p)return true;return au.pilotosAut.includes(p.codigo||p.id);}
-function tipoRank(t){t=(t||'').toUpperCase();return t==='BVLOS'?3:t==='EVLOS'?2:t==='VLOS'?1:0;}
-function opTipoMsgs(au){const m=[];if(!au||!au.tipoVisual)return m;let opr=0,opn='';if(isOp('bvlos')){opr=3;opn='BVLOS';}else if(isOp('evlos')){opr=2;opn='EVLOS';}else if(isOp('vlos')){opr=1;opn='VLOS';}if(opr>tipoRank(au.tipoVisual))m.push('La operación ('+opn+') excede el tipo autorizado ('+au.tipoVisual+')');if(isOp('nocturna')&&au.nocturno===false)m.push('Operación nocturna no autorizada en esta autorización');return m;}
 function dronLabel(d){return d?((d.modelo||'')+(d.dr?' -'+d.dr:'')):''}
 function proyectoById(id){return proyectos.find(p=>p.id===id)}
 function projName(o){const p=proyectoById(o.proyectoId);return p?p.nombre:(o.proyecto||'Sin proyecto')}
-function certsMap(){try{return JSON.parse(localStorage.getItem('bvd_certs')||'{}')}catch(e){return{}}}
-function pilotCipus(p){if(!p)return [];const m=certsMap();const k=p.codigo||p.id;return (m[k]&&m[k].length)?m[k]:(p.cipus||[]);}
-function hasCert(p,tipo){return pilotCipus(p).some(c=>(c.tipo||c)===tipo);}
+function hasCert(p,tipo){return !!(p&&p.cipus&&p.cipus.some(c=>(c.tipo||c)===tipo))}
 
 function nav(v){document.querySelectorAll('.view').forEach(x=>x.classList.remove('active'));$('v-'+v).classList.add('active');
   const tab=(v==='nueva')?'oper':v;
   document.querySelectorAll('nav button').forEach(b=>b.classList.toggle('active',b.dataset.view===tab));window.scrollTo(0,0);
-  if(v==='nueva')prepNueva();if(v==='oper')renderOper();if(v==='vuelos')renderVuelos();if(v==='mapa')initMap();if(v==='flota')renderFleet();if(v==='aut')renderAut();if(v==='pilotos')renderPilots();if(v==='hist')renderHistory();
+  if(v==='nueva')prepNueva();if(v==='oper')renderOper();
+applyModo();if(v==='vuelos')renderVuelos();if(v==='mapa')initMap();if(v==='flota')renderFleet();if(v==='aut')renderAut();if(v==='pilotos')renderPilots();if(v==='hist')renderHistory();
   if(v==='bitacora')renderConsolPilotos();if(v==='libro')renderConsolDrones();if(v==='datos')renderStorage();
   closeNav();}
 function toggleNav(){$('navGrid').classList.toggle('collapsed');syncNav();}
@@ -549,19 +549,16 @@ function closeNav(){const g=$('navGrid');if(g)g.classList.add('collapsed');syncN
 function syncNav(){const g=$('navGrid');if(!g)return;const open=!g.classList.contains('collapsed');const i=$('navToggleIcon');if(i)i.textContent=open?'✕':'☰';const bd=$('navBackdrop');if(bd){bd.style.opacity=open?'1':'0';bd.style.pointerEvents=open?'auto':'none';}}
 
 /* ---------- pilotos ---------- */
-function cipuLabel(c){const t=(c.tipo||c);return t==='Nocturno'?'Vuelo nocturno':t==='BVLOS'?'BVLOS':'Piloto UAS';}
-let pilotFilterP='todos';
-function setPilotFilterP(f){pilotFilterP=f;renderPilots();}
+function cipuLabel(c){return (c.tipo||c)==='Nocturno'?'Nocturno':(c.tipo||c)==='BVLOS'?'BVLOS':'Piloto';}
 function renderPilots(){const l=$('pilotList');
-  const _mk=arr=>'<div class="btnrow" style="margin-bottom:6px;flex-wrap:wrap">'+arr.map(x=>'<button class="btn sec sm" style="'+(pilotFilterP===x[0]?'background:#007934;color:#fff':'')+'" onclick="setPilotFilterP(\''+x[0]+'\')">'+x[1]+'</button>').join('')+'</div>';const bar=_mk([['todos','Todos'],['hab','Habilitados'],['inh','Inhabilitados']])+_mk([['bvlos','BVLOS'],['noct','Vuelo nocturno']]);
-  if(!pilotos.length){l.innerHTML='<div class="card empty">No hay pilotos cargados. Cargá el catálogo en Datos.</div>';return}
-  let list=pilotos.slice();if(pilotFilterP==='hab')list=list.filter(p=>pilotHabil(p));else if(pilotFilterP==='inh')list=list.filter(p=>!pilotHabil(p));else if(pilotFilterP==='bvlos')list=list.filter(p=>hasCert(p,'BVLOS'));else if(pilotFilterP==='noct')list=list.filter(p=>hasCert(p,'Nocturno'));
-  l.innerHTML=bar+(list.length?list.map(p=>{const mm=pilotMed(p);const mv=daysTo(mm);const med=mm?(mv<0?'⛔ certificado médico vencido':'certificado médico vence '+fmtDate(mm)):'sin certificado médico';
-    const cip=pilotCipus(p).map(c=>cipuLabel(c)).join(', ')||'—';
-    const inh=!pilotHabil(p);return `<div class="item"><div class="top"><div><div class="name">${esc(p.nombre)} ${inh?'<span style="color:var(--rojo);font-size:12px">⛔ INHABILITADO</span>':'<span style="color:var(--verde);font-size:12px">✓ HABILITADO</span>'}</div>
-    <div class="meta">Certificaciones: ${cip}</div>
-    <div class="meta">${hasCert(p,'Nocturno')?'✓ Vuelo nocturno ':''}${hasCert(p,'BVLOS')?'✓ BVLOS ':''}· ${med}</div></div>
-    </div></div>`}).join(''):'<div class="card empty">No hay pilotos en este filtro.</div>');}
+  if(!pilotos.length){l.innerHTML='<div class="card empty">No hay pilotos. Agregá el primero arriba para que aparezca en los desplegables.</div>';return}
+  l.innerHTML=pilotos.map(p=>{const mv=daysTo(p.med);const med=p.med?(mv<0?'⛔ médico vencido':'médico vence '+p.med):'sin médico';
+    const cip=(p.cipus||[]).map(c=>esc(c.num||c)+' ('+cipuLabel(c)+')').join(', ')||'—';
+    return `<div class="item"><div class="top"><div><div class="name">${esc(p.nombre)}</div>
+    <div class="meta">CC ${esc(p.cedula||'—')}</div>
+    <div class="meta">CIPU: ${cip}</div>
+    <div class="meta">${hasCert(p,'Nocturno')?'✓ nocturno ':''}${hasCert(p,'BVLOS')?'✓ BVLOS ':''}· ${med}</div></div>
+    ${modoPiloto()?'':`<div class="acts"><button class="icon-btn" onclick="editPilot('${p.id}')">✎</button><button class="icon-btn del" onclick="delPilot('${p.id}')">🗑</button></div>`}</div></div>`}).join('');applyModo();}
 function addCipu(){const v=$('pi_cipuIn').value.trim();if(!v)return;pendingCipus.push({num:v,tipo:$('pi_cipuTipo').value});$('pi_cipuIn').value='';renderCipuChips();}
 function renderCipuChips(){$('pi_cipuChips').innerHTML=pendingCipus.map((c,i)=>`<span class="chipx">${esc(c.num)} · ${cipuLabel(c)}<button onclick="rmCipu(${i})">×</button></span>`).join('');}
 function rmCipu(i){pendingCipus.splice(i,1);renderCipuChips();}
@@ -577,18 +574,14 @@ function resetPilotForm(){editPilotId=null;pendingCipus=[];['pi_nombre','pi_cedu
 function delPilot(id){if(!confirm('¿Eliminar este piloto?'))return;pilotos=pilotos.filter(x=>x.id!==id);save(K.pilots,pilotos);renderPilots();}
 
 /* ---------- flota ---------- */
-let droneFilterP='todos';
-function setDroneFilterP(f){droneFilterP=f;renderFleet();}
 function renderFleet(){const l=$('fleetList');
-  const _mk=arr=>'<div class="btnrow" style="margin-bottom:6px;flex-wrap:wrap">'+arr.map(x=>'<button class="btn sec sm" style="'+(droneFilterP===x[0]?'background:#007934;color:#fff':'')+'" onclick="setDroneFilterP(\''+x[0]+'\')">'+x[1]+'</button>').join('')+'</div>';const bar=_mk([['todos','Todos'],['act','Activos'],['ina','Inactivos']])+_mk([['bvlos','BVLOS'],['noct','Vuelo nocturno']]);
-  if(!flota.length){l.innerHTML='<div class="card empty">La flota llega por el seed (con internet).</div>';return}
-  let list=flota.slice();if(droneFilterP==='act')list=list.filter(d=>d.activo!==false);else if(droneFilterP==='ina')list=list.filter(d=>d.activo===false);else if(droneFilterP==='bvlos')list=list.filter(d=>d.habBVLOS);else if(droneFilterP==='noct')list=list.filter(d=>d.habNocturno);
-  l.innerHTML=bar+(list.length?list.map(d=>{const pv=daysTo(d.polizaVence);const pol=d.polizaVence?(pv<0?'⛔ póliza vencida':'póliza vence '+d.polizaVence):'sin póliza';const est=d.activo===false?'<span style="color:var(--rojo);font-size:12px">⛔ INACTIVO</span>':'<span style="color:var(--verde);font-size:12px">✓ ACTIVO</span>';
-    return `<div class="item"><div class="top"><div><div class="name">${esc(dronLabel(d))} ${est}</div>
+  if(!flota.length){l.innerHTML='<div class="card empty">La flota está vacía. Agregá tu primer dron arriba.</div>';return}
+  l.innerHTML=flota.map(d=>{const pv=daysTo(d.polizaVence);const pol=d.polizaVence?(pv<0?'⛔ póliza vencida':'póliza vence '+d.polizaVence):'sin póliza';
+    return `<div class="item"><div class="top"><div><div class="name">${esc(dronLabel(d))}</div>
     <div class="meta">Serial ${esc(d.serial||'—')}</div>
     <div class="meta">RUAS ${d.ruas||'—'} · Máximo ${d.maximo||'—'}</div>
-    <div class="meta">${d.habNocturno?'✓ Vuelo nocturno ':''}${d.habBVLOS?'✓ BVLOS ':''}· ${pol}${d.mant?' · mant '+fmtDate(d.mant)+(daysTo(d.mant)<0?' ⛔':''):''}</div></div>
-    </div></div>`}).join(''):'<div class="card empty">No hay drones en este filtro.</div>');}
+    <div class="meta">${d.habNocturno?'✓ nocturno ':''}${d.habBVLOS?'✓ BVLOS ':''}· ${pol}${d.mant?' · mant '+fmtDate(d.mant)+(daysTo(d.mant)<0?' ⛔':''):''}</div></div>
+    ${modoPiloto()?'':`<div class="acts"><button class="icon-btn" onclick="editDrone('${d.id}')">✎</button><button class="icon-btn del" onclick="delDrone('${d.id}')">🗑</button></div>`}</div></div>`}).join('');applyModo();}
 function attachAutPdf(e){const f=e.target.files[0];e.target.value='';if(!f)return;
   const r=new FileReader();r.onload=async ev=>{const id=uid();const ok=await Assets.put(id,ev.target.result);if(!ok){toast('Sin espacio para el PDF');return;}autFormPdf={id,name:f.name};renderAutPdfRow();};r.readAsDataURL(f);}
 function renderAutPdfRow(){const el=$('au_pdfRow');if(el)el.innerHTML=autFormPdf?`<div class="filerow"><span>📄</span><span class="nm">${esc(autFormPdf.name)}</span><button class="icon-btn" onclick="openPdf('${autFormPdf.id}')">Ver</button><button class="icon-btn del" onclick="autFormPdf=null;renderAutPdfRow()">Quitar</button></div>`:'';}
@@ -601,55 +594,16 @@ function editAut(id){const a=autById(id);if(!a)return;editAutId=id;$('au_rad').v
 function resetAutForm(){editAutId=null;autFormPdf=null;['au_rad','au_id','au_ini','au_fin','au_desc'].forEach(i=>$(i).value='');renderAutPdfRow();$('autTitle').textContent='Nueva autorización';$('au_saveBtn').textContent='Crear autorización';$('au_cancel').style.display='none';}
 function delAut(id){if(!confirm('¿Eliminar esta autorización?'))return;autorizaciones=autorizaciones.filter(x=>x.id!==id);save(K.aut,autorizaciones);renderAut();}
 function renderAut(){const cont=$('autList');if(!cont)return;
-  cont.innerHTML=autorizaciones.length?autorizaciones.map(a=>{const venc=autVencida(a);const est=venc?'<span style="color:#6b7280;font-weight:700">VENCIDA</span>':(a.fin?'<span style="color:var(--verde);font-weight:700">VIGENTE</span>':'sin vigencia');const tipo=(a.tipoVisual||'')+(a.nocturno?(a.tipoVisual?' · ':'')+'Nocturno':'');const hayBtn=a.pdf||a.pdfInfo||(a.poly&&a.poly.length&&!venc);
-    return `<div class="item" style="cursor:pointer${venc?';opacity:.55;background:#f3f4f6':''}" onclick="openAutDetail('${a.id}')"><div class="top"><div style="width:100%"><div class="name">${esc(a.radicado||'—')} ${est} <span style="float:right;color:var(--muted)">›</span></div><div class="meta">ID ${esc(a.idAut||'—')} · ${a.ini?esc(fmtDate(a.ini)):'?'} a ${a.fin?esc(fmtDate(a.fin)):'?'}</div>${tipo?`<div class="meta">Tipo: <b>${esc(tipo)}</b></div>`:''}${((a.dronesAut&&a.dronesAut.length)||(a.pilotosAut&&a.pilotosAut.length)||(a.poligonos&&a.poligonos.length))?`<div class="meta">🚁 ${(a.dronesAut||[]).length} · 👤 ${(a.pilotosAut||[]).length} · 🗺️ ${(a.poligonos||[]).length}</div>`:''}${a.desc?`<div class="meta">${esc(a.desc)}</div>`:''}${hayBtn?`<div class="btnrow" style="margin-top:6px;flex-wrap:wrap" onclick="event.stopPropagation()">${a.pdf?`<button class="btn sec sm" onclick="openPdf('${a.pdf.id}')">📄 Autorización</button> `:''}${a.pdfInfo?`<button class="btn sec sm" onclick="openPdf('${a.pdfInfo.id}')">📄 Información</button> `:''}${(a.poly&&a.poly.length&&!venc)?`<button class="btn sec sm" onclick="verZonaAut('${a.id}')">🗺️ Zona</button> `:''}</div>`:''}</div></div></div>`}).join(''):'<div class="card empty">No hay autorizaciones cargadas. Llegarán con el catálogo (seed).</div>';}
-function openAutDetail(id){const a=autById(id);if(!a)return;const cont=$('autList');if(!cont)return;const venc=autVencida(a);
-  const est=venc?'<span style="color:#6b7280;font-weight:700">VENCIDA</span>':(a.fin?'<span style="color:var(--verde);font-weight:700">VIGENTE</span> · vence '+fmtDate(a.fin):'sin vigencia');
-  const btns=[];
-  if(a.pdf)btns.push('<button class="btn sec sm noprint" onclick="openPdf(\''+a.pdf.id+'\')">📄 Documento</button>');
-  if(a.pdfInfo)btns.push('<button class="btn sec sm noprint" onclick="openPdf(\''+a.pdfInfo.id+'\')">📄 Información</button>');
-  if(a.poly&&a.poly.length&&!venc)btns.push('<button class="btn sec sm noprint" onclick="verZonaAut(\''+a.id+'\')">🗺️ Ver zona en mapa</button>');
-  const pil=(a.pilotosAut||[]).map(cod=>{const p=pilotos.find(x=>(x.codigo||x.id)===cod);return '<tr><td>'+esc(p&&p.nombre?p.nombre:'—')+'</td><td>'+esc(cod)+'</td></tr>';}).join('');
-  const dro=(a.dronesAut||[]).map(ser=>{const d=flota.find(x=>(x.serial||'').trim()===ser);return '<tr><td>'+esc(d?dronLabel(d):'—')+'</td><td>'+esc(ser)+'</td><td>'+esc(d&&d.ruas?d.ruas:'—')+'</td></tr>';}).join('');
-  cont.innerHTML='<button class="btn sec sm" style="margin-bottom:10px" onclick="renderAut()">← Volver</button>'+
-    '<div class="item"><div class="top"><div style="width:100%">'+
-    '<div class="name">'+esc(a.radicado||'—')+' '+est+'</div>'+
-    '<div class="meta">ID '+esc(a.idAut||'—')+'</div>'+
-    '<div class="meta">Vigencia: '+(a.ini?esc(fmtDate(a.ini)):'?')+' a '+(a.fin?esc(fmtDate(a.fin)):'?')+'</div>'+
-    (a.tipoVisual?'<div class="meta">Tipo: <b>'+esc(a.tipoVisual)+'</b>'+(a.nocturno?' · Nocturno autorizado':'')+'</div>':'')+
-    (a.desc?'<div class="meta">'+esc(a.desc)+'</div>':'')+
-    '<div class="btnrow" style="margin-top:8px">'+(btns.join('')||'<span class="hint">Sin PDF ni zona cargados.</span>')+'</div>'+
-    '<h4 class="auth4">Pilotos autorizados ('+((a.pilotosAut||[]).length)+')</h4>'+
-    (pil?'<table class="auttbl"><thead><tr><th>Nombre</th><th>CIPU</th></tr></thead><tbody>'+pil+'</tbody></table>':'<div class="hint">Sin pilotos asociados. Reimportá el PDF en el maestro y regenerá el seed.</div>')+
-    '<h4 class="auth4">Drones autorizados ('+((a.dronesAut||[]).length)+')</h4>'+
-    (dro?'<table class="auttbl"><thead><tr><th>Dron</th><th>Serial</th><th>RUAS</th></tr></thead><tbody>'+dro+'</tbody></table>':'<div class="hint">Sin drones asociados. Reimportá el PDF en el maestro y regenerá el seed.</div>')+
-    ((a.poligonos&&a.poligonos.length)?'<h4 class="auth4">Polígonos autorizados ('+a.poligonos.length+')</h4><table class="auttbl"><thead><tr><th>Nombre</th><th>Altura</th></tr></thead><tbody>'+a.poligonos.map(p=>'<tr><td>'+esc(p.nombre)+'</td><td>'+esc(p.altura)+' m</td></tr>').join('')+'</tbody></table>':'')+
-    '</div></div></div>';window.scrollTo(0,0);}
+  cont.innerHTML=autorizaciones.length?autorizaciones.map(a=>{const v=daysTo(a.fin);const est=a.fin?(v<0?'⛔ vencida':'vence '+fmtDate(a.fin)):'sin vigencia';
+    return `<div class="item"><div class="top"><div><div class="name">${esc(a.radicado||'—')}</div><div class="meta">ID ${esc(a.idAut||'—')} · ${a.ini?esc(fmtDate(a.ini)):'?'} a ${a.fin?esc(fmtDate(a.fin)):'?'} · ${est}</div>${a.desc?`<div class="meta">${esc(a.desc)}</div>`:''}${a.pdf?`<button class="btn sec sm noprint" style="margin-top:6px" onclick="openPdf('${a.pdf.id}')">Ver PDF</button>`:''}</div></div></div>`}).join(''):'<div class="card empty">No hay autorizaciones cargadas. Llegarán con el catálogo (seed).</div>';}
 function fdate(x){return x?fmtDate(x)+(daysTo(x)<0?' <span class="bad">(vencido)</span>':''):'—';}
-function renderPilotoInfo(){const el=$('pilotoInfo');if(!el)return;const p=pilotById($('g_pilotoId').value);if(p&&!pilotHabil(p))block.push('Piloto inhabilitado (revisá con el administrador)');
-  if(!p){el.innerHTML='';return;}
-  const noct=hasCert(p,'Nocturno'),bv=hasCert(p,'BVLOS');
-  const inhab=!pilotHabil(p);
-  el.innerHTML=(inhab?'<b style="color:var(--rojo)">⛔ PILOTO INHABILITADO</b><br>':'')+'<b>'+esc(p.nombre||'')+'</b><br>Certificaciones: '+(pilotCipus(p).map(c=>esc(cipuLabel(c))).join(', ')||'—')+'<br>Nocturno: '+(noct?'<b style="color:var(--verde)">✓ Sí</b>':'✕ No')+' · BVLOS: '+(bv?'<b style="color:var(--verde)">✓ Sí</b>':'✕ No')+'<br>Examen médico: '+fdate(pilotMed(p));}
-function renderDronInfo(){const el=$('dronInfo');if(!el)return;const d=dronById($('g_dron').value);const _inact=d&&d.activo===false?'<b style="color:var(--rojo)">⛔ DRON INACTIVO</b><br>':'';
-  el.innerHTML=d?_inact+`<b>${esc(dronLabel(d))}</b><br>Serial: ${esc(d.serial||'—')} · RUAS: ${esc(d.ruas||'—')} · Máximo: ${esc(d.maximo||'—')}<br>Póliza vence: ${fdate(d.polizaVence)} · Mantenimiento vence: ${fdate(d.mant)}${(d.habNocturno||d.habBVLOS)?'<br>Habilitado: '+[d.habNocturno?'nocturno':'',d.habBVLOS?'BVLOS':''].filter(Boolean).join(', '):''}`:'';}
+function renderDronInfo(){const el=$('dronInfo');if(!el)return;const d=dronById($('g_dron').value);
+  el.innerHTML=d?`<b>${esc(dronLabel(d))}</b><br>Serial: ${esc(d.serial||'—')} · RUAS: ${esc(d.ruas||'—')} · Máximo: ${esc(d.maximo||'—')}<br>Póliza vence: ${fdate(d.polizaVence)} · Mantenimiento vence: ${fdate(d.mant)}${(d.habNocturno||d.habBVLOS)?'<br>Habilitado: '+[d.habNocturno?'nocturno':'',d.habBVLOS?'BVLOS':''].filter(Boolean).join(', '):''}`:'';}
 function renderAutInfo(){const el=$('autInfo');if(!el)return;const au=autById($('g_autId').value);
-  if(!au){el.innerHTML='<span>Se consultan en la pestaña Autorizaciones.</span>';return;}
-  let h='';
-  if(au.desc)h+='<b>'+esc(au.desc)+'</b><br>';
-  h+='Radicado: '+esc(au.radicado||'—')+(au.idAut?' · ID '+esc(au.idAut):'')+'<br>';
-  h+='Vigencia: '+(au.ini?fmtDate(au.ini):'—')+' a '+fdate(au.fin);
-  if((au.dronesAut&&au.dronesAut.length)||(au.pilotosAut&&au.pilotosAut.length))h+='<br>Autorizados: '+((au.dronesAut||[]).length)+' drones · '+((au.pilotosAut||[]).length)+' pilotos';
-  const b=[];
-  if(au.pdf)b.push('<button class="btn sec sm noprint" onclick="openPdf(\''+au.pdf.id+'\')">📄 Documento</button>');
-  if(au.pdfInfo)b.push('<button class="btn sec sm noprint" onclick="openPdf(\''+au.pdfInfo.id+'\')">📄 Información</button>');
-  if(au.poly&&au.poly.length)b.push('<button class="btn sec sm noprint" onclick="verZonaAut(\''+au.id+'\')">🗺️ Ver zona en mapa</button>');
-  h+='<div class="btnrow" style="margin-top:8px">'+(b.length?b.join(''):'<span class="hint">Sin PDF ni polígono cargados.</span>')+'</div>';
-  el.innerHTML=h;}
-function verZonaAut(id){nav('mapa');setTimeout(()=>{const a=autById(id);if(a&&a.poly&&a.poly.length&&map){const bb=[];a.poly.forEach(p=>p.forEach(pt=>bb.push(pt)));if(bb.length){try{map.fitBounds(bb,{padding:[30,30]});}catch(e){}}}},450);}
+  el.innerHTML=au?`<b>Radicado ${esc(au.radicado||'—')}</b> · ID ${esc(au.idAut||'—')}<br>Vigencia: ${fdate(au.ini)} a ${fdate(au.fin)}${au.desc?'<br>'+esc(au.desc):''}<br>${au.pdf?`<button class="btn sec sm noprint" style="margin-top:6px" onclick="openPdf('${au.pdf.id}')">📄 Ver PDF de la autorización</button>`:'<span>Sin PDF de autorización adjunto.</span>'}`:'<span>Se crean/consultan en la pestaña Autorizaciones.</span>';}
 function onAutSelect(){const au=autById($('g_autId').value);renderAutInfo();
   $('a_rad').value=au?(au.radicado||''):'';$('a_id').value=au?(au.idAut||''):'';$('a_ini').value=au?(au.ini||''):'';$('a_fin').value=au?(au.fin||''):'';
-  st.autPdf=au&&au.pdf?au.pdf:null;st.autPdfInfo=au&&au.pdfInfo?au.pdfInfo:null;renderPdfRow();verdict();saveDraft();}
+  st.autPdf=au&&au.pdf?au.pdf:null;renderPdfRow();verdict();saveDraft();}
 function saveDrone(){const m=$('d_modelo').value.trim();if(!m){toast('Poné el modelo');return}
   const o={id:editDroneId||uid(),dr:$('d_dr').value.trim(),modelo:m,serial:$('d_serial').value.trim(),ruas:$('d_ruas').value.trim(),maximo:$('d_maximo').value.trim(),
     poliza:$('d_poliza').value.trim(),polizaVence:$('d_polizaVence').value,mant:$('d_mant').value,habNocturno:$('d_hnoc').checked,habBVLOS:$('d_hbvlos').checked};
@@ -668,30 +622,6 @@ function delDrone(id){if(!confirm('¿Eliminar este dron?'))return;flota=flota.fi
 
 /* ---------- desplegables ---------- */
 function pilotOptions(sel){return '<option value="">— piloto —</option>'+pilotos.map(p=>`<option value="${p.id}" ${p.id===sel?'selected':''}>${esc(p.nombre)}</option>`).join('');}
-function pilotName(id){const p=pilotById(id);return p?(p.nombre||''):'';}
-function habilMap(){try{return JSON.parse(localStorage.getItem('bvd_habil')||'{}')}catch(e){return{}}}
-function medMap(){try{return JSON.parse(localStorage.getItem('bvd_med')||'{}')}catch(e){return{}}}
-function pilotMed(p){if(!p)return '';const m=medMap();const k=p.codigo||p.id;return (k in m&&m[k])?m[k]:(p.med||'');}
-function pilotHabil(p){if(!p)return true;const m=habilMap();const k=p.codigo||p.id;const flag=!(k in m)||m[k]!==false;const md=pilotMed(p);return flag&&!(md&&daysTo(md)<0);}
-function fillDeptos(){const s=$('g_depto');if(!s)return;s.innerHTML='<option value="">— departamento —</option>'+Object.keys(COL).map(d=>`<option value="${esc(d)}">${esc(d)}</option>`).join('');}
-function onDeptoChange(){const s=$('g_muni');if(!s)return;const munis=COL[$('g_depto').value]||[];s.innerHTML='<option value="">— municipio —</option>'+munis.map(m=>`<option value="${esc(m)}">${esc(m)}</option>`).join('');}
-function resolvePilot(q){const v=(q||'').trim();return pilotos.find(p=>(p.nombre||'').trim()===v)||null;}
-function onPilotoQ(){const p=resolvePilot($('g_pilotoQ').value);$('g_pilotoId').value=p?p.id:'';verdict();renderPilotoInfo();saveDraft();}
-function setSPilot(i,field,q){const p=resolvePilot(q);if(!antesDelCorte()&&p&&!pilotHabil(p)){toast((field==='observadorId'?'El observador':'El piloto')+' está INHABILITADO, no puede ir en el vuelo');setS(i,field,'');renderSorties();return;}setS(i,field,p?p.id:'');}
-function autLabel(a){return a?((a.radicado||'')+(a.desc?' — '+a.desc:'')):'';}
-function resolveAut(q){const v=(q||'').trim();return autorizaciones.find(a=>autLabel(a)===v)||autorizaciones.find(a=>(a.radicado||'').trim()===v)||null;}
-function onAutQ(){const a=resolveAut($('g_autQ').value);if(a&&autVencida(a)&&!antesDelCorte()){toast('Esa autorización está vencida, no se puede usar');$('g_autQ').value='';$('g_autId').value='';onAutSelect();return;}$('g_autId').value=a?a.id:'';onAutSelect();}
-let comboState=null;
-function comboRender(filter){if(!comboState)return;const pop=$('comboPop');const f=(filter||'').toLowerCase().trim();const opts=comboState.opts;let html='';opts.forEach((o,i)=>{if(f&&!o.label.toLowerCase().includes(f))return;html+='<div class="cbo'+(o.dis?' dis':'')+'" data-i="'+i+'">'+esc(o.label)+(o.dis?' <span style="color:var(--rojo);font-size:11px">('+esc(o.dis)+')</span>':'')+'</div>';});pop.innerHTML=html||'<div class="cbo dis">Sin resultados</div>';const r=comboState.input.getBoundingClientRect();pop.style.left=r.left+'px';pop.style.top=(r.bottom+2)+'px';pop.style.width=r.width+'px';pop.style.display='block';}
-function comboOpen(input,opts,onPick){comboState={input,opts,onPick};comboRender('');}
-function comboFilter(input){if(comboState&&comboState.input===input)comboRender(input.value);}
-function comboClose(){const p=$('comboPop');if(p)p.style.display='none';comboState=null;}
-function comboPick(e){if(!comboState)return;const it=e.target.closest('.cbo');if(!it||it.classList.contains('dis'))return;e.preventDefault();const o=comboState.opts[+it.dataset.i];const fn=comboState.onPick;comboState.input.value=o.label;comboClose();fn(o.value);}
-function pilotOpts(){const antes=antesDelCorte();return pilotos.map(p=>({value:p.id,label:p.nombre||'(sin nombre)',dis:(!antes&&!pilotHabil(p))?'inhabilitado':''}));}
-function autOpts(){const antes=antesDelCorte();return autorizaciones.filter(a=>antes||!autVencida(a)).map(a=>({value:a.id,label:autLabel(a)}));}
-function pickPiloto(id){$('g_pilotoId').value=id;$('g_pilotoQ').value=pilotName(id);verdict();renderPilotoInfo();saveDraft();}
-function pickAut(id){const a=autById(id);$('g_autId').value=id;$('g_autQ').value=a?autLabel(a):'';onAutSelect();}
-function pickSortie(i,field,id){const p=pilotById(id);if(!antesDelCorte()&&p&&!pilotHabil(p)){toast((field==='observadorId'?'El observador':'El piloto')+' está INHABILITADO');return;}setS(i,field,id);renderSorties();}
 
 /* ---------- checklists ---------- */
 function renderSiNo(cont,cfg,group){$(cont).innerHTML=cfg.map(([k,q,crit])=>{const v=st[group][k];
@@ -704,7 +634,10 @@ function setSN(group,k,val){st[group][k]=(st[group][k]===val?null:val);
   else if(group==='posvuelo')renderSiNo('chkPosvuelo',CHK_POSVUELO,'posvuelo');
   else if(group==='ocurr'){renderOcurr();morCheck();}
   verdict();saveDraft();}
-function renderOcurr(){$('ocurrList').innerHTML=OCURRENCIAS.map(([k,q,code])=>{const v=st.ocurr[k];return `<div class="sino inv"><div class="q">${esc(q)}</div><div class="btns"><button type="button" class="b si ${v==='si'?'on':''}" onclick="setSN('ocurr','${k}','si')">Sí</button><button type="button" class="b no ${v==='no'?'on':''}" onclick="setSN('ocurr','${k}','no')">No</button></div></div>`}).join('');}
+function renderOcurr(){$('ocurrList').innerHTML=OCURRENCIAS.map(([k,q])=>{const v=st.ocurr[k];
+  return `<div class="sino inv"><div class="q">${q}</div><div class="btns">
+    <button type="button" class="b si ${v==='si'?'on':''}" onclick="setSN('ocurr','${k}','si')">Sí</button>
+    <button type="button" class="b no ${v==='no'?'on':''}" onclick="setSN('ocurr','${k}','no')">No</button></div></div>`}).join('');}
 function riesgoResult(){let sum=0,answered=0;
   RIESGO.forEach(f=>{const o=f.opts.find(x=>x[0]===st.hf[f.k]);if(o){answered++;sum+=o[2];}});
   const complete=answered===RIESGO.length;let calif,cls;
@@ -726,8 +659,8 @@ function addSortie(d){st.sorties.push(d||{fecha:($('p_inicio').value||'').slice(
 function renderSorties(){
   $('sortieList').innerHTML=st.sorties.map((s,i)=>{const dur=sortieDur(s);const needObs=!s.observadorId;
     return `<div class="sortie"><div class="sh"><span class="n">Vuelo #${i+1}</span><span class="dur">${dur!=null?dur+' min de vuelo':''}</span><button class="rm" onclick="rmSortie(${i})">Quitar</button></div>
-      <div class="field"><label>Piloto</label><input value="${esc(pilotName(s.pilotoId))}" placeholder="Tocá para ver la lista…" autocomplete="off" onfocus="comboOpen(this,pilotOpts(),(id)=>pickSortie(${i},'pilotoId',id))" oninput="comboFilter(this)" onchange="setSPilot(${i},'pilotoId',this.value)" onblur="setTimeout(comboClose,150)"></div>
-      <div class="field"><label>Observador ${needObs?'<span style="color:#dc2626">· obligatorio</span>':''}</label><input value="${esc(pilotName(s.observadorId))}" placeholder="Tocá para ver la lista…" autocomplete="off" onfocus="comboOpen(this,pilotOpts(),(id)=>pickSortie(${i},'observadorId',id))" oninput="comboFilter(this)" onchange="setSPilot(${i},'observadorId',this.value)" onblur="setTimeout(comboClose,150)"></div>
+      <div class="field"><label>Piloto</label><select onchange="setS(${i},'pilotoId',this.value)">${pilotOptions(s.pilotoId)}</select></div>
+      <div class="field"><label>Observador ${needObs?'<span style="color:#dc2626">· obligatorio</span>':''}</label><select onchange="setS(${i},'observadorId',this.value)">${pilotOptions(s.observadorId)}</select></div>
       <div class="field"><label>Fecha</label><input type="date" value="${s.fecha||''}" onchange="setS(${i},'fecha',this.value)"></div>
       <div class="row2"><div class="field"><label>Hora inicio</label><input type="time" value="${s.inicio||''}" onchange="setS(${i},'inicio',this.value)"></div>
       <div class="field"><label>Hora fin</label><input type="time" value="${s.fin||''}" onchange="setS(${i},'fin',this.value)"></div></div>
@@ -754,30 +687,21 @@ async function openPdf(id){try{const data=await Assets.get(id);if(!data){toast('
 function dataURLtoBlob(du){const[meta,b64]=du.split(',');const mime=(meta.match(/:(.*?);/)||[])[1]||'application/pdf';const bin=atob(b64);const a=new Uint8Array(bin.length);for(let i=0;i<bin.length;i++)a[i]=bin.charCodeAt(i);return new Blob([a],{type:mime});}
 
 /* ---------- veredicto ---------- */
-const CORTE='2026-09-02';
-const CORTE2='2026-03-09';
-function antesDelCorte2(){return opFechaRef()<CORTE2;}
-function opFechaRef(){const cands=[($('p_inicio')&&$('p_inicio').value)||'',($('q_fin')&&$('q_fin').value)||''];((typeof st!=='undefined'&&st.sorties)||[]).forEach(s=>{cands.push(s.inicio||'',s.fin||'');});const ds=cands.map(x=>{const m=String(x).match(/\d{4}-\d{2}-\d{2}/);return m?m[0]:'';}).filter(Boolean);return ds.length?ds.sort()[0]:new Date().toISOString().slice(0,10);}
-function antesDelCorte(){return opFechaRef()<CORTE;}
-function verdict(){const box=$('verdictBox'),word=$('vWord'),desc=$('vDesc'),light=$('vLight'),ul=$('vReasons');const antes=antesDelCorte();const antes2=antesDelCorte2();
+function verdict(){const box=$('verdictBox'),word=$('vWord'),desc=$('vDesc'),light=$('vLight'),ul=$('vReasons');
   const block=[],pend=[],warn=[];
   const ini=$('a_ini').value,fin=$('a_fin').value,fecha=($('p_inicio').value||'').slice(0,10)||new Date().toISOString().slice(0,10);
   if(ini&&fecha<ini)block.push('Operación antes del inicio de la autorización');
   if(fin&&fecha>fin)block.push('Operación después del vencimiento de la autorización');
-  if(!antes2&&!$('a_rad').value.trim())block.push('Debe asociar una autorización de vuelo');
+  if(!$('a_rad').value.trim())warn.push('Sin radicado de autorización');
   if(fin&&daysTo(fin)!==null&&daysTo(fin)>=0&&daysTo(fin)<=7)warn.push('La autorización vence en '+daysTo(fin)+' día(s)');
   const noc=isOp('nocturna'),bv=isOp('bvlos');
   const p=pilotById($('g_pilotoId').value);
-  if(p){if(!antes){const _md=pilotMed(p);if(_md&&daysTo(_md)<0)block.push('Examen médico del piloto vencido');}}
+  if(p){if(p.med&&daysTo(p.med)<0)block.push('Examen médico del piloto vencido');}
   else warn.push('Sin piloto principal seleccionado');
   const d=dronById($('g_dron').value);
-  if(d){if(!antes&&d.activo===false)block.push('Dron inactivo');if(!antes&&d.polizaVence&&daysTo(d.polizaVence)<0)block.push('Póliza del dron vencida');
+  if(d){if(d.polizaVence&&daysTo(d.polizaVence)<0)block.push('Póliza del dron vencida');
     if(noc&&!d.habNocturno)block.push('Dron no habilitado para operación nocturna');
     if(bv&&!d.habBVLOS)block.push('Dron no habilitado para BVLOS');}
-  const _au=autById($('g_autId').value);
-  if(_au){opTipoMsgs(_au).forEach(x=>block.push(x));if(d&&!dronAutOK(_au,d))block.push('El dron no está autorizado en esta autorización');
-    if(p&&!pilotAutOK(_au,p))block.push('El piloto principal no está autorizado en esta autorización');
-    st.sorties.forEach((s,i)=>{const sp=pilotById(s.pilotoId),so=pilotById(s.observadorId);if(sp&&!pilotAutOK(_au,sp))block.push('Piloto del vuelo #'+(i+1)+' no autorizado en esta autorización');if(so&&!pilotAutOK(_au,so))block.push('Observador del vuelo #'+(i+1)+' no autorizado en esta autorización');});}
   // Observador obligatorio en cada vuelo
   st.sorties.forEach((s,i)=>{if(!s.observadorId)block.push('Vuelo #'+(i+1)+' sin observador (obligatorio)');});
   // En nocturno o BVLOS, piloto y observador deben estar certificados
@@ -831,7 +755,7 @@ function collectForm(){return{pilotoId:$('g_pilotoId').value,
   pInicio:$('p_inicio').value,qFin:$('q_fin').value,pObs:$('p_obs').value,qObs:$('q_obs').value,st};}
 function saveDraft(){save(K.draft,collectForm());}
 async function loadDraft(){const d=load(K.draft,null);if(!d)return false;
-  fillDeptos();$('g_depto').value=d.depto||'';onDeptoChange();$('g_muni').value=d.muni||'';
+  $('g_muni').value=d.muni||'';$('g_depto').value=d.depto||'';
   $('a_rad').value=d.rad||'';$('a_id').value=d.aid||'';$('a_ini').value=d.ini||'';$('a_fin').value=d.fin||'';
   $('p_inicio').value=d.pInicio||'';$('q_fin').value=d.qFin||'';$('p_obs').value=d.pObs||'';$('q_obs').value=d.qObs||'';
   st=Object.assign(blankState(),d.st||{});
@@ -840,7 +764,7 @@ async function loadDraft(){const d=load(K.draft,null);if(!d)return false;
   renderHF();renderOcurr();renderSorties();
   await preloadAssets([].concat(st.fotosPre||[],st.fotosPos||[],st.fotoDron?[st.fotoDron]:[],st.fotoMeteo?[st.fotoMeteo]:[],(st.autPdf&&st.autPdf.id)?[st.autPdf.id]:[]));
   renderPhotos('pre');renderPhotos('pos');renderNamedPhoto('fotoDron');renderNamedPhoto('fotoMeteo');renderPdfRow();
-  setTimeout(()=>{if(d.pilotoId){$('g_pilotoId').value=d.pilotoId;$('g_pilotoQ').value=pilotName(d.pilotoId);}if(d.dron)$('g_dron').value=d.dron;if(d.autId){$('g_autId').value=d.autId;$('g_autQ').value=autLabel(autById(d.autId));onAutSelect();}renderDronInfo();renderPilotoInfo();verdict();},0);
+  setTimeout(()=>{if(d.pilotoId)$('g_pilotoId').value=d.pilotoId;if(d.dron)$('g_dron').value=d.dron;if(d.autId){$('g_autId').value=d.autId;onAutSelect();}renderDronInfo();verdict();},0);
   return true;}
 function discardDraft(){if(!confirm('¿Descartar el borrador en curso?'))return;
   const ids=[].concat(st.fotosPre||[],st.fotosPos||[],st.fotoDron?[st.fotoDron]:[],st.fotoMeteo?[st.fotoMeteo]:[]);
@@ -851,12 +775,10 @@ function discardDraft(){if(!confirm('¿Descartar el borrador en curso?'))return;
 /* ---------- preparar nueva ---------- */
 function prepNueva(){
   const selD=$('g_dron');selD.innerHTML=flota.length?'<option value="">— dron —</option>'+flota.map(d=>`<option value="${d.id}">${esc(dronLabel(d))}</option>`).join(''):'<option value="">— sin drones —</option>';
-  $('dlPilotos').innerHTML=pilotos.map(p=>`<option value="${esc(p.nombre)}">`).join('');
-  $('dlAut').innerHTML=autorizaciones.filter(a=>!autVencida(a)).map(a=>`<option value="${esc(autLabel(a))}">`).join('');
-  $('g_pilotoQ').value='';$('g_pilotoId').value='';$('g_autQ').value='';$('g_autId').value='';
-  fillDeptos();onDeptoChange();
+  $('g_pilotoId').innerHTML=pilotOptions('');
+  $('g_autId').innerHTML='<option value="">— autorización —</option>'+autorizaciones.map(a=>`<option value="${a.id}">${esc(a.radicado||a.idAut||'Aut')}</option>`).join('');
   renderSiNo('chkOficina',CHK_OFICINA,'oficina');renderSiNo('chkPrevuelo',CHK_PREVUELO,'prevuelo');renderSiNo('chkPosvuelo',CHK_POSVUELO,'posvuelo');
-  renderHF();renderOcurr();renderSorties();renderPhotos('pre');renderPhotos('pos');renderNamedPhoto('fotoDron');renderNamedPhoto('fotoMeteo');renderPdfRow();renderDronInfo();renderPilotoInfo();renderAutInfo();morCheck();
+  renderHF();renderOcurr();renderSorties();renderPhotos('pre');renderPhotos('pos');renderNamedPhoto('fotoDron');renderNamedPhoto('fotoMeteo');renderPdfRow();renderDronInfo();renderAutInfo();morCheck();
   const hasDraft=localStorage.getItem(K.draft);const sb=$('saveOpBtn');
   if(editingOpId){$('draftBar').innerHTML='<div class="alert info"><span>✏️</span><div>Editando una operación guardada. <a href="#" onclick="cancelEdit();return false" style="color:#065f46;font-weight:700">Cancelar edición</a></div></div>';if(sb)sb.textContent='Guardar cambios';}
   else{$('draftBar').innerHTML=hasDraft?'<div class="alert info"><span>💾</span><div>Borrador en curso (autoguardado). <a href="#" onclick="discardDraft();return false" style="color:#065f46;font-weight:700">Descartar</a></div></div>':'';if(sb)sb.textContent='Guardar operación';}
@@ -868,17 +790,7 @@ function prepNueva(){
 /* ---------- guardar operación ---------- */
 function nextCodigo(base){let n=0;operaciones.forEach(o=>{if(o.codigo&&o.codigo.indexOf(base+'-')===0){const m=o.codigo.slice(base.length+1).match(/^(\d+)/);if(m)n=Math.max(n,+m[1]);}});return base+'-'+(n+1);}
 function saveOp(){
-  const antes=antesDelCorte();
-  if(!antesDelCorte2()&&!$('a_rad').value.trim()){toast('No se puede registrar: debe asociar una autorización de vuelo');return;}
-  if(!antes&&(!st.fotoDron||!st.fotoMeteo)){toast('Faltan las fotos obligatorias: dron/puerto y app de meteorología');nav('nueva');return;}
-  if(!antes){const _pp=pilotById($('g_pilotoId').value);if(_pp&&!pilotHabil(_pp)){toast('No se puede registrar: el piloto está INHABILITADO');return;}
-  const _dd=dronById($('g_dron').value);if(_dd&&_dd.activo===false){toast('No se puede registrar: el dron está INACTIVO');return;}
-  for(const s of (st.sorties||[])){const _sp=pilotById(s.pilotoId);if(_sp&&!pilotHabil(_sp)){toast('No se puede registrar: hay un piloto de vuelo INHABILITADO');return;}const _so=pilotById(s.observadorId);if(_so&&!pilotHabil(_so)){toast('No se puede registrar: hay un observador INHABILITADO');return;}}}
-  const _au=autById($('g_autId').value);
-  if(_au){const _tm=opTipoMsgs(_au);if(_tm.length){toast('No se puede registrar: '+_tm[0]);return;}
-    const _dd2=dronById($('g_dron').value);if(_dd2&&!dronAutOK(_au,_dd2)){toast('No se puede registrar: el dron no está autorizado en esta autorización');return;}
-    const _pp2=pilotById($('g_pilotoId').value);if(_pp2&&!pilotAutOK(_au,_pp2)){toast('No se puede registrar: el piloto no está autorizado en esta autorización');return;}
-    for(const s of (st.sorties||[])){const sp=pilotById(s.pilotoId),so=pilotById(s.observadorId);if(sp&&!pilotAutOK(_au,sp)){toast('No se puede registrar: un piloto de vuelo no está autorizado en esta autorización');return;}if(so&&!pilotAutOK(_au,so)){toast('No se puede registrar: un observador no está autorizado en esta autorización');return;}}}
+  if(!st.fotoDron||!st.fotoMeteo){toast('Faltan las fotos obligatorias: dron/puerto y app de meteorología');nav('nueva');return;}
   const v=verdict();
   const d=dronById($('g_dron').value);const pp=pilotById($('g_pilotoId').value);
   const nm=id=>{const p=pilotById(id);return p?p.nombre:''};
@@ -886,11 +798,11 @@ function saveOp(){
   const fechaCod=(($('p_inicio').value||new Date().toISOString().slice(0,10)).slice(0,10)).replace(/-/g,'');
   const codBase=fechaCod+'-'+((d&&d.maximo)||'SINMAX');
   const codigo=editingOpId?((operaciones.find(x=>x.id===editingOpId)||{}).codigo||nextCodigo(codBase)):nextCodigo(codBase);
-  const rec={id:uid(),ts:Date.now(),historico:antesDelCorte(),codigo:codigo,pilotoId:$('g_pilotoId').value,piloto:pp?pp.nombre:'',
+  const rec={id:uid(),ts:Date.now(),codigo:codigo,pilotoId:$('g_pilotoId').value,piloto:pp?pp.nombre:'',
     tipoOp:{diurna:isOp('diurna'),nocturna:isOp('nocturna'),vlos:isOp('vlos'),evlos:isOp('evlos'),bvlos:isOp('bvlos')},
     municipio:$('g_muni').value.trim(),departamento:$('g_depto').value.trim(),
     dronId:d?d.id:'',dronModelo:d?d.modelo:'',dronSerial:d?d.serial:'',dronRuas:d?d.ruas:'',dronMaximo:d?d.maximo:'',dronDR:d?(d.dr||''):'',dronPolizaVence:d?(d.polizaVence||''):'',dronMant:d?(d.mant||''):'',
-    aut:{radicado:$('a_rad').value.trim(),id:$('a_id').value.trim(),ini:$('a_ini').value,fin:$('a_fin').value,pdf:st.autPdf,pdfInfo:st.autPdfInfo},
+    aut:{radicado:$('a_rad').value.trim(),id:$('a_id').value.trim(),ini:$('a_ini').value,fin:$('a_fin').value,pdf:st.autPdf},
     inicioOp:$('p_inicio').value,finOp:$('q_fin').value,
     oficina:{...st.oficina},prevuelo:{...st.prevuelo},posvuelo:{...st.posvuelo},hf:{...st.hf},ocurr:{...st.ocurr},
     riesgo:riesgoResult(),
@@ -898,7 +810,7 @@ function saveOp(){
     sorties:st.sorties.map(s=>({...s,piloto:nm(s.pilotoId),observador:nm(s.observadorId),pilotoCedula:cd(s.pilotoId),observadorCedula:cd(s.observadorId),dur:sortieDur(s)})),
     fotosPre:st.fotosPre.slice(),fotosPos:st.fotosPos.slice(),fotoDron:st.fotoDron||null,fotoMeteo:st.fotoMeteo||null,
     verdict:v.verdict,block:v.block,pend:v.pend,warn:v.warn,requiereMOR:false,
-    operadorPiloto:pp?{cedula:pp.cedula,cipus:pilotCipus(pp),med:pilotMed(pp)}:null};
+    operadorPiloto:pp?{cedula:pp.cedula,cipus:pp.cipus,med:pp.med}:null};
   if(editingOpId){const i=operaciones.findIndex(x=>x.id===editingOpId);
     if(i>=0){rec.id=editingOpId;rec.ts=operaciones[i].ts;operaciones[i]=rec;}else operaciones.unshift(rec);
     if(!save(K.ops,operaciones)){toast('Sin espacio: quitá fotos o el PDF adjunto');return;}
@@ -908,7 +820,7 @@ function saveOp(){
   localStorage.removeItem(K.draft);toast('Operación guardada ('+v.verdict+')');resetForm(false);nav('oper');}
 function resetForm(clearAll){st=blankState();
   ['g_muni','g_depto','a_rad','a_id','a_ini','a_fin','p_inicio','q_fin','p_obs','q_obs'].forEach(i=>$(i).value='');
-  if(clearAll){$('g_pilotoId').value='';if($('g_pilotoQ'))$('g_pilotoQ').value='';if($('g_autId'))$('g_autId').value='';if($('g_autQ'))$('g_autQ').value='';localStorage.removeItem(K.draft);$('draftBar').innerHTML='';}
+  if(clearAll){$('g_pilotoId').value='';if($('g_autId'))$('g_autId').value='';localStorage.removeItem(K.draft);$('draftBar').innerHTML='';}
   document.querySelectorAll('#v-nueva .pill').forEach(p=>{p.classList.remove('on');const c=p.querySelector('input');if(c)c.checked=false;});
   renderSiNo('chkOficina',CHK_OFICINA,'oficina');renderSiNo('chkPrevuelo',CHK_PREVUELO,'prevuelo');renderSiNo('chkPosvuelo',CHK_POSVUELO,'posvuelo');
   renderHF();renderOcurr();renderSorties();renderPhotos('pre');renderPhotos('pos');renderNamedPhoto('fotoDron');renderNamedPhoto('fotoMeteo');renderPdfRow();morCheck();verdict();}
@@ -1060,7 +972,7 @@ function renderConsolDrones(){const sel=$('dronConsol');const cur=sel.value;
 /* ---------- exportes ---------- */
 function exportPDF(){if(!operaciones.length){toast('No hay operaciones');return}printReport(operaciones,'Todas las operaciones');}
 function exportProjectPDF(pid){const list=operaciones.filter(o=>o.proyectoId===pid);if(!list.length){toast('El proyecto no tiene operaciones');return}printReport(list,(proyectoById(pid)||{}).nombre||'Proyecto');}
-function siNoTable(cfg,state,invert){return `<table>${cfg.map(([k,q,code])=>{const val=state[k];const cls=val?(invert?(val==='si'?'no':'si'):val):'';return `<tr><td class="k">${esc(q)}${code?' <b style="color:#007934">['+esc(code)+']</b>':''}</td><td class="v ${cls}">${val?val.toUpperCase():'—'}</td></tr>`}).join('')}</table>`;}
+function siNoTable(cfg,state,invert){return `<table>${cfg.map(([k,q])=>{const val=state[k];const cls=val?(invert?(val==='si'?'no':'si'):val):'';return `<tr><td class="k">${esc(q)}</td><td class="v ${cls}">${val?val.toUpperCase():'—'}</td></tr>`}).join('')}</table>`;}
 function fmtDate(s){if(!s)return '';const m=String(s).match(/^(\d{4})-(\d{2})-(\d{2})/);return m?`${m[3]}-${m[2]}-${m[1]}`:s;}
 function fmtDT(s){if(!s)return '';const m=String(s).match(/^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2})/);if(m)return `${m[3]}-${m[2]}-${m[1]} ${m[4]}:${m[5]}`;return fmtDate(s);}
 async function pdfToImages(dataURL,scale){if(typeof pdfjsLib==='undefined')throw new Error('LIB');
@@ -1076,7 +988,7 @@ async function printReport(list,titulo){const w=window.open('','_blank');if(w)w.
   if(!w){toast('Permití ventanas emergentes para ver el PDF');return;}
   const body=list.map(o=>opBlock(o)).join('<div style="page-break-after:always"></div>');
   let annex='';
-  for(const o of list){if(!o.aut)continue;for(const it of [{p:o.aut.pdf,lb:'documento'},{p:o.aut.pdfInfo,lb:'información'}]){const pp=it.p;if(pp&&pp.id){const data=await Assets.get(pp.id);if(data){try{const imgs=await pdfToImages(data);if(imgs.length)annex+='<div style="page-break-before:always"></div><h2 style="font-size:15px;color:#007934;border-bottom:2px solid #007934;padding-bottom:4px">Anexo — Autorización ('+it.lb+') · '+esc(o.codigo||'')+' · '+fmtDT(o.inicioOp)+'</h2>'+imgs.map(im=>'<img src="'+im+'" style="width:100%;display:block;margin:8px 0;border:1px solid #cbd5e1">').join('');}catch(e){const msg=(e&&e.message==='LIB')?'La librería pdf.js no está cargada: subí <b>pdf.min.js</b> y <b>pdf.worker.min.js</b> al repositorio (junto a index.html) y abrí la app instalada, no como archivo local.':('Detalle técnico: '+esc(e&&e.message||''));annex+='<p style="color:#b45309;border:1px solid #fcd34d;background:#fffbeb;padding:8px 10px;border-radius:8px">No se pudo incrustar el PDF adjunto <b>'+esc((pp.name)||'')+'</b>. '+msg+'</p>';}}}}}
+  for(const o of list){if(o.aut&&o.aut.pdf&&o.aut.pdf.id){const data=await Assets.get(o.aut.pdf.id);if(data){try{const imgs=await pdfToImages(data);if(imgs.length)annex+='<div style="page-break-before:always"></div><h2 style="font-size:15px;color:#007934;border-bottom:2px solid #007934;padding-bottom:4px">Anexo — Autorización · '+esc(o.codigo||'')+' · '+fmtDT(o.inicioOp)+'</h2>'+imgs.map(im=>'<img src="'+im+'" style="width:100%;display:block;margin:8px 0;border:1px solid #cbd5e1">').join('');}catch(e){const msg=(e&&e.message==='LIB')?'La librería pdf.js no está cargada: subí <b>pdf.min.js</b> y <b>pdf.worker.min.js</b> al repositorio (junto a index.html) y abrí la app instalada, no como archivo local.':('Detalle técnico: '+esc(e&&e.message||''));annex+='<p style="color:#b45309;border:1px solid #fcd34d;background:#fffbeb;padding:8px 10px;border-radius:8px">No se pudo incrustar el PDF adjunto <b>'+esc((o.aut.pdf.name)||'')+'</b>. '+msg+'</p>';}}}}
   w.document.open();
   w.document.write(`<!DOCTYPE html><html><head><meta charset="utf-8"><title>Bitácora — ${esc(titulo)}</title><style>
   *{font-family:system-ui,sans-serif;color:#111}body{margin:0;padding:26px;background:#fff}
@@ -1092,7 +1004,7 @@ async function printReport(list,titulo){const w=window.open('','_blank');if(w)w.
   .rz{background:#fee2e2;border-radius:8px;padding:8px 12px;margin-top:8px;font-size:11.5px;color:#991b1b}
   .imgs{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}.imgs img{width:110px;height:110px;object-fit:cover;border-radius:6px}
   @media print{.blk{page-break-inside:avoid}}</style></head><body>
-  <div class="hd"><img src="${EPM_LOGO}" style="width:99px;height:44px;object-fit:contain;display:block"><div><h1>Bitácora de Vuelo Dron</h1><div class="s">F-EPM-03 · RAC 100 · ${esc(titulo)}</div></div></div>
+  <div class="hd"><img src="${EPM_LOGO}" style="height:44px;display:block"><div><h1>Bitácora de Vuelo Dron</h1><div class="s">F-EPM-03 · RAC 100 · ${esc(titulo)}</div></div></div>
   ${body}${annex}<p style="font-size:10px;color:#999;margin-top:18px">Generado ${(function(){const n=new Date(),p=x=>String(x).padStart(2,'0');return p(n.getDate())+'-'+p(n.getMonth()+1)+'-'+n.getFullYear()+' '+p(n.getHours())+':'+p(n.getMinutes());})()} · Documento de soporte operacional</p></body></html>`);
   w.document.close();setTimeout(()=>w.print(),400);}
 function opBlock(o){const kv=(k,val)=>val?`<tr><td class="k">${k}</td><td>${esc(String(val))}</td></tr>`:'';
@@ -1141,55 +1053,7 @@ async function shareBackup(){toast('Preparando respaldo…');const assets={};
     if(navigator.canShare&&navigator.canShare({files:[file]})){await navigator.share({files:[file],title:'Bitácora de vuelo dron'});localStorage.setItem('bvd_lastBackup',String(Date.now()));if($('v-datos').classList.contains('active'))renderStorage();return;}
   }catch(e){if(e&&e.name==='AbortError')return;}
   dl(name,json,'application/json');localStorage.setItem('bvd_lastBackup',String(Date.now()));toast('Compartir no disponible: se descargó el archivo');}
-function colLetter(i){let s='';i++;while(i>0){const m=(i-1)%26;s=String.fromCharCode(65+m)+s;i=Math.floor((i-1)/26);}return s;}
-function buildXlsx(sheets){const ex=s=>String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');const F={};
-  F['[Content_Types].xml']='<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types"><Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/><Default Extension="xml" ContentType="application/xml"/>'+sheets.map((s,i)=>'<Override PartName="/xl/worksheets/sheet'+(i+1)+'.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.worksheet+xml"/>').join('')+'<Override PartName="/xl/workbook.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet.main+xml"/></Types>';
-  F['_rels/.rels']='<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument" Target="xl/workbook.xml"/></Relationships>';
-  F['xl/workbook.xml']='<?xml version="1.0" encoding="UTF-8" standalone="yes"?><workbook xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships"><sheets>'+sheets.map((s,i)=>'<sheet name="'+ex(s.name)+'" sheetId="'+(i+1)+'" r:id="rId'+(i+1)+'"/>').join('')+'</sheets></workbook>';
-  F['xl/_rels/workbook.xml.rels']='<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">'+sheets.map((s,i)=>'<Relationship Id="rId'+(i+1)+'" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/worksheet" Target="worksheets/sheet'+(i+1)+'.xml"/>').join('')+'</Relationships>';
-  sheets.forEach((s,i)=>{const rows=s.rows.map((row,ri)=>'<row r="'+(ri+1)+'">'+row.map((v,ci)=>'<c r="'+colLetter(ci)+(ri+1)+'" t="inlineStr"><is><t xml:space="preserve">'+ex(v)+'</t></is></c>').join('')+'</row>').join('');
-    F['xl/worksheets/sheet'+(i+1)+'.xml']='<?xml version="1.0" encoding="UTF-8" standalone="yes"?><worksheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main"><sheetData>'+rows+'</sheetData></worksheet>';});
-  const enc=new TextEncoder();const zo={};for(const k in F)zo[k]=enc.encode(F[k]);return fflate.zipSync(zo);}
-function opIsClosed(o){return !!(o&&o.finOp);}
-let _expSel=null;
-function exportSelectOpen(){if(!operaciones.length){toast('No hay operaciones para exportar');return;}_expSel={onlyClosed:true,checked:{}};operaciones.forEach(o=>{_expSel.checked[o.id]=opIsClosed(o);});exportSelectRender();}
-function exportSelectRender(){let ov=$('expOverlay');if(!ov){ov=document.createElement('div');ov.id='expOverlay';ov.className='expOvl';ov.onclick=e=>{if(e.target===ov)exportSelClose();};document.body.appendChild(ov);}
-  const list=operaciones.filter(o=>!_expSel.onlyClosed||opIsClosed(o));
-  const rows=list.length?list.map(o=>{const cl=opIsClosed(o);return '<label class=\"exprow\"><input type=\"checkbox\" '+(_expSel.checked[o.id]?'checked':'')+' onchange=\"_expSel.checked[\''+o.id+'\']=this.checked;exportSelCount()\"><div style=\"flex:1\"><div style=\"font-weight:700\">'+esc(o.codigo||o.id)+'</div><div class=\"meta\">'+esc((o.inicioOp||'').replace('T',' '))+' · '+(cl?'<span style=\"color:var(--verde)\">cerrada</span>':'<span style=\"color:#d97706\">abierta</span>')+' · '+((o.sorties||[]).length)+' vuelo(s)</div></div></label>';}).join(''):'<div class=\"hint\" style=\"padding:14px\">Sin operaciones con este filtro.</div>';
-  const n=operaciones.filter(o=>_expSel.checked[o.id]).length;
-  ov.innerHTML='<div class=\"expCard\"><h3 style=\"margin:0 0 8px\">Exportar a Forms</h3>'
-    +'<label style=\"display:flex;align-items:center;gap:8px;font-size:14px;margin-bottom:8px\"><input type=\"checkbox\" '+(_expSel.onlyClosed?'checked':'')+' onchange=\"_expSel.onlyClosed=this.checked;exportSelectRender()\"> Mostrar solo operaciones cerradas</label>'
-    +'<div class=\"btnrow\" style=\"margin-bottom:8px\"><button class=\"btn sec sm\" onclick=\"exportSelAll(true)\">Marcar todas</button><button class=\"btn sec sm\" onclick=\"exportSelAll(false)\">Ninguna</button></div>'
-    +'<div style=\"max-height:46vh;overflow:auto;border:1px solid var(--line);border-radius:10px\">'+rows+'</div>'
-    +'<div class=\"btnrow\" style=\"margin-top:12px\"><button class=\"btn\" style=\"flex:1\" id=\"expGo\" onclick=\"exportSelGo()\">Exportar ('+n+')</button><button class=\"btn sec\" onclick=\"exportSelClose()\">Cancelar</button></div></div>';
-  ov.style.display='flex';}
-function exportSelCount(){const n=operaciones.filter(o=>_expSel.checked[o.id]).length;const b=$('expGo');if(b)b.textContent='Exportar ('+n+')';}
-function exportSelAll(v){const list=operaciones.filter(o=>!_expSel.onlyClosed||opIsClosed(o));list.forEach(o=>_expSel.checked[o.id]=v);exportSelectRender();}
-function exportSelClose(){const ov=$('expOverlay');if(ov)ov.style.display='none';}
-function exportSelGo(){const ops=operaciones.filter(o=>_expSel.checked[o.id]);if(!ops.length){toast('Seleccioná al menos una operación');return;}exportSelClose();exportForms(ops);}
-async function exportForms(ops){ops=ops||operaciones;toast('Preparando Excel…');const assets={};
-  for(const o of ops){for(const id of opAssetIds(o)){if(!isDataURL(id)&&!(id in assets)){const d=await Assets.get(id);if(d!=null)assets[id]=d;}}}
-  const json=JSON.stringify({v:7,proyectos,pilotos,flota,autorizaciones,operaciones:ops,assets});
-  const CH=30000;const chunks=[];for(let i=0;i<json.length;i+=CH)chunks.push(json.slice(i,i+CH));
-  const dataRows=[['BITACORA_JSON_V1']].concat(chunks.map(c=>[c]));
-  const resumen=[['Resumen bitácora dron'],['Operaciones',String(ops.length)],['Generado',new Date().toLocaleString('es-CO')],['Nota','No edite este archivo. Súbalo tal cual por el formulario.']];
-  const xls=buildXlsx([{name:'RESUMEN',rows:resumen},{name:'DATA',rows:dataRows}]);
-  const name='bitacora_'+new Date().toISOString().slice(0,10)+'.xlsx';
-  const blob=new Blob([xls],{type:'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'});
-  try{const file=new File([blob],name,{type:blob.type});if(navigator.canShare&&navigator.canShare({files:[file]})){await navigator.share({files:[file],title:'Bitácora de vuelo dron'});localStorage.setItem('bvd_lastBackup',String(Date.now()));return;}}catch(e){if(e&&e.name==='AbortError')return;}
-  const u=URL.createObjectURL(blob);const a=document.createElement('a');a.href=u;a.download=name;a.click();setTimeout(()=>URL.revokeObjectURL(u),1000);
-  localStorage.setItem('bvd_lastBackup',String(Date.now()));toast('Excel para Forms generado');}
 let pendingImport=null;
-function importPriv(e){const f=e.target.files[0];e.target.value='';if(!f)return;const r=new FileReader();
-  r.onload=async ev=>{try{const d=JSON.parse(ev.target.result);
-    if(!d.flota&&!d.pilotos){toast('Ese archivo no es el catálogo de pilotos/drones');return;}
-    if(d.assets)for(const[id,data]of Object.entries(d.assets))await Assets.put(id,data);
-    mergeCatalog(flota,d.flota,'serial');mergeCatalog(pilotos,d.pilotos,'codigo');
-    save(K.fl,flota);save(K.pilots,pilotos);
-    if(d.catalogoActualizado)localStorage.setItem('bvd_catalogoFecha',d.catalogoActualizado);
-    renderFleet();renderPilots();
-    toast('Catálogo cargado: '+flota.length+' drones · '+pilotos.length+' pilotos');
-  }catch(err){toast('Archivo inválido')}};r.readAsText(f);}
 function loadJSON(e){const f=e.target.files[0];e.target.value='';if(!f)return;const r=new FileReader();
   r.onload=ev=>{try{pendingImport=JSON.parse(ev.target.result);const m=$('importModal');if(m)m.style.display='flex';}catch(err){toast('Archivo inválido')}};r.readAsText(f);}
 function closeImportModal(){const m=$('importModal');if(m)m.style.display='none';pendingImport=null;}
@@ -1203,29 +1067,16 @@ function modoPiloto(){return localStorage.getItem('bvd_modoPiloto')==='1';}
 function applyModo(){const on=modoPiloto();['fleetForm','pilotForm'].forEach(id=>{const el=$(id);if(el)el.style.display=on?'none':'';});const c=$('modoPilotoChk');if(c)c.checked=on;}
 function setModoPiloto(on){localStorage.setItem('bvd_modoPiloto',on?'1':'');applyModo();renderFleet();renderPilots();toast(on?'Modo piloto activado (solo consulta)':'Modo maestro (edición habilitada)');}
 function mergeCatalog(local,incoming,key){if(!incoming)return 0;let n=0;incoming.forEach(item=>{let i=local.findIndex(x=>x.id===item.id);if(i<0&&key&&item[key])i=local.findIndex(x=>String(x[key]||'').trim()===String(item[key]||'').trim());if(i<0){local.push(item);n++;}else local[i]=item;});return n;}
-const APP_VER='v74';
-function renderSyncInfo(){const t=Number(localStorage.getItem('bvd_lastSync')||0);const v=localStorage.getItem('bvd_seedVerShown')||localStorage.getItem('bvd_seedVersion')||'';const cf=localStorage.getItem('bvd_catalogoFecha')||'';const p=n=>String(n).padStart(2,'0');
-  let ts='',short='';if(t){const d=new Date(t);ts=p(d.getDate())+'-'+p(d.getMonth()+1)+'-'+d.getFullYear()+' '+p(d.getHours())+':'+p(d.getMinutes());short=p(d.getDate())+'-'+p(d.getMonth()+1)+' '+p(d.getHours())+':'+p(d.getMinutes());}
-  const hv=$('hdrVer');if(hv)hv.innerHTML='App '+APP_VER+(short?'<br>'+short:'');
-  const el=$('syncInfo');if(!el)return;
-  if(!t){el.innerHTML='<b>App '+APP_VER+'</b> · Sin sincronizar con GitHub todavía. Abrí la app con internet para recibir el catálogo.';return;}
-  el.innerHTML='<b>App '+APP_VER+'</b> · Última actualización con GitHub: <b>'+ts+'</b>'+(v?' · catálogo v'+esc(v):'')+(cf?' · datos al '+esc(fmtDate(cf)):'');}
 async function loadSeed(){try{
   const resp=await fetch('seed.json?ts='+Date.now(),{cache:'no-store'});if(!resp.ok)return;
   const seed=await resp.json();const localV=Number(localStorage.getItem('bvd_seedVersion')||0);
-  localStorage.setItem('bvd_lastSync',String(Date.now()));if(seed.catalogoActualizado)localStorage.setItem('bvd_catalogoFecha',seed.catalogoActualizado);if(seed.seedVersion!=null)localStorage.setItem('bvd_seedVerShown',String(seed.seedVersion));
-  if(!(Number(seed.seedVersion||0)>localV)){renderSyncInfo();return;}
+  if(!(Number(seed.seedVersion||0)>localV))return;
   if(seed.assets)for(const[id,data]of Object.entries(seed.assets))await Assets.put(id,data);
-  mergeCatalog(autorizaciones,seed.autorizaciones,'radicado');
-  save(K.aut,autorizaciones);
-  if(seed.flota){mergeCatalog(flota,seed.flota,'serial');save(K.fl,flota);}
-  if(seed.habil)localStorage.setItem('bvd_habil',JSON.stringify(seed.habil));
-  if(seed.med)localStorage.setItem('bvd_med',JSON.stringify(seed.med));
-  if(seed.certs)localStorage.setItem('bvd_certs',JSON.stringify(seed.certs));
-  if(seed.catalogoActualizado)localStorage.setItem('bvd_catalogoFecha',seed.catalogoActualizado);
+  mergeCatalog(flota,seed.flota,'serial');mergeCatalog(pilotos,seed.pilotos,'cedula');mergeCatalog(autorizaciones,seed.autorizaciones,'radicado');
+  save(K.fl,flota);save(K.pilots,pilotos);save(K.aut,autorizaciones);
   localStorage.setItem('bvd_seedVersion',String(seed.seedVersion));
-  renderAut();renderFleet();renderSyncInfo();
-  toast('Autorizaciones actualizadas (v'+seed.seedVersion+')');
+  renderFleet();renderPilots();renderAut();
+  toast('Catálogo actualizado (seed v'+seed.seedVersion+')');
 }catch(e){}}
 async function exportSeed(){const v=Number(localStorage.getItem('bvd_seedExportVersion')||0)+1;const assets={};
   for(const a of autorizaciones){if(a.pdf&&a.pdf.id&&!(a.pdf.id in assets)){const d=await Assets.get(a.pdf.id);if(d!=null)assets[a.pdf.id]=d;}}
@@ -1233,13 +1084,11 @@ async function exportSeed(){const v=Number(localStorage.getItem('bvd_seedExportV
   dl('seed.json',JSON.stringify(seed,null,1),'application/json');
   localStorage.setItem('bvd_seedExportVersion',String(v));
   toast('seed.json v'+v+' generado. Subilo al repositorio.');}
-function showUpdateBanner(reg){window._updReg=reg;const b=$('updBanner');if(b)b.style.display='flex';}
-function applyUpdate(){const b=$('updBanner');if(b)b.style.display='none';const reg=window._updReg;if(reg&&reg.waiting){reg.waiting.postMessage({type:'skipWaiting'});}else{location.href=location.href.split('#')[0].split('?')[0]+'?u='+Date.now();}}
 async function forceUpdate(){if(!navigator.onLine){toast('Necesitás internet para actualizar');return;}
   if(!confirm('Se descargará la última versión publicada. Tus datos no se borran. ¿Continuar?'))return;
   try{if('serviceWorker' in navigator){const rs=await navigator.serviceWorker.getRegistrations();await Promise.all(rs.map(r=>r.unregister()));}
-    if(window.caches){const ks=await caches.keys();await Promise.all(ks.filter(k=>k!=='bvd-tiles').map(k=>caches.delete(k)));}}catch(e){}
-  location.href=location.href.split('#')[0].split('?')[0]+'?u='+Date.now();}
+    if(window.caches){const ks=await caches.keys();await Promise.all(ks.map(k=>caches.delete(k)));}}catch(e){}
+  location.reload(true);}
 async function doMerge(d){
     if(d.assets)for(const[id,data]of Object.entries(d.assets)){await Assets.put(id,data);}
     let nOps=0,nUpd=0,nPro=0,nPil=0,nFl=0,nAut=0;
@@ -1256,7 +1105,6 @@ async function doMerge(d){
     migrateProjects();await migrateAssets();
     save(K.proj,proyectos);save(K.pilots,pilotos);save(K.fl,flota);save(K.aut,autorizaciones);save(K.ops,operaciones);
     renderPilots();renderFleet();renderOper();
-renderSyncInfo();
     toast('Consolidado: +'+nOps+' oper., '+nUpd+' act., +'+nPil+' pilotos, +'+nFl+' drones, +'+nAut+' autoriz.');nav('oper');}
 function wipeAll(){if(!confirm('Se borra TODO (proyectos, pilotos, flota, operaciones y adjuntos). ¿Seguro?'))return;if(!confirm('Última confirmación: no se puede deshacer.'))return;
   [K.fl,K.pilots,K.proj,K.ops,K.draft].forEach(k=>localStorage.removeItem(k));localStorage.removeItem('bvd_lastBackup');Assets.clear();
@@ -1288,7 +1136,6 @@ function capturarGPSVuelo(i){const h=document.getElementById('gpsHintV'+i);
 
 /* ---------- mapa de zona (KMZ) ---------- */
 let map,zonaLayers=[],meMarker,baseOSM,baseSat,curBase,vueloLayer;
-const AUT_COLORS=['#007934','#1d4ed8','#dc2626','#d97706','#7c3aed','#0891b2','#be185d','#4d7c0f','#b45309','#0f766e','#9333ea','#e11d48'];
 function coordStr(t){return t.trim().split(/\s+/).map(s=>{const a=s.split(',');return [+a[1],+a[0]];}).filter(p=>isFinite(p[0])&&isFinite(p[1]));}
 function parseKmlText(t){const doc=new DOMParser().parseFromString(t,'text/xml');const polys=[];const pg=doc.getElementsByTagName('Polygon');
   for(let i=0;i<pg.length;i++){const c=pg[i].getElementsByTagName('coordinates');if(c.length){const p=coordStr(c[0].textContent);if(p.length>=3)polys.push(p);}}
@@ -1313,11 +1160,12 @@ function renderVueloPoints(){if(!map)return;if(vueloLayer)map.removeLayer(vueloL
     vueloLayer.addLayer(mk);bounds.push([la,lo]);n++;}}));
   vueloLayer.addTo(map);const el=$('vpInfo');if(el)el.textContent=n?(n+' punto(s) de vuelo registrados'):'Sin puntos de vuelo registrados aún.';return n;}
 function centrarVuelos(){if(!map)return;const b=[];operaciones.forEach(o=>(o.sorties||[]).forEach(s=>{const la=parseFloat(s.lat),lo=parseFloat(s.lon);if(isFinite(la)&&isFinite(lo))b.push([la,lo]);}));if(b.length){try{map.fitBounds(b,{padding:[30,30]});}catch(e){}}else if($('vpInfo'))$('vpInfo').textContent='No hay puntos de vuelo para centrar.';}
-function allPolys(){const out=[];(autorizaciones||[]).forEach(a=>(a.poly||[]).forEach(p=>out.push(p)));return out;}
-function renderZonas(){if(!map)return;zonaLayers.forEach(l=>map.removeLayer(l));zonaLayers=[];const all=[];
-  (autorizaciones||[]).forEach((a,ai)=>{if(autVencida(a))return;const col=AUT_COLORS[ai%AUT_COLORS.length];(a.poly||[]).forEach(poly=>{const pl=L.polygon(poly,{color:col,weight:2,fillColor:col,fillOpacity:.16,interactive:false}).addTo(map);zonaLayers.push(pl);poly.forEach(pt=>all.push(pt));});});
-  if(!map._zoneClick){map._zoneClick=true;map.on('click',e=>{const zs=[],seen={};(autorizaciones||[]).forEach((a,ai)=>{if(autVencida(a))return;const hit=(a.poly||[]).some(poly=>pointInPoly([e.latlng.lat,e.latlng.lng],poly));const k=a.id||a.radicado;if(hit&&!seen[k]){seen[k]=1;zs.push({a,col:AUT_COLORS[ai%AUT_COLORS.length]});}});if(!zs.length)return;const html='<div style="max-height:190px;overflow:auto;min-width:160px">'+zs.map(z=>'<div style="border-left:4px solid '+z.col+';padding:2px 0 2px 7px;margin:3px 0"><b>'+esc(z.a.desc||z.a.radicado||'Autorización')+'</b>'+(z.a.radicado?'<br><span style="font-size:11px;color:#64748b">Radicado '+esc(z.a.radicado)+'</span>':'')+'</div>').join('')+'</div>';L.popup({maxWidth:260}).setLatLng(e.latlng).setContent(html).openOn(map);});}
-  if(all.length){try{map.fitBounds(all,{padding:[20,20]});}catch(e){}}}
+function allPolys(){const out=[];load('bvd_zonas',[]).forEach(z=>(z.polys||[]).forEach(p=>out.push(p)));(autorizaciones||[]).forEach(a=>(a.poly||[]).forEach(p=>out.push(p)));return out;}
+function renderZonas(){if(!map)return;zonaLayers.forEach(l=>map.removeLayer(l));zonaLayers=[];const zonas=load('bvd_zonas',[]);const all=[];
+  zonas.forEach(z=>(z.polys||[]).forEach(poly=>{const pl=L.polygon(poly,{color:'#007934',weight:2,fillColor:'#7AD400',fillOpacity:.18}).addTo(map);zonaLayers.push(pl);poly.forEach(pt=>all.push(pt));}));
+  (autorizaciones||[]).forEach(a=>(a.poly||[]).forEach(poly=>{const pl=L.polygon(poly,{color:'#007934',weight:2,fillColor:'#7AD400',fillOpacity:.12,dashArray:'4'}).addTo(map);pl.bindPopup('<b>'+esc(a.radicado||'Autorización')+'</b>'+(a.desc?'<br>'+esc(a.desc):''));zonaLayers.push(pl);poly.forEach(pt=>all.push(pt));}));
+  if(all.length){try{map.fitBounds(all,{padding:[20,20]});}catch(e){}}
+  const zi=$('zonaInfo');if(zi)zi.innerHTML=zonas.length?zonas.map((z,i)=>`<div class="filerow"><span>🗺️</span><span class="nm">${esc(z.name||'Zona '+(i+1))}</span><button class="icon-btn del" onclick="delZona(${i})">Quitar</button></div>`).join(''):'<div class="hint">No hay zonas cargadas.</div>';}
 function loadKmz(e){const f=e.target.files[0];e.target.value='';if(!f)return;const isKml=/\.kml$/i.test(f.name);const r=new FileReader();
   r.onload=ev=>{try{const polys=isKml?parseKmlText(ev.target.result):parseKmz(ev.target.result);
     if(!polys.length){$('mapStatus').textContent='No se encontraron polígonos en el archivo.';return;}
@@ -1338,9 +1186,9 @@ function locateMe(){if(!map){initMap();}if(!navigator.geolocation){$('mapStatus'
     $('mapStatus').textContent=msg+' · ±'+Math.round(p.coords.accuracy)+' m';
   },err=>{$('mapStatus').textContent='No se pudo ubicar: '+err.message;},{enableHighAccuracy:true,timeout:12000,maximumAge:0});}
 function toggleBase(){if(!map)return;if(curBase===baseOSM){map.removeLayer(baseOSM);baseSat.addTo(map);curBase=baseSat;}else{map.removeLayer(baseSat);baseOSM.addTo(map);curBase=baseOSM;}}
-async function downloadArea(){if(!map){$('dlStatus').textContent='Abrí el mapa primero.';return;}
-  if(!navigator.onLine){$('dlStatus').textContent='Necesitás internet para descargar.';return;}
-  const b=map.getBounds();const mnLa=b.getSouth(),mxLa=b.getNorth(),mnLo=b.getWest(),mxLo=b.getEast();
+async function downloadArea(){const zonas=load('bvd_zonas',[]);if(!zonas.length){$('dlStatus').textContent='Cargá una zona (KMZ/KML) primero.';return;}
+  if(!navigator.onLine){$('dlStatus').textContent='Necesitás internet para descargar la zona.';return;}
+  let mnLa=90,mxLa=-90,mnLo=180,mxLo=-180;zonas.forEach(z=>(z.polys||[]).forEach(poly=>poly.forEach(([la,lo])=>{mnLa=Math.min(mnLa,la);mxLa=Math.max(mxLa,la);mnLo=Math.min(mnLo,lo);mxLo=Math.max(mxLo,lo);})));
   const sat=curBase===baseSat;const tpl=sat?'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}':'https://a.tile.openstreetmap.org/{z}/{x}/{y}.png';
   const urls=[];for(let z=13;z<=16;z++){const x1=lon2tile(mnLo,z),x2=lon2tile(mxLo,z),y1=lat2tile(mxLa,z),y2=lat2tile(mnLa,z);for(let x=x1;x<=x2;x++)for(let y=y1;y<=y2;y++)urls.push(tpl.replace('{z}',z).replace('{x}',x).replace('{y}',y));}
   if(urls.length>2200){$('dlStatus').textContent='Zona muy grande ('+urls.length+' teselas). Reducila o usá menos zoom.';return;}
@@ -1348,18 +1196,7 @@ async function downloadArea(){if(!map){$('dlStatus').textContent='Abrí el mapa 
   for(let i=0;i<urls.length;i+=8){await Promise.all(urls.slice(i,i+8).map(u=>fetch(u,{mode:'no-cors'}).then(()=>done++).catch(()=>fail++)));$('dlStatus').textContent='Descargando… '+done+'/'+urls.length;}
   $('dlStatus').textContent='✓ Zona descargada ('+done+' teselas'+(fail?', '+fail+' fallaron':'')+'). Disponible offline.';}
 
-if('serviceWorker' in navigator){
-  let _refreshing=false;
-  navigator.serviceWorker.addEventListener('controllerchange',()=>{if(_refreshing)return;_refreshing=true;location.reload();});
-  window.addEventListener('load',()=>{
-    navigator.serviceWorker.register('sw.js').then(reg=>{
-      if(reg.waiting&&navigator.serviceWorker.controller)showUpdateBanner(reg);
-      reg.addEventListener('updatefound',()=>{const nw=reg.installing;if(!nw)return;nw.addEventListener('statechange',()=>{if(nw.state==='installed'&&navigator.serviceWorker.controller)showUpdateBanner(reg);});});
-    }).catch(()=>{});
-    setInterval(()=>{navigator.serviceWorker.getRegistration().then(r=>{if(r)r.update();}).catch(()=>{});},60000);
-    document.addEventListener('visibilitychange',()=>{if(!document.hidden)navigator.serviceWorker.getRegistration().then(r=>{if(r)r.update();}).catch(()=>{});});
-  });
-}
+if('serviceWorker' in navigator){window.addEventListener('load',()=>navigator.serviceWorker.register('sw.js').catch(()=>{}));}
 
 Assets.init().then(async()=>{await migrateAssets();await loadSeed();});
 var _el=document.getElementById("epmLogo");if(_el)_el.src=EPM_LOGO;
