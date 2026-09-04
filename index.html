@@ -535,7 +535,7 @@ function dronLabel(d){return d?((d.modelo||'')+(d.dr?' -'+d.dr:'')):''}
 function proyectoById(id){return proyectos.find(p=>p.id===id)}
 function projName(o){const p=proyectoById(o.proyectoId);return p?p.nombre:(o.proyecto||'Sin proyecto')}
 function certsMap(){try{return JSON.parse(localStorage.getItem('bvd_certs')||'{}')}catch(e){return{}}}
-function pilotCipus(p){if(!p)return [];const m=certsMap();const k=pilotKey(p);return (m[k]&&m[k].length)?m[k]:(p.cipus||[]);}
+function pilotCipus(p){if(!p)return [];const m=certsMap();const k=pilotKey(p);const v=mapVal(m,k);return (v&&v.length)?v:(p.cipus||[]);}
 function hasCert(p,tipo){return pilotCipus(p).some(c=>(c.tipo||c)===tipo);}
 
 function nav(v){document.querySelectorAll('.view').forEach(x=>x.classList.remove('active'));$('v-'+v).classList.add('active');
@@ -671,9 +671,10 @@ function pilotOptions(sel){return '<option value="">— piloto —</option>'+pil
 function pilotName(id){const p=pilotById(id);return p?(p.nombre||''):'';}
 function habilMap(){try{return JSON.parse(localStorage.getItem('bvd_habil')||'{}')}catch(e){return{}}}
 function medMap(){try{return JSON.parse(localStorage.getItem('bvd_med')||'{}')}catch(e){return{}}}
-function pilotMed(p){if(!p)return '';const m=medMap();const k=pilotKey(p);return (k in m&&m[k])?m[k]:(p.med||'');}
+function pilotMed(p){if(!p)return '';const m=medMap();const k=pilotKey(p);const v=mapVal(m,k);return v?v:(p.med||'');}
 function pilotKey(p){return (p&&p.codigo&&String(p.codigo).trim())||String((p&&p.id)||'').replace(/^plt-/,'')||(p&&p.id)||'';}
-function pilotHabil(p){if(!p)return true;const m=habilMap();const k=pilotKey(p);const flag=!(k in m)||m[k]!==false;const md=pilotMed(p);return flag&&!(md&&daysTo(md)<0);}
+function mapVal(m,k){if(k in m)return m[k];const pk='plt-'+k;if(pk in m)return m[pk];const bare=String(k).replace(/^plt-/,'');if(bare in m)return m[bare];return undefined;}
+function pilotHabil(p){if(!p)return true;const m=habilMap();const k=pilotKey(p);const v=mapVal(m,k);const flag=(v===undefined)||(v!==false);const md=pilotMed(p);return flag&&!(md&&daysTo(md)<0);}
 function fillDeptos(){const s=$('g_depto');if(!s)return;s.innerHTML='<option value="">— departamento —</option>'+Object.keys(COL).map(d=>`<option value="${esc(d)}">${esc(d)}</option>`).join('');}
 function onDeptoChange(){const s=$('g_muni');if(!s)return;const munis=COL[$('g_depto').value]||[];s.innerHTML='<option value="">— municipio —</option>'+munis.map(m=>`<option value="${esc(m)}">${esc(m)}</option>`).join('');}
 function resolvePilot(q){const v=(q||'').trim();return pilotos.find(p=>(p.nombre||'').trim()===v)||null;}
@@ -1204,7 +1205,7 @@ function modoPiloto(){return localStorage.getItem('bvd_modoPiloto')==='1';}
 function applyModo(){const on=modoPiloto();['fleetForm','pilotForm'].forEach(id=>{const el=$(id);if(el)el.style.display=on?'none':'';});const c=$('modoPilotoChk');if(c)c.checked=on;}
 function setModoPiloto(on){localStorage.setItem('bvd_modoPiloto',on?'1':'');applyModo();renderFleet();renderPilots();toast(on?'Modo piloto activado (solo consulta)':'Modo maestro (edición habilitada)');}
 function mergeCatalog(local,incoming,key){if(!incoming)return 0;let n=0;incoming.forEach(item=>{let i=local.findIndex(x=>x.id===item.id);if(i<0&&key&&item[key])i=local.findIndex(x=>String(x[key]||'').trim()===String(item[key]||'').trim());if(i<0){local.push(item);n++;}else local[i]=item;});return n;}
-const APP_VER='v75';
+const APP_VER='v77';
 function renderSyncInfo(){const t=Number(localStorage.getItem('bvd_lastSync')||0);const v=localStorage.getItem('bvd_seedVerShown')||localStorage.getItem('bvd_seedVersion')||'';const cf=localStorage.getItem('bvd_catalogoFecha')||'';const p=n=>String(n).padStart(2,'0');
   let ts='',short='';if(t){const d=new Date(t);ts=p(d.getDate())+'-'+p(d.getMonth()+1)+'-'+d.getFullYear()+' '+p(d.getHours())+':'+p(d.getMinutes());short=p(d.getDate())+'-'+p(d.getMonth()+1)+' '+p(d.getHours())+':'+p(d.getMinutes());}
   const hv=$('hdrVer');if(hv)hv.innerHTML='App '+APP_VER+(short?'<br>'+short:'');
