@@ -1196,7 +1196,7 @@ function importPriv(e){const f=e.target.files[0];e.target.value='';if(!f)return;
   r.onload=async ev=>{try{const d=JSON.parse(ev.target.result);
     if(!d.flota&&!d.pilotos){toast('Ese archivo no es el catálogo de pilotos/drones');return;}
     if(d.assets)for(const[id,data]of Object.entries(d.assets))await Assets.put(id,data);
-    mergeCatalog(flota,d.flota,'serial');mergeCatalog(pilotos,d.pilotos,'codigo');
+    if(d.flota)mergeCatalog(flota,d.flota,'serial');if(d.pilotos){pilotos.length=0;d.pilotos.forEach(p=>pilotos.push(p));}
     save(K.fl,flota);save(K.pilots,pilotos);
     if(d.catalogoActualizado)localStorage.setItem('bvd_catalogoFecha',d.catalogoActualizado);
     renderFleet();renderPilots();
@@ -1222,6 +1222,7 @@ function renderSyncInfo(){const t=Number(localStorage.getItem('bvd_lastSync')||0
   const el=$('syncInfo');if(!el)return;
   if(!t){el.innerHTML='<b>App '+APP_VER+'</b> · Sin sincronizar con GitHub todavía. Abrí la app con internet para recibir el catálogo.';return;}
   el.innerHTML='<b>App '+APP_VER+'</b> · Última actualización con GitHub: <b>'+ts+'</b>'+(v?' · catálogo v'+esc(v):'')+(cf?' · datos al '+esc(fmtDate(cf)):'');}
+function migrarCodigos(){let ch=false;(pilotos||[]).forEach(p=>{let c=String(p.codigo||'');if(/^plt-/i.test(c)){c=c.replace(/^plt-/i,'');p.codigo=c;ch=true;}if(c==='mtnjsgza3y7fnl'||/JUAN\s+CAMILO\s+HERNANDEZ/i.test(p.nombre||'')){if(p.codigo!=='CIPU-100-24-0731'){p.codigo='CIPU-100-24-0731';ch=true;}}});if(ch){save(K.pilots,pilotos);if(typeof renderPilots==='function')renderPilots();}}
 async function loadSeed(){try{
   const resp=await fetch('seed.json?ts='+Date.now(),{cache:'no-store'});if(!resp.ok)return;
   const seed=await resp.json();const localV=Number(localStorage.getItem('bvd_seedVersion')||0);
@@ -1373,7 +1374,7 @@ if('serviceWorker' in navigator){
   });
 }
 
-Assets.init().then(async()=>{await migrateAssets();await loadSeed();});
+Assets.init().then(async()=>{await migrateAssets();migrarCodigos();await loadSeed();});
 var _el=document.getElementById("epmLogo");if(_el)_el.src=EPM_LOGO;
 renderOper();
 </script>
