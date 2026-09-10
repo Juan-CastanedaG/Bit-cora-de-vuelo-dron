@@ -268,6 +268,7 @@ input[readonly]{background:#eef3f1;color:var(--muted);cursor:not-allowed}
 
 <!-- ===== NUEVA OPERACIÓN ===== -->
 <section class="view" id="v-nueva">
+  <button id="guardarFab" onclick="saveDraft();toast('Avance guardado ✓')" style="position:fixed;right:14px;bottom:calc(84px + env(safe-area-inset-bottom));z-index:400;background:#007934;color:#fff;border:0;border-radius:26px;padding:12px 18px;font-size:15px;font-weight:700;box-shadow:0 4px 14px rgba(0,0,0,.28)">💾 Guardar</button>
   <div id="draftBar"></div>
   <div id="setupWarn"></div>
 
@@ -1225,8 +1226,8 @@ async function loadSeed(){try{
   const resp=await fetch('seed.json?ts='+Date.now(),{cache:'no-store'});if(!resp.ok)return;
   const seed=await resp.json();const localV=Number(localStorage.getItem('bvd_seedVersion')||0);
   localStorage.setItem('bvd_lastSync',String(Date.now()));if(seed.catalogoActualizado)localStorage.setItem('bvd_catalogoFecha',seed.catalogoActualizado);if(seed.seedVersion!=null)localStorage.setItem('bvd_seedVerShown',String(seed.seedVersion));
-  if(Number(seed.seedVersion||0)===localV){renderSyncInfo();return;}
-  if(seed.assets)for(const[id,data]of Object.entries(seed.assets))await Assets.put(id,data);
+  const _nuevoSeed=Number(seed.seedVersion||0)!==localV;
+  if(_nuevoSeed&&seed.assets)for(const[id,data]of Object.entries(seed.assets))await Assets.put(id,data);
   mergeCatalog(autorizaciones,seed.autorizaciones,'radicado');
   save(K.aut,autorizaciones);
   if(seed.flota){mergeCatalog(flota,seed.flota,'serial');save(K.fl,flota);}
