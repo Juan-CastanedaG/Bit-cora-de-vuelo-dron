@@ -789,8 +789,8 @@ function verdict(){const box=$('verdictBox'),word=$('vWord'),desc=$('vDesc'),lig
   if(_au){opTipoMsgs(_au).forEach(x=>block.push(x));if(d&&!dronAutOK(_au,d))block.push('El dron no está autorizado en esta autorización');
     if(p&&!pilotAutOK(_au,p))block.push('El piloto principal no está autorizado en esta autorización');
     st.sorties.forEach((s,i)=>{const sp=pilotById(s.pilotoId),so=pilotById(s.observadorId);if(sp&&!pilotAutOK(_au,sp))block.push('Piloto del vuelo #'+(i+1)+' no autorizado en esta autorización');if(so&&!pilotAutOK(_au,so))block.push('Observador del vuelo #'+(i+1)+' no autorizado en esta autorización');});}
-  // Observador obligatorio en cada vuelo
-  st.sorties.forEach((s,i)=>{if(!s.observadorId)block.push('Vuelo #'+(i+1)+' sin observador (obligatorio)');});
+  // Observador obligatorio en cada vuelo (no aplica antes del CORTE)
+  if(!antes)st.sorties.forEach((s,i)=>{if(!s.observadorId)block.push('Vuelo #'+(i+1)+' sin observador (obligatorio)');});
   // En nocturno o BVLOS, piloto y observador deben estar certificados
   if(noc||bv){const ids=new Set();if($('g_pilotoId').value)ids.add($('g_pilotoId').value);
     st.sorties.forEach(s=>{if(s.pilotoId)ids.add(s.pilotoId);if(s.observadorId)ids.add(s.observadorId);});
@@ -1225,7 +1225,7 @@ async function loadSeed(){try{
   const resp=await fetch('seed.json?ts='+Date.now(),{cache:'no-store'});if(!resp.ok)return;
   const seed=await resp.json();const localV=Number(localStorage.getItem('bvd_seedVersion')||0);
   localStorage.setItem('bvd_lastSync',String(Date.now()));if(seed.catalogoActualizado)localStorage.setItem('bvd_catalogoFecha',seed.catalogoActualizado);if(seed.seedVersion!=null)localStorage.setItem('bvd_seedVerShown',String(seed.seedVersion));
-  if(!(Number(seed.seedVersion||0)>localV)){renderSyncInfo();return;}
+  if(Number(seed.seedVersion||0)===localV){renderSyncInfo();return;}
   if(seed.assets)for(const[id,data]of Object.entries(seed.assets))await Assets.put(id,data);
   mergeCatalog(autorizaciones,seed.autorizaciones,'radicado');
   save(K.aut,autorizaciones);
