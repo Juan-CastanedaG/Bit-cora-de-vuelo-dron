@@ -532,8 +532,8 @@ function pilotById(id){return pilotos.find(p=>p.id===id)}
 function dronById(id){return flota.find(d=>d.id===id)}
 function autById(id){return autorizaciones.find(a=>a.id===id)}
 function autVencida(a){return !!(a&&a.fin&&daysTo(a.fin)<0);}
-function dronAutOK(au,d){if(!au||!au.dronesAut||!au.dronesAut.length||!d)return true;return au.dronesAut.includes((d.serial||'').trim());}
-function pilotAutOK(au,p){if(!au||!au.pilotosAut||!au.pilotosAut.length||!p)return true;return au.pilotosAut.includes(p.codigo||p.id);}
+function dronAutOK(au,d){if(!au||!au.dronesAut||!au.dronesAut.length||!d)return true;const ns=s=>String(s||'').toUpperCase().replace(/[^A-Z0-9]/g,'');const keys=[d.serial,d.id].filter(Boolean).map(ns);return au.dronesAut.some(a=>keys.includes(ns(a)));}
+function pilotAutOK(au,p){if(!au||!au.pilotosAut||!au.pilotosAut.length||!p)return true;const nz=s=>String(s||'').toUpperCase().replace(/[^A-Z0-9]/g,'').replace(/^PLT/,'');const keys=[p.codigo,p.id].concat((p.cipus||[]).map(c=>c&&(c.num||c.codigo))).filter(Boolean).map(nz);return au.pilotosAut.some(a=>keys.includes(nz(a)));}
 function tipoRank(t){t=(t||'').toUpperCase();return t==='BVLOS'?3:t==='EVLOS'?2:t==='VLOS'?1:0;}
 function opTipoMsgs(au){const m=[];if(!au||!au.tipoVisual)return m;let opr=0,opn='';if(isOp('bvlos')){opr=3;opn='BVLOS';}else if(isOp('evlos')){opr=2;opn='EVLOS';}else if(isOp('vlos')){opr=1;opn='VLOS';}if(opr>tipoRank(au.tipoVisual))m.push('La operación ('+opn+') excede el tipo autorizado ('+au.tipoVisual+')');if(isOp('nocturna')&&au.nocturno===false)m.push('Operación nocturna no autorizada en esta autorización');return m;}
 function dronLabel(d){return d?((d.modelo||'')+(d.dr?' -'+d.dr:'')):''}
@@ -852,7 +852,7 @@ async function loadDraft(){const d=load(K.draft,null);if(!d)return false;
   renderHF();renderOcurr();renderSorties();
   await preloadAssets([].concat(st.fotosPre||[],st.fotosPos||[],st.fotoDron?[st.fotoDron]:[],st.fotoMeteo?[st.fotoMeteo]:[],(st.autPdf&&st.autPdf.id)?[st.autPdf.id]:[]));
   renderPhotos('pre');renderPhotos('pos');renderNamedPhoto('fotoDron');renderNamedPhoto('fotoMeteo');renderPdfRow();
-  setTimeout(()=>{if(d.pilotoId){$('g_pilotoId').value=d.pilotoId;$('g_pilotoQ').value=pilotName(d.pilotoId);}if(d.dron)$('g_dron').value=d.dron;if(d.autId){$('g_autId').value=d.autId;$('g_autQ').value=autLabel(autById(d.autId));onAutSelect();}renderDronInfo();renderPilotoInfo();verdict();},0);
+  setTimeout(()=>{if(d.pilotoId){$('g_pilotoId').value=d.pilotoId;$('g_pilotoQ').value=pilotName(d.pilotoId);}if(d.dron)$('g_dron').value=d.dron;{const _rn=s=>String(s||'').replace(/\D/g,'');const _a=(d.autId&&autById(d.autId))||(d.rad?autorizaciones.find(a=>_rn(a.radicado)===_rn(d.rad)):null);if(_a){$('g_autId').value=_a.id;$('g_autQ').value=autLabel(_a);onAutSelect();}else if(d.rad){$('g_autQ').value=d.rad;}}renderDronInfo();renderPilotoInfo();verdict();},0);
   return true;}
 function discardDraft(){if(!confirm('¿Descartar el borrador en curso?'))return;
   const ids=[].concat(st.fotosPre||[],st.fotosPos||[],st.fotoDron?[st.fotoDron]:[],st.fotoMeteo?[st.fotoMeteo]:[]);
@@ -914,10 +914,10 @@ function saveOp(){
   if(editingOpId){const i=operaciones.findIndex(x=>x.id===editingOpId);
     if(i>=0){rec.id=editingOpId;rec.ts=operaciones[i].ts;operaciones[i]=rec;}else operaciones.unshift(rec);
     if(!save(K.ops,operaciones)){toast('Sin espacio: quitá fotos o el PDF adjunto');return;}
-    editingOpId=null;localStorage.removeItem(K.draft);toast('Cambios guardados ('+v.verdict+')');resetForm(false);nav('oper');return;}
+    editingOpId=null;localStorage.removeItem(K.draft);avisoCierre(rec);resetForm(false);nav('oper');return;}
   operaciones.unshift(rec);
   if(!save(K.ops,operaciones)){operaciones.shift();toast('Sin espacio: quitá fotos o el PDF adjunto');return;}
-  localStorage.removeItem(K.draft);toast('Operación guardada ('+v.verdict+')');resetForm(false);nav('oper');}
+  localStorage.removeItem(K.draft);avisoCierre(rec);resetForm(false);nav('oper');}
 function resetForm(clearAll){st=blankState();
   ['g_muni','g_depto','a_rad','a_id','a_ini','a_fin','p_inicio','q_fin','p_obs','q_obs'].forEach(i=>$(i).value='');
   if(clearAll){$('g_pilotoId').value='';if($('g_pilotoQ'))$('g_pilotoQ').value='';if($('g_autId'))$('g_autId').value='';if($('g_autQ'))$('g_autQ').value='';localStorage.removeItem(K.draft);$('draftBar').innerHTML='';}
@@ -933,21 +933,39 @@ function dupOp(id){const o=operaciones.find(x=>x.id===id);if(!o)return;editingOp
   save(K.draft,dr);nav('nueva');toast('Datos copiados a una nueva operación');}
 
 /* ---------- vuelos (operaciones) ---------- */
+function faltantesParaCerrar(o){const f=[];const ss=o.sorties||[];
+  if(!o.inicioOp)f.push('Inicio de la operación');
+  if(!o.finOp)f.push('Fin de la operación');
+  if(!o.pilotoId)f.push('Piloto principal');
+  if(!o.dronId)f.push('Dron');
+  if(!ss.length)f.push('Al menos un vuelo');
+  ss.forEach((s,i)=>{if(!s.pilotoId)f.push('Piloto del vuelo #'+(i+1));if(!s.observadorId)f.push('Observador del vuelo #'+(i+1));if(!s.inicio||!s.fin)f.push('Horas del vuelo #'+(i+1));});
+  if(o.verdict==='NO-GO')f.push('Resolver los bloqueos (NO-GO)');
+  return f;}
+function avisoCierre(rec){const f=faltantesParaCerrar(rec);if(!f.length){toast('✅ Operación cerrada ('+(rec.verdict||'')+')');}else{alert('Operación guardada ('+(rec.verdict||'')+').\n\nPara CERRARLA todavía falta:\n• '+f.slice(0,12).join('\n• ')+(f.length>12?'\n• … y '+(f.length-12)+' más':''));}}
 function renderOper(){updateDash();const cont=$('operList');if(!cont)return;const hasDraft=localStorage.getItem(K.draft);
   let html='<button class="btn" onclick="nuevaOperacion()">＋ Nueva operación</button>';
   if(hasDraft&&!editingOpId)html+='<div class="alert info" style="margin-top:10px"><span>💾</span><div>Tenés un <b>borrador en curso</b>. <a href="#" onclick="nav(\'nueva\');return false" style="color:#065f46;font-weight:700">Retomar</a> &nbsp;·&nbsp; <a href="#" onclick="discardDraft();renderOper();return false" style="color:#991b1b;font-weight:700">Descartar</a></div></div>';
   const list=operaciones.slice().sort((a,b)=>(b.ts||0)-(a.ts||0));
   if(!list.length){cont.innerHTML=html+'<div class="card empty" style="margin-top:12px">Todavía no hay operaciones. Tocá "＋ Nueva operación" para empezar.</div>';return;}
-  html+='<div style="margin-top:12px">'+list.map(o=>{const cls=o.verdict==='GO'?'go':o.verdict==='NO-GO'?'nogo':'pend';const m=totalMins(o.sorties);
+  const card=o=>{const cls=o.verdict==='GO'?'go':o.verdict==='NO-GO'?'nogo':'pend';const m=totalMins(o.sorties);const cerr=opIsClosed(o);const falt=cerr?[]:faltantesParaCerrar(o);
     return `<div class="card"><div style="display:flex;align-items:center;gap:10px"><span class="badge ${cls}">${o.verdict}</span>
-      <div style="flex:1"><div class="name" style="font-weight:700">${esc(o.codigo||'Operación')}</div>
-      <div class="meta">${esc((o.dronModelo||'Sin dron')+(o.dronDR?' -'+o.dronDR:''))} · ${fmtDate(o.inicioOp)||'sin fecha'}${o.sorties&&o.sorties.length?' · '+o.sorties.length+' vuelo(s) · '+(m/60).toFixed(1)+' h':''}</div></div></div>
+      <div style="flex:1"><div class="name" style="font-weight:700">${esc(o.codigo||'Operación')} ${cerr?'<span style="font-size:10px;color:var(--verde);font-weight:700">● CERRADA</span>':'<span style="font-size:10px;color:#d97706;font-weight:700">● ABIERTA</span>'}</div>
+      <div class="meta">${esc((o.dronModelo||'Sin dron')+(o.dronDR?' -'+o.dronDR:''))} · ${fmtDate(o.inicioOp)||'sin fecha'}${o.sorties&&o.sorties.length?' · '+o.sorties.length+' vuelo(s) · '+(m/60).toFixed(1)+' h':''}</div>
+      ${falt.length?'<div class="meta" style="color:#b45309;margin-top:2px">Falta para cerrar: '+esc(falt.slice(0,3).join(', '))+(falt.length>3?' (+'+(falt.length-3)+')':'')+'</div>':''}</div></div>
       <div class="btnrow" style="margin-top:10px;flex-wrap:wrap">
         <button class="btn sec sm" onclick="editOp('${o.id}')">✎ Editar</button>
         <button class="btn sec sm" onclick="viewOp('${o.id}')">👁 Ver</button>
         <button class="btn sec sm" onclick="dupOp('${o.id}')">⧉ Duplicar</button>
         <button class="btn sec sm" style="color:var(--rojo)" onclick="delOp('${o.id}')">🗑 Eliminar</button>
-      </div></div>`}).join('')+'</div>';
+      </div></div>`;};
+  const abiertas=list.filter(o=>!opIsClosed(o)),cerradas=list.filter(o=>opIsClosed(o));
+  html+='<div style="margin-top:12px">';
+  html+='<div class="sectlabel" style="color:#b45309;font-weight:700;margin:6px 0">🟠 Abiertas ('+abiertas.length+')</div>';
+  html+=abiertas.length?abiertas.map(card).join(''):'<div class="hint" style="margin-bottom:10px">No hay operaciones abiertas.</div>';
+  html+='<div class="sectlabel" style="color:var(--verde);font-weight:700;margin:14px 0 6px">🟢 Cerradas ('+cerradas.length+')</div>';
+  html+=cerradas.length?cerradas.map(card).join(''):'<div class="hint">No hay operaciones cerradas.</div>';
+  html+='</div>';
   cont.innerHTML=html;}
 function nuevaOperacion(){if(localStorage.getItem(K.draft)&&!editingOpId&&!confirm('Hay un borrador en curso. Si empezás una nueva se descarta ese borrador. ¿Continuar?'))return;
   editingOpId=null;localStorage.removeItem(K.draft);resetForm(true);nav('nueva');}
