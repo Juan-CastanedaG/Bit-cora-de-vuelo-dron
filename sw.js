@@ -1,7 +1,8 @@
 /* Service worker de la Bitácora de Vuelo Dron.
    Subí el número de versión (bvd-vN) al publicar una versión nueva del index.html. */
-const CACHE = 'bvd-v87';
+const CACHE = 'bvd-v88';
 const TILES = 'bvd-tiles';           // caché de mapa: NO se borra al actualizar
+const CART  = 'bvd-cartilla';        // caché de cartilla: NO se borra al actualizar
 const ASSETS = [
   './','./index.html','./manifest.json','./icon-192.png','./icon-512.png',
   './pdf.min.js','./pdf.worker.min.js','./leaflet.js','./leaflet.css','./fflate.js'
@@ -12,7 +13,7 @@ self.addEventListener('install', e => {
 self.addEventListener('message', e => { if(e.data && e.data.type==='skipWaiting') self.skipWaiting(); });
 self.addEventListener('activate', e => {
   e.waitUntil(
-    caches.keys().then(ks => Promise.all(ks.filter(k => k !== CACHE && k !== TILES).map(k => caches.delete(k))))
+    caches.keys().then(ks => Promise.all(ks.filter(k => k !== CACHE && k !== TILES && k !== CART).map(k => caches.delete(k))))
       .then(() => self.clients.claim())
   );
 });
@@ -21,6 +22,12 @@ self.addEventListener('fetch', e => {
   if (e.request.method !== 'GET') return;
   if (/\/seed\.json/.test(e.request.url)) {
     e.respondWith(fetch(e.request).catch(() => new Response('{}', {headers:{'Content-Type':'application/json'}})));
+    return;
+  }
+  if (/\/cartilla\.js/.test(e.request.url)) {
+    e.respondWith(caches.open(CART).then(c => c.match(e.request).then(hit =>
+      hit || fetch(e.request).then(resp => { c.put(e.request, resp.clone()).catch(function(){}); return resp; }).catch(() => hit)
+    )));
     return;
   }
   if (isTile(e.request.url)) {

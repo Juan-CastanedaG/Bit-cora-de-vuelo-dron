@@ -404,6 +404,13 @@ input[readonly]{background:#eef3f1;color:var(--muted);cursor:not-allowed}
       <div class="hint">Descarga la última versión publicada. No borra tus datos; solo actualiza la app. Requiere internet.</div></div></div>
 </section>
 
+<section class="view" id="v-cartilla">
+  <div class="card"><h2>Cartilla UAS</h2>
+  <div class="hint">Guía de campo · Operación · Mantenimiento · Seguridad operacional (SMS) · RAC 100 · v3 · Sept. 2026. Tocá una página para ampliarla.</div>
+  <div id="cartillaBox" style="margin-top:10px"><div class="hint">Cargando…</div></div>
+  </div>
+</section>
+
 </main>
 
 <div id="navBackdrop" onclick="closeNav()"></div>
@@ -417,6 +424,7 @@ input[readonly]{background:#eef3f1;color:var(--muted);cursor:not-allowed}
   <button data-view="aut" onclick="nav('aut')"><svg width="20" height="20" viewBox="0 0 24 24"><path d="M6 2h9l5 5v15a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1V3a1 1 0 0 1 1-1z"/><path d="M14 2v6h6M9 13l2 2 4-4"/></svg>Autoriz.</button>
   <button data-view="pilotos" onclick="nav('pilotos')"><svg width="20" height="20" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 4-6 8-6s8 2 8 6"/></svg>Pilotos</button>
   <button data-view="datos" onclick="nav('datos')"><svg width="20" height="20" viewBox="0 0 24 24"><path d="M12 3v14m0 0l-4-4m4 4l4-4M5 21h14"/></svg>Datos</button>
+  <button data-view="cartilla" onclick="nav('cartilla')"><svg width="20" height="20" viewBox="0 0 24 24"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>Cartilla</button>
 </nav>
 <div id="navBar"><button id="navToggle" onclick="toggleNav()"><span class="ic" id="navToggleIcon">☰</span><span id="navToggleLabel">Menú</span></button></div>
 <div id="importModal" class="modal" style="display:none"><div class="modalCard">
@@ -547,8 +555,12 @@ function nav(v){document.querySelectorAll('.view').forEach(x=>x.classList.remove
   const tab=(v==='nueva')?'oper':v;
   document.querySelectorAll('nav button').forEach(b=>b.classList.toggle('active',b.dataset.view===tab));window.scrollTo(0,0);
   if(v==='nueva')prepNueva();if(v==='oper')renderOper();if(v==='vuelos')renderVuelos();if(v==='mapa')initMap();if(v==='flota')renderFleet();if(v==='aut')renderAut();if(v==='pilotos')renderPilots();if(v==='hist')renderHistory();
-  if(v==='bitacora')renderConsolPilotos();if(v==='libro')renderConsolDrones();if(v==='datos')renderStorage();
+  if(v==='bitacora')renderConsolPilotos();if(v==='libro')renderConsolDrones();if(v==='datos')renderStorage();if(v==='cartilla')renderCartilla();
   closeNav();}
+function renderCartilla(){var box=document.getElementById('cartillaBox');if(!box)return;if(window.CARTILLA_PAGES){pintarCartilla();return;}box.innerHTML='<div class="hint">Cargando cartilla…</div>';if(document.getElementById('cartillaScript'))return;var s=document.createElement('script');s.id='cartillaScript';s.src='cartilla.js';s.onload=function(){pintarCartilla();};s.onerror=function(){box.innerHTML='<div class="alert warn"><span>\u26a0</span><div>No se pudo cargar la cartilla. Verific\u00e1 que <b>cartilla.js</b> est\u00e9 junto a la app y reintent\u00e1 con conexi\u00f3n.</div></div>';var sc=document.getElementById('cartillaScript');if(sc)sc.remove();};document.body.appendChild(s);}
+function pintarCartilla(){var box=document.getElementById('cartillaBox');if(!box)return;var P=window.CARTILLA_PAGES||[];if(!P.length){box.innerHTML='<div class="hint">Cartilla vac\u00eda.</div>';return;}var html='';for(var i=0;i<P.length;i++){html+='<div style="margin-bottom:12px"><div style="font-size:11px;color:var(--muted);margin-bottom:3px">P\u00e1gina '+(i+1)+' / '+P.length+'</div><img src="'+P[i]+'" loading="lazy" style="width:100%;border:1px solid #e5e7eb;border-radius:8px;cursor:zoom-in" onclick="cartillaZoom(this)"></div>';}box.innerHTML=html;}
+function cartillaZoom(img){var ov=document.createElement('div');ov.style.cssText='position:fixed;inset:0;background:rgba(0,0,0,.93);z-index:99999;overflow:auto;-webkit-overflow-scrolling:touch';var im=document.createElement('img');im.src=img.src;im.style.cssText='display:block;min-width:100%';var hh=document.createElement('div');hh.textContent='\u2715 Tocá para cerrar';hh.style.cssText='position:fixed;top:8px;right:12px;color:#fff;font-size:12px;background:rgba(0,0,0,.55);padding:5px 9px;border-radius:6px';ov.appendChild(im);ov.appendChild(hh);ov.onclick=function(){document.body.removeChild(ov);};document.body.appendChild(ov);}
+
 function toggleNav(){$('navGrid').classList.toggle('collapsed');syncNav();}
 function closeNav(){const g=$('navGrid');if(g)g.classList.add('collapsed');syncNav();}
 function syncNav(){const g=$('navGrid');if(!g)return;const open=!g.classList.contains('collapsed');const i=$('navToggleIcon');if(i)i.textContent=open?'✕':'☰';const bd=$('navBackdrop');if(bd){bd.style.opacity=open?'1':'0';bd.style.pointerEvents=open?'auto':'none';}}
@@ -611,7 +623,7 @@ function editAut(id){const a=autById(id);if(!a)return;editAutId=id;$('au_rad').v
 function resetAutForm(){editAutId=null;autFormPdf=null;['au_rad','au_id','au_ini','au_fin','au_desc'].forEach(i=>$(i).value='');renderAutPdfRow();$('autTitle').textContent='Nueva autorización';$('au_saveBtn').textContent='Crear autorización';$('au_cancel').style.display='none';}
 function delAut(id){if(!confirm('¿Eliminar esta autorización?'))return;autorizaciones=autorizaciones.filter(x=>x.id!==id);save(K.aut,autorizaciones);renderAut();}
 function renderAut(){const cont=$('autList');if(!cont)return;
-  cont.innerHTML=autorizaciones.length?autorizaciones.map(a=>{const venc=autVencida(a);const est=venc?'<span style="color:#6b7280;font-weight:700">VENCIDA</span>':(a.fin?'<span style="color:var(--verde);font-weight:700">VIGENTE</span>':'sin vigencia');const tipo=(a.tipoVisual||'')+(a.nocturno?(a.tipoVisual?' · ':'')+'Nocturno':'');const hayBtn=a.pdf||a.pdfInfo||(a.poly&&a.poly.length&&!venc);
+  const _al=autorizaciones.slice().sort((a,b)=>{const t=(b.ts||0)-(a.ts||0);if(t)return t;const ra=Number(String(a.radicado||'').replace(/\D/g,''))||0,rb=Number(String(b.radicado||'').replace(/\D/g,''))||0;return rb-ra;});cont.innerHTML=_al.length?_al.map(a=>{const venc=autVencida(a);const est=venc?'<span style="color:#6b7280;font-weight:700">VENCIDA</span>':(a.fin?'<span style="color:var(--verde);font-weight:700">VIGENTE</span>':'sin vigencia');const tipo=(a.tipoVisual||'')+(a.nocturno?(a.tipoVisual?' · ':'')+'Nocturno':'');const hayBtn=a.pdf||a.pdfInfo||(a.poly&&a.poly.length&&!venc);
     return `<div class="item" style="cursor:pointer${venc?';opacity:.55;background:#f3f4f6':''}" onclick="openAutDetail('${a.id}')"><div class="top"><div style="width:100%"><div class="name">${esc(a.radicado||'—')} ${est} <span style="float:right;color:var(--muted)">›</span></div><div class="meta">ID ${esc(a.idAut||'—')} · ${a.ini?esc(fmtDate(a.ini)):'?'} a ${a.fin?esc(fmtDate(a.fin)):'?'}</div>${tipo?`<div class="meta">Tipo: <b>${esc(tipo)}</b></div>`:''}${((a.dronesAut&&a.dronesAut.length)||(a.pilotosAut&&a.pilotosAut.length)||(a.poligonos&&a.poligonos.length))?`<div class="meta">🚁 ${(a.dronesAut||[]).length} · 👤 ${(a.pilotosAut||[]).length} · 🗺️ ${(a.poligonos||[]).length}</div>`:''}${a.desc?`<div class="meta">${esc(a.desc)}</div>`:''}${hayBtn?`<div class="btnrow" style="margin-top:6px;flex-wrap:wrap" onclick="event.stopPropagation()">${a.pdf?`<button class="btn sec sm" onclick="openPdf('${a.pdf.id}')">📄 Autorización</button> `:''}${a.pdfInfo?`<button class="btn sec sm" onclick="openPdf('${a.pdfInfo.id}')">📄 Información</button> `:''}${(a.poly&&a.poly.length&&!venc)?`<button class="btn sec sm" onclick="verZonaAut('${a.id}')">🗺️ Zona</button> `:''}</div>`:''}</div></div></div>`}).join(''):'<div class="card empty">No hay autorizaciones cargadas. Llegarán con el catálogo (seed).</div>';}
 function openAutDetail(id){const a=autById(id);if(!a)return;const cont=$('autList');if(!cont)return;const venc=autVencida(a);
   const est=venc?'<span style="color:#6b7280;font-weight:700">VENCIDA</span>':(a.fin?'<span style="color:var(--verde);font-weight:700">VIGENTE</span> · vence '+fmtDate(a.fin):'sin vigencia');
@@ -950,12 +962,12 @@ function renderOper(){updateDash();const cont=$('operList');if(!cont)return;cons
   if(!list.length){cont.innerHTML=html+'<div class="card empty" style="margin-top:12px">Todavía no hay operaciones. Tocá "＋ Nueva operación" para empezar.</div>';return;}
   const card=o=>{const cls=o.verdict==='GO'?'go':o.verdict==='NO-GO'?'nogo':'pend';const m=totalMins(o.sorties);const cerr=opIsClosed(o);const falt=cerr?[]:faltantesParaCerrar(o);
     return `<div class="card"><div style="display:flex;align-items:center;gap:10px"><span class="badge ${cls}">${o.verdict}</span>
-      <div style="flex:1"><div class="name" style="font-weight:700">${esc(o.codigo||'Operación')} ${cerr?'<span style="font-size:10px;color:var(--verde);font-weight:700">● CERRADA</span>':'<span style="font-size:10px;color:#d97706;font-weight:700">● ABIERTA</span>'}</div>
+      <div style="flex:1;cursor:pointer" onclick="verOpDetalle('${o.id}')"><div class="name" style="font-weight:700">${esc(o.codigo||'Operación')} ${cerr?'<span style="font-size:10px;color:var(--verde);font-weight:700">● CERRADA</span>':'<span style="font-size:10px;color:#d97706;font-weight:700">● ABIERTA</span>'}</div>
       <div class="meta">${esc((o.dronModelo||'Sin dron')+(o.dronDR?' -'+o.dronDR:''))} · ${fmtDate(o.inicioOp)||'sin fecha'}${o.sorties&&o.sorties.length?' · '+o.sorties.length+' vuelo(s) · '+(m/60).toFixed(1)+' h':''}</div>
       ${falt.length?'<div class="meta" style="color:#b45309;margin-top:2px">Falta para cerrar: '+esc(falt.slice(0,3).join(', '))+(falt.length>3?' (+'+(falt.length-3)+')':'')+'</div>':''}</div></div>
       <div class="btnrow" style="margin-top:10px;flex-wrap:wrap">
         <button class="btn sec sm" onclick="editOp('${o.id}')">✎ Editar</button>
-        <button class="btn sec sm" onclick="viewOp('${o.id}')">👁 Ver</button>
+        <button class="btn sec sm" onclick="verOpDetalle('${o.id}')">👁 Ver</button>
         <button class="btn sec sm" onclick="dupOp('${o.id}')">⧉ Duplicar</button>
         <button class="btn sec sm" style="color:var(--rojo)" onclick="delOp('${o.id}')">🗑 Eliminar</button>
       </div></div>`;};
@@ -1030,6 +1042,31 @@ function renderHistory(){updateDash();const cont=$('projList');
           <button class="icon-btn del" onclick="delProject('${pr.id}')">🗑</button>
         </div></div>`:''}</div>`}).join('');}
 function delOp(id){if(!confirm('¿Eliminar esta operación?'))return;const o=operaciones.find(x=>x.id===id);if(o)opOwnedAssetIds(o).forEach(a=>Assets.del(a));operaciones=operaciones.filter(x=>x.id!==id);save(K.ops,operaciones);renderHistory();renderOper();}
+
+function opFullSections(o){
+  var esc=(typeof escHtml==='function')?escHtml:(window.esc||function(s){return String(s==null?'':s).replace(/[&<>"]/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];});});
+  var ans=function(v){return v==='si'?'<b style="color:#16a34a">✓ Sí</b>':v==='no'?'<b style="color:#dc2626">✗ No</b>':v==='na'?'<span style="color:#6b7280">N/A</span>':'<span style="color:#9ca3af">—</span>';};
+  var chkTbl=function(defs,obj,titulo){if(!defs||!defs.length)return '';var has=obj&&Object.keys(obj).length;var rows=defs.map(function(d){return '<tr><td style="color:var(--muted);padding:3px 6px;width:78%">'+esc(d[1])+'</td><td style="padding:3px 6px;text-align:right;white-space:nowrap">'+ans((obj||{})[d[0]])+'</td></tr>';}).join('');return '<h4 class="auth4">'+esc(titulo)+(has?'':' <span style="font-size:11px;color:#9ca3af">(sin registrar)</span>')+'</h4><table class="auttbl">'+rows+'</table>';};
+  var OC=(typeof OCURRENCIAS!=='undefined'?OCURRENCIAS:[]);
+  var ocuRows=OC.map(function(d){var v=(o.ocurr||{})[d[0]];var si=v==='si';return '<tr'+(si?' style="background:#fef2f2"':'')+'><td style="color:var(--muted);padding:3px 6px;width:72%">'+esc(d[1])+(d[2]?' <span style="font-size:10px;color:#9ca3af">'+esc(d[2])+'</span>':'')+'</td><td style="padding:3px 6px;text-align:right;white-space:nowrap">'+(si?'<b style="color:#dc2626">⚠ Sí</b>':v==='no'?'<span style="color:#16a34a">No</span>':'<span style="color:#9ca3af">—</span>')+'</td></tr>';}).join('');
+  var ocu=(o.ocurr&&Object.keys(o.ocurr).length)?'<h4 class="auth4">Ocurrencias / eventos</h4><table class="auttbl">'+ocuRows+'</table>':'';
+  var rie='';if(o.riesgo&&(o.riesgo.calif||Object.keys(o.riesgo).length>1)){var rd=(typeof RIESGO!=='undefined'?RIESGO:[]);var rows=rd.map(function(d){var v=o.riesgo[d.k];var opt=(d.opts||[]).find(function(x){return x[0]===v;});var lbl=opt?opt[1]:'';var sc=opt?opt[2]:0;return '<tr><td style="color:var(--muted);padding:3px 6px;width:60%">'+esc(d.q)+'</td><td style="padding:3px 6px;text-align:right">'+(lbl?esc(lbl)+(sc?' <b style="color:#dc2626">(+'+sc+')</b>':''):'<span style="color:#9ca3af">—</span>')+'</td></tr>';}).join('');rie='<h4 class="auth4">Análisis de riesgo'+(o.riesgo.calif?' — <b>'+esc(o.riesgo.calif)+'</b>':'')+'</h4><table class="auttbl">'+rows+'</table>';}
+  var img1=function(lbl,v){return v?'<div style="margin:6px 0"><div style="color:var(--muted);font-size:12px;margin-bottom:3px">'+lbl+'</div><img src="'+assetSrc(v)+'" style="max-width:100%;border-radius:8px;border:1px solid #e5e7eb"></div>':'';};
+  var imgN=function(lbl,arr){return (arr&&arr.length)?'<div style="margin:6px 0"><div style="color:var(--muted);font-size:12px;margin-bottom:3px">'+lbl+' ('+arr.length+')</div><div style="display:flex;flex-wrap:wrap;gap:6px">'+arr.map(function(v){return '<img src="'+assetSrc(v)+'" style="width:110px;height:110px;object-fit:cover;border-radius:8px;border:1px solid #e5e7eb">';}).join('')+'</div></div>':'';};
+  var fot=img1('📷 Dron / puerto',o.fotoDron)+img1('🌤️ App meteorología',o.fotoMeteo)+imgN('📷 Evidencias pre-vuelo',o.fotosPre)+imgN('📷 Evidencias pos-vuelo',o.fotosPos);
+  var fotos=fot?'<h4 class="auth4">Fotos</h4>'+fot:'';
+  return chkTbl(typeof CHK_OFICINA!=='undefined'?CHK_OFICINA:[],o.oficina,'Checklist oficina')+chkTbl(typeof CHK_PREVUELO!=='undefined'?CHK_PREVUELO:[],o.prevuelo,'Checklist pre-vuelo')+chkTbl(typeof CHK_POSVUELO!=='undefined'?CHK_POSVUELO:[],o.posvuelo,'Checklist pos-vuelo')+ocu+rie+fotos;
+}
+function verOpDetalle(id){var o=operaciones.find(function(x){return x.id===id;});if(!o)return;var cont=$('operList');if(!cont)return;window.scrollTo(0,0);
+  var kv=function(k,v){return v?'<tr><td style="color:var(--muted);padding:3px 6px;width:38%">'+esc(k)+'</td><td style="padding:3px 6px">'+esc(v)+'</td></tr>':'';};
+  var tipos=Object.keys(o.tipoOp||{}).filter(function(k){return o.tipoOp[k];}).map(function(k){return k.toUpperCase();}).join(', ');
+  var piloto=o.piloto||((typeof pilotName==='function'&&o.pilotoId)?pilotName(o.pilotoId):'');
+  var dron=(o.dronModelo||'')+(o.dronDR?' -'+o.dronDR:'');
+  var proy=(typeof projName==='function')?projName(o):'';
+  var dg='<table class="auttbl">'+kv('Código',o.codigo)+kv('Proyecto',proy)+kv('Fecha',o.inicioOp?fmtDate(o.inicioOp):'')+kv('Piloto principal',piloto)+kv('Dron',dron)+kv('Tipo',tipos)+kv('Ubicación',(o.municipio||'')+(o.departamento?', '+o.departamento:''))+kv('Coordenadas',(o.lat&&o.lon)?(o.lat+', '+o.lon):'')+kv('Autorización',(o.aut&&o.aut.radicado)?o.aut.radicado:'')+'</table>';
+  var vuelos=(o.sorties||[]).length?('<table class="auttbl"><thead><tr><th>#</th><th>Piloto</th><th>Observador</th><th>Batería</th><th>Dur.</th></tr></thead><tbody>'+(o.sorties||[]).map(function(s,i){return '<tr><td>'+(i+1)+'</td><td>'+esc(s.piloto||'')+'</td><td>'+esc(s.observador||'')+'</td><td>'+esc((s.batDesp||'')+((s.batDesp||s.batAter)?'→':'')+(s.batAter||''))+'</td><td>'+esc((s.dur!==''&&s.dur!=null)?(s.dur+' min'):'')+'</td></tr>';}).join('')+'</tbody></table>'):'<div class="hint">Sin vuelos registrados.</div>';
+  var back='<button class="btn sec sm" style="margin-bottom:10px" onclick="renderOper()">← Volver</button>';
+  cont.innerHTML=back+'<div class="item"><div style="width:100%"><div class="name" style="font-weight:700;font-size:16px">'+esc(o.codigo||'Operación')+'</div><h4 class="auth4">Datos generales</h4>'+dg+'<h4 class="auth4">Vuelos ('+((o.sorties||[]).length)+')</h4>'+vuelos+opFullSections(o)+'<div class="btnrow" style="margin-top:12px;flex-wrap:wrap"><button class="btn sec sm" onclick="renderOper()">← Volver</button> <button class="btn sec sm" onclick="editOp(\''+o.id+'\')">✎ Editar</button> <button class="btn sec sm" onclick="viewOp(\''+o.id+'\')">🖨 PDF</button></div></div></div>';}
 function viewOp(id){const o=operaciones.find(x=>x.id===id);if(o)printReport([o],projName(o));}
 function updateDash(){$('dTot').textContent=operaciones.length;$('dGo').textContent=operaciones.filter(o=>o.verdict==='GO').length;
   $('dNogo').textContent=operaciones.filter(o=>o.verdict==='NO-GO').length;
