@@ -1,6 +1,6 @@
 {
- "seedVersion": 29,
- "actualizado": "2026-09-12",
+ "seedVersion": 30,
+ "actualizado": "2026-09-13",
  "catalogoActualizado": "2026-09-03",
  "autorizaciones": [
   {
@@ -4013,7 +4013,7 @@
    "id": "aut-2026151070147974",
    "radicado": "2026151070147974",
    "idAut": "2704300",
-   "desc": "FRONTINO",
+   "desc": "Compensación Uramita",
    "ini": "2026-09-14",
    "fin": "2026-09-26",
    "dronesAut": [
@@ -4066,9 +4066,9 @@
    "id": "aut-2026151070148687",
    "radicado": "2026151070148687",
    "idAut": "2705945",
-   "desc": "REMEDIOS",
-   "ini": "2026-09-11",
-   "fin": "2026-09-14",
+   "desc": "La Ceiba",
+   "ini": "2026-09-14",
+   "fin": "2026-09-26",
    "dronesAut": [
     "1ZNBKC900C00NM",
     "1581F5FHD233T00D2S0M"
