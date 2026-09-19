@@ -574,6 +574,9 @@ async function storageInfo(){let idb=0,quota=0;
   let ls=0;for(let i=0;i<localStorage.length;i++){const k=localStorage.key(i);ls+=(k.length+(localStorage.getItem(k)||'').length)*2;}
   return{idb,quota,ls,mode:Assets.useIDB?'IndexedDB':'localStorage'};}
 function fmtMB(b){return (b/1048576).toFixed(1)+' MB'}
+async function persistStatus(){if(navigator.storage&&navigator.storage.persisted){try{return await navigator.storage.persisted();}catch(e){}}return null;}
+async function pedirPersistencia(){if(navigator.storage&&navigator.storage.persist){try{var g=await navigator.storage.persist();toast(g?'Almacenamiento persistente activado':'El navegador no concedió persistencia (suele activarse al instalar la app)');if(typeof renderStorage==='function')renderStorage();return g;}catch(e){}}toast('Este navegador no permite fijar persistencia');return false;}
+async function integridadAssets(){await Assets.readyP;var falt=[],total=0;for(var i=0;i<operaciones.length;i++){var o=operaciones[i];var ids=opOwnedAssetIds(o);for(var k=0;k<ids.length;k++){var id=ids[k];if(!id||isDataURL(id))continue;total++;var d=null;try{d=await Assets.get(id);}catch(e){}if(d==null)falt.push(o.codigo||o.id);}}return{total:total,faltan:falt};}
 let st=blankState();
 function blankState(){return{oficina:{},prevuelo:{},posvuelo:{},ocurr:{},hf:{},sorties:[],fotosPre:[],fotosPos:[],fotoDron:null,fotoMeteo:null,autPdf:null,autPdfInfo:null}}
 
@@ -659,6 +662,11 @@ async function meteoFetch(lat,lon,label){
     var r=await fetch(u);wx=await r.json();
   }catch(e){wx=null;}
   try{
+    var rl=await fetch('kp.json');
+    var jl=await rl.json();
+    if(jl&&jl.kp!=null){var vl=parseFloat(jl.kp);if(!isNaN(vl))kp={val:vl,time:jl.time||'',src:jl.src||'GFZ/NOAA'};}
+  }catch(e){}
+  if(!kp)try{
     var _n=new Date(),_e=_n.toISOString().slice(0,10),_s=new Date(_n.getTime()-129600000).toISOString().slice(0,10);
     var rg=await fetch('https://kp.gfz.de/app/json/?start='+_s+'&end='+_e+'&index=Kp');
     var jg=await rg.json();var ka=jg&&(jg.Kp||jg.kp),da=jg&&(jg.datetime||jg.time);
@@ -1472,7 +1480,7 @@ function modoPiloto(){return localStorage.getItem('bvd_modoPiloto')==='1';}
 function applyModo(){const on=modoPiloto();['fleetForm','pilotForm'].forEach(id=>{const el=$(id);if(el)el.style.display=on?'none':'';});const c=$('modoPilotoChk');if(c)c.checked=on;}
 function setModoPiloto(on){localStorage.setItem('bvd_modoPiloto',on?'1':'');applyModo();renderFleet();renderPilots();toast(on?'Modo piloto activado (solo consulta)':'Modo maestro (edición habilitada)');}
 function mergeCatalog(local,incoming,key){if(!incoming)return 0;let n=0;incoming.forEach(item=>{let i=local.findIndex(x=>x.id===item.id);if(i<0&&key&&item[key])i=local.findIndex(x=>String(x[key]||'').trim()===String(item[key]||'').trim());if(i<0){local.push(item);n++;}else local[i]=item;});return n;}
-const APP_VER='v99';
+const APP_VER='v101';
 function renderSyncInfo(){const t=Number(localStorage.getItem('bvd_lastSync')||0);const v=localStorage.getItem('bvd_seedVerShown')||localStorage.getItem('bvd_seedVersion')||'';const cf=localStorage.getItem('bvd_catalogoFecha')||'';const p=n=>String(n).padStart(2,'0');
   let ts='',short='';if(t){const d=new Date(t);ts=p(d.getDate())+'-'+p(d.getMonth()+1)+'-'+d.getFullYear()+' '+p(d.getHours())+':'+p(d.getMinutes());short=p(d.getDate())+'-'+p(d.getMonth()+1)+' '+p(d.getHours())+':'+p(d.getMinutes());}
   const hv=$('hdrVer');if(hv)hv.innerHTML='App '+APP_VER+(short?'<br>'+short:'');
@@ -1534,10 +1542,13 @@ function wipeAll(){if(!confirm('Se borra TODO (proyectos, pilotos, flota, operac
 function dl(name,content,type){const b=new Blob([content],{type});const u=URL.createObjectURL(b);const a=document.createElement('a');a.href=u;a.download=name;a.click();setTimeout(()=>URL.revokeObjectURL(u),1000);}
 function backupOverdue(){const last=Number(localStorage.getItem('bvd_lastBackup')||0);const days=last?Math.floor((Date.now()-last)/86400000):null;return operaciones.length&&(!last||days>7);}
 async function renderStorage(){const el=$('storageInfo');if(!el)return;const s=await storageInfo();
+  var _persist=await persistStatus();var _integ=await integridadAssets();
+  var _ig=_integ.faltan.length?('<div style="margin:0 0 8px;padding:8px 10px;border-radius:8px;background:#fef2f2;border:1px solid #fecaca;color:#991b1b;font-size:12px;font-weight:600">\u26d4 Faltan '+_integ.faltan.length+' foto(s) en: '+esc(_integ.faltan.slice(0,6).join(', '))+'. Restaurá desde tu último respaldo.</div>'):('<div style="margin:0 0 8px;padding:8px 10px;border-radius:8px;background:#f0fdf4;border:1px solid #bbf7d0;color:#166534;font-size:12px;font-weight:600">\u2705 Integridad OK \u2014 '+_integ.total+' foto(s) verificadas, todas presentes.</div>');
+  var _ps='<div class="hint" style="margin-bottom:8px">Almacenamiento persistente: <b>'+(_persist===true?'\u2705 activado':_persist===false?'\u26a0 no activado':'no disponible')+'</b>'+(_persist===true?' \u2014 el navegador no borrará tus fotos.':(_persist===false?' <button class="btn sec sm" style="margin-left:6px;padding:3px 10px" onclick="pedirPersistencia()">Activar</button>':''))+'</div>';
   const last=Number(localStorage.getItem('bvd_lastBackup')||0);const lastTxt=last?new Date(last).toLocaleDateString('es-CO'):'nunca';
   const days=last?Math.floor((Date.now()-last)/86400000):null;const overdue=!last||days>7;
   const used=s.idb+s.ls;const pct=s.quota?Math.min(100,Math.round(used/s.quota*100)):Math.min(100,Math.round(used/(50*1048576)*100));
-  el.innerHTML=`<div class="hint" style="margin-bottom:8px">Modo: <b>${s.mode}</b>${s.mode==='localStorage'?' — el navegador bloqueó IndexedDB. Para durabilidad plena, hospedá la app en HTTPS.':' — fotos y PDF guardados fuera de localStorage.'}</div>
+  el.innerHTML=_ig+_ps+`<div class="hint" style="margin-bottom:8px">Modo: <b>${s.mode}</b>${s.mode==='localStorage'?' — el navegador bloqueó IndexedDB. Para durabilidad plena, hospedá la app en HTTPS.':' — fotos y PDF guardados fuera de localStorage.'}</div>
     <div class="meter"><div class="meterfill" style="width:${pct}%"></div></div>
     <div class="hint" style="margin-top:6px">Uso aproximado: <b>${fmtMB(used)}</b>${s.quota?(' de ~'+fmtMB(s.quota)+' disponibles'):''}</div>
     <div class="divider"></div>
@@ -1631,7 +1642,7 @@ if('serviceWorker' in navigator){
   });
 }
 
-Assets.init().then(async()=>{await migrateAssets();migrarCodigos();await loadSeed();});
+Assets.init().then(async()=>{await migrateAssets();migrarCodigos();await loadSeed();if(navigator.storage&&navigator.storage.persist){try{if(!(await navigator.storage.persisted()))await navigator.storage.persist();}catch(e){}}});
 var _el=document.getElementById("epmLogo");if(_el)_el.src=EPM_LOGO;
 renderOper();
 </script>

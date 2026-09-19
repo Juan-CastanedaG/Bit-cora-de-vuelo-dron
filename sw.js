@@ -1,6 +1,6 @@
 /* Service worker de la Bitácora de Vuelo Dron.
    Subí el número de versión (bvd-vN) al publicar una versión nueva del index.html. */
-const CACHE = 'bvd-v99';
+const CACHE = 'bvd-v101';
 const TILES = 'bvd-tiles';           // caché de mapa: NO se borra al actualizar
 const CART  = 'bvd-cartilla';        // caché de cartilla: NO se borra al actualizar
 const ASSETS = [
@@ -20,7 +20,7 @@ self.addEventListener('activate', e => {
 function isTile(url){ return /tile\.openstreetmap\.org|arcgisonline\.com/.test(url); }
 self.addEventListener('fetch', e => {
   if (e.request.method !== 'GET') return;
-  if (/api\.open-meteo\.com|kp\.gfz\.de|kp\.gfz-potsdam\.de|services\.swpc\.noaa\.gov/.test(e.request.url)) { e.respondWith(fetch(e.request)); return; }
+  if (/api\.open-meteo\.com|kp\.gfz\.de|kp\.gfz-potsdam\.de|services\.swpc\.noaa\.gov|\/kp\.json/.test(e.request.url)) { e.respondWith(fetch(e.request)); return; }
   if (/\/seed\.json/.test(e.request.url)) {
     e.respondWith(
       fetch(e.request).then(resp => { if(resp && resp.ok) caches.open(CACHE).then(c => c.put(e.request, resp.clone())).catch(function(){}); return resp; })
