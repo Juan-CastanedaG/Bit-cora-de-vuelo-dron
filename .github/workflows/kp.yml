@@ -1,5 +1,5 @@
 name: Actualizar Kp
-# Baja el índice Kp (NOAA, con GFZ de respaldo) del lado del servidor —sin CORS—
+# Baja el índice Kp (NOAA products -> NOAA 1m -> GFZ) del lado del servidor —sin CORS—
 # y guarda kp.json en el repo. La app lo lee del mismo dominio (github.io), sin CORS.
 on:
   schedule:
@@ -18,12 +18,13 @@ jobs:
       - name: Obtener Kp y escribir kp.json
         run: |
           python3 - <<'PY'
-          import json, urllib.request, datetime
+          import json, urllib.request, datetime, sys
+          UA = 'Mozilla/5.0 (compatible; epm-bitacora-kp/1.0; +https://juan-castanedag.github.io)'
           def get(u):
-              req = urllib.request.Request(u, headers={'User-Agent': 'epm-bitacora-kp'})
+              req = urllib.request.Request(u, headers={'User-Agent': UA, 'Accept': 'application/json'})
               return urllib.request.urlopen(req, timeout=30).read().decode()
           kp = None
-          # 1) NOAA SWPC
+          # 1) NOAA SWPC (products, tri-horario)
           try:
               a = json.loads(get('https://services.swpc.noaa.gov/products/noaa-planetary-k-index.json'))
               for row in reversed(a[1:]):
@@ -32,14 +33,27 @@ jobs:
                       break
                   except Exception:
                       pass
+              print('NOAA products ->', kp)
           except Exception as e:
-              print('NOAA fail:', e)
-          # 2) GFZ Potsdam (respaldo)
+              print('NOAA products FAIL:', repr(e))
+          # 2) NOAA SWPC (json 1-min, estimado)
+          if not kp:
+              try:
+                  a = json.loads(get('https://services.swpc.noaa.gov/json/planetary_k_index_1m.json'))
+                  for row in reversed(a):
+                      v = row.get('kp_index', row.get('kp'))
+                      if v is not None:
+                          kp = {'kp': float(v), 'time': row.get('time_tag', ''), 'src': 'NOAA-1m'}
+                          break
+                  print('NOAA 1m ->', kp)
+              except Exception as e:
+                  print('NOAA 1m FAIL:', repr(e))
+          # 3) GFZ Potsdam (respaldo, ISO completo)
           if not kp:
               try:
                   now = datetime.datetime.utcnow()
-                  end = now.strftime('%Y-%m-%d')
-                  start = (now - datetime.timedelta(hours=36)).strftime('%Y-%m-%d')
+                  end = now.strftime('%Y-%m-%dT%H:%M:%SZ')
+                  start = (now - datetime.timedelta(hours=48)).strftime('%Y-%m-%dT%H:%M:%SZ')
                   j = json.loads(get('https://kp.gfz.de/app/json/?start=%s&end=%s&index=Kp' % (start, end)))
                   ka = j.get('Kp') or j.get('kp')
                   da = j.get('datetime') or j.get('time')
@@ -50,14 +64,15 @@ jobs:
                               break
                           except Exception:
                               pass
+                  print('GFZ ->', kp)
               except Exception as e:
-                  print('GFZ fail:', e)
+                  print('GFZ FAIL:', repr(e))
           if not kp:
               print('Sin Kp de ninguna fuente; se conserva kp.json anterior')
-              raise SystemExit(0)
+              sys.exit(0)
           with open('kp.json', 'w') as f:
               f.write(json.dumps(kp))
-          print('kp.json =', kp)
+          print('OK kp.json =', kp)
           PY
       - name: Commit si cambió
         run: |
