@@ -1072,6 +1072,7 @@ function discardDraft(){if(!confirm('¿Descartar el borrador en curso?'))return;
 
 /* ---------- preparar nueva ---------- */
 function prepNueva(){
+  try{var _edr=JSON.parse(localStorage.getItem(K.draft)||'null');if(_edr&&_edr._editId&&operaciones.some(function(o){return o.id===_edr._editId;}))editingOpId=_edr._editId;}catch(e){}
   const selD=$('g_dron');selD.innerHTML=flota.length?'<option value="">— dron —</option>'+flota.map(d=>`<option value="${d.id}">${esc(dronLabel(d))}</option>`).join(''):'<option value="">— sin drones —</option>';
   $('dlPilotos').innerHTML=pilotos.map(p=>`<option value="${esc(p.nombre)}">`).join('');
   $('dlAut').innerHTML=autorizaciones.filter(a=>!autVencida(a)).map(a=>`<option value="${esc(autLabel(a))}">`).join('');
@@ -1107,7 +1108,10 @@ function saveOp(){
   const cd=id=>{const p=pilotById(id);return p?(p.cedula||''):''};
   const fechaCod=(($('p_inicio').value||new Date().toISOString().slice(0,10)).slice(0,10)).replace(/-/g,'');
   const codBase=fechaCod+'-'+((d&&d.maximo)||'SINMAX');
-  const codigo=editingOpId?((operaciones.find(x=>x.id===editingOpId)||{}).codigo||nextCodigo(codBase)):nextCodigo(codBase);
+  var codigo;
+  if(editingOpId){var _ex=operaciones.find(function(x){return x.id===editingOpId;});var _max=(d&&d.maximo)||'SINMAX';var _m=_ex&&_ex.codigo?String(_ex.codigo).match(/^(\d{8})-(.+)-(\d+)$/):null;
+    if(_ex&&_ex.codigo&&_m&&_m[1]===fechaCod&&_m[2]===_max)codigo=_ex.codigo;else codigo=nextCodigo(codBase);}
+  else codigo=nextCodigo(codBase);
   const rec={id:uid(),ts:Date.now(),historico:antesDelCorte(),codigo:codigo,pilotoId:$('g_pilotoId').value,piloto:pp?pp.nombre:'',
     tipoOp:{diurna:isOp('diurna'),nocturna:isOp('nocturna'),vlos:isOp('vlos'),evlos:isOp('evlos'),bvlos:isOp('bvlos')},
     municipio:$('g_muni').value.trim(),departamento:$('g_depto').value.trim(),
@@ -1186,7 +1190,7 @@ function editOp(id){const o=operaciones.find(x=>x.id===id);if(!o)return;
     st:{oficina:{...(o.oficina||{})},prevuelo:{...(o.prevuelo||{})},posvuelo:{...(o.posvuelo||{})},ocurr:{...(o.ocurr||{})},hf:{...(o.hf||{})},
         sorties:(o.sorties||[]).map(s=>({...s})),fotosPre:(o.fotosPre||[]).slice(),fotosPos:(o.fotosPos||[]).slice(),
         fotoDron:o.fotoDron||null,fotoMeteo:o.fotoMeteo||null,autPdf:(o.aut&&o.aut.pdf)||null}};
-  editingOpId=id;save(K.draft,dr);nav('nueva');toast('Editando operación');}
+  editingOpId=id;dr._editId=id;save(K.draft,dr);nav('nueva');toast('Editando operación');}
 function cancelEdit(){editingOpId=null;localStorage.removeItem(K.draft);resetForm(true);nav('oper');}
 function renderVuelos(){const cont=$('vuelosList');if(!cont)return;
   const rows=[];operaciones.forEach(o=>{(o.sorties||[]).forEach((s,i)=>rows.push({o,s,i}));});
@@ -1468,7 +1472,7 @@ function modoPiloto(){return localStorage.getItem('bvd_modoPiloto')==='1';}
 function applyModo(){const on=modoPiloto();['fleetForm','pilotForm'].forEach(id=>{const el=$(id);if(el)el.style.display=on?'none':'';});const c=$('modoPilotoChk');if(c)c.checked=on;}
 function setModoPiloto(on){localStorage.setItem('bvd_modoPiloto',on?'1':'');applyModo();renderFleet();renderPilots();toast(on?'Modo piloto activado (solo consulta)':'Modo maestro (edición habilitada)');}
 function mergeCatalog(local,incoming,key){if(!incoming)return 0;let n=0;incoming.forEach(item=>{let i=local.findIndex(x=>x.id===item.id);if(i<0&&key&&item[key])i=local.findIndex(x=>String(x[key]||'').trim()===String(item[key]||'').trim());if(i<0){local.push(item);n++;}else local[i]=item;});return n;}
-const APP_VER='v98';
+const APP_VER='v99';
 function renderSyncInfo(){const t=Number(localStorage.getItem('bvd_lastSync')||0);const v=localStorage.getItem('bvd_seedVerShown')||localStorage.getItem('bvd_seedVersion')||'';const cf=localStorage.getItem('bvd_catalogoFecha')||'';const p=n=>String(n).padStart(2,'0');
   let ts='',short='';if(t){const d=new Date(t);ts=p(d.getDate())+'-'+p(d.getMonth()+1)+'-'+d.getFullYear()+' '+p(d.getHours())+':'+p(d.getMinutes());short=p(d.getDate())+'-'+p(d.getMonth()+1)+' '+p(d.getHours())+':'+p(d.getMinutes());}
   const hv=$('hdrVer');if(hv)hv.innerHTML='App '+APP_VER+(short?'<br>'+short:'');
