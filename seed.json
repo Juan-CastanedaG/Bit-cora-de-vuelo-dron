@@ -1,5 +1,5 @@
 {
- "seedVersion": 31,
+ "seedVersion": 32,
  "actualizado": "2026-09-19",
  "catalogoActualizado": "2026-09-03",
  "autorizaciones": [
@@ -4117,7 +4117,7 @@
    "id": "aut-2026151070149822",
    "radicado": "2026151070149822",
    "idAut": "2708277",
-   "desc": "MZRJ",
+   "desc": "SE El Salto - Guadalupe III",
    "ini": "2026-09-14",
    "fin": "2026-09-26",
    "dronesAut": [
@@ -4168,7 +4168,7 @@
    "id": "aut-2026151070149830",
    "radicado": "2026151070149830",
    "idAut": "2708286",
-   "desc": "BARBOSA",
+   "desc": "Predio El Machete",
    "ini": "2026-09-15",
    "fin": "2026-09-26",
    "dronesAut": [
