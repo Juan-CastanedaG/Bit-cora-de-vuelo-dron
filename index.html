@@ -277,15 +277,15 @@ input[readonly]{background:#eef3f1;color:var(--muted);cursor:not-allowed}
     <div class="field"><label>Piloto principal</label><input id="g_pilotoQ" placeholder="Tocá para ver la lista o escribí…" autocomplete="off" onfocus="comboOpen(this,pilotOpts(),pickPiloto)" oninput="comboFilter(this)" onchange="onPilotoQ()" onblur="setTimeout(comboClose,150)"><input type="hidden" id="g_pilotoId"><div id="pilotoInfo" class="infoBox"></div></div><datalist id="dlPilotos"></datalist>
     <div class="field"><label>Tipo de operación</label>
       <div class="pillwrap">
-        <label class="pill" onclick="tgl(this);verdict();saveDraft()"><input type="checkbox" data-op="diurna" hidden><span class="dot"></span>Diurna</label>
-        <label class="pill" onclick="tgl(this);verdict();saveDraft()"><input type="checkbox" data-op="nocturna" hidden><span class="dot"></span>Nocturna</label>
+        <label class="pill" onclick="tgl(this);verdict();refreshDronSelect();renderSorties();saveDraft()"><input type="checkbox" data-op="diurna" hidden><span class="dot"></span>Diurna</label>
+        <label class="pill" onclick="tgl(this);verdict();refreshDronSelect();renderSorties();saveDraft()"><input type="checkbox" data-op="nocturna" hidden><span class="dot"></span>Nocturna</label>
       </div>
     </div>
     <div class="field"><label>Tipo de contacto visual</label>
       <div class="pillwrap">
-        <label class="pill" onclick="tgl(this);verdict();saveDraft()"><input type="checkbox" data-op="vlos" hidden><span class="dot"></span>VLOS</label>
-        <label class="pill" onclick="tgl(this);verdict();saveDraft()"><input type="checkbox" data-op="evlos" hidden><span class="dot"></span>EVLOS</label>
-        <label class="pill" onclick="tgl(this);verdict();saveDraft()"><input type="checkbox" data-op="bvlos" hidden><span class="dot"></span>BVLOS</label>
+        <label class="pill" onclick="tgl(this);verdict();refreshDronSelect();renderSorties();saveDraft()"><input type="checkbox" data-op="vlos" hidden><span class="dot"></span>VLOS</label>
+        <label class="pill" onclick="tgl(this);verdict();refreshDronSelect();renderSorties();saveDraft()"><input type="checkbox" data-op="evlos" hidden><span class="dot"></span>EVLOS</label>
+        <label class="pill" onclick="tgl(this);verdict();refreshDronSelect();renderSorties();saveDraft()"><input type="checkbox" data-op="bvlos" hidden><span class="dot"></span>BVLOS</label>
       </div>
     </div>
     <div class="row2">
@@ -312,7 +312,7 @@ input[readonly]{background:#eef3f1;color:var(--muted);cursor:not-allowed}
 
   <div class="card">
     <h2><span class="step">4</span>Chequeo pre-vuelo</h2>
-    <div class="field"><label>Inicio de la operación</label><input type="datetime-local" id="p_inicio" oninput="verdict();saveDraft()"></div>
+    <div class="field"><label>Inicio de la operación</label><input type="datetime-local" id="p_inicio" oninput="verdict();refreshDronSelect();renderSorties();saveDraft()"></div>
     <div id="chkPrevuelo"></div>
     <div class="sectlabel">Análisis de riesgo</div>
     <div class="alert info"><span>📋</span><div><b>Análisis de riesgo</b>: respondé cada punto. La app calcula internamente la calificación de seguridad para la operación UAS.</div></div>
@@ -659,10 +659,16 @@ async function meteoFetch(lat,lon,label){
     var r=await fetch(u);wx=await r.json();
   }catch(e){wx=null;}
   try{
+    var _n=new Date(),_e=_n.toISOString().slice(0,10),_s=new Date(_n.getTime()-129600000).toISOString().slice(0,10);
+    var rg=await fetch('https://kp.gfz.de/app/json/?start='+_s+'&end='+_e+'&index=Kp');
+    var jg=await rg.json();var ka=jg&&(jg.Kp||jg.kp),da=jg&&(jg.datetime||jg.time);
+    if(ka&&ka.length){for(var i=ka.length-1;i>=0;i--){var v=parseFloat(ka[i]);if(!isNaN(v)){kp={val:v,time:(da&&da[i])||'',src:'GFZ'};break;}}}
+  }catch(e){}
+  if(!kp){try{
     var rk=await fetch('https://services.swpc.noaa.gov/products/noaa-planetary-k-index.json');
     var arr=await rk.json();
-    for(var i=arr.length-1;i>0;i--){var kv=parseFloat(arr[i][1]);if(!isNaN(kv)){kp={val:kv,time:arr[i][0]};break;}}
-  }catch(e){kp=null;}
+    for(var j2=arr.length-1;j2>0;j2--){var kv=parseFloat(arr[j2][1]);if(!isNaN(kv)){kp={val:kv,time:arr[j2][0],src:'NOAA'};break;}}
+  }catch(e){}}
   if(wx&&wx.current){
     meteoState.wx=wx;if(kp)meteoState.kp=kp;meteoState.ts=Date.now();meteoState.online=true;
     try{localStorage.setItem('bvd_meteo',JSON.stringify(meteoState));}catch(e){}
@@ -721,7 +727,7 @@ function meteoRender(fromCache){
   cells+=_mtCell('Lluvia',(precip==null?'\u2014':precip.toFixed(1)),'mm',vr,(prob==null?'':'prob. '+prob+'%'));
   cells+=_mtCell('Visibilidad',(vis==null?'\u2014':(vis/1000).toFixed(1)),'km',vv,'');
   cells+=_mtCell('Temperatura',(temp==null?'\u2014':Math.round(temp)),'\u00b0C',vt,(sens==null?'':'sensaci\u00f3n '+Math.round(sens)+'\u00b0'));
-  cells+=_mtCell('Kp (GPS)',(kp==null?'\u2014':kp.toFixed(1)),'',vk,(s.kp?'geomagn\u00e9tico':'no disponible'));
+  cells+=_mtCell('Kp (GPS)',(kp==null?'\u2014':kp.toFixed(1)),'',vk,(s.kp?('geomagn\u00e9tico'+(s.kp.src?' \u00b7 '+s.kp.src:'')):'servicio externo no accesible'));
   cells+=_mtCell('Nubes',(cloud==null?'\u2014':Math.round(cloud)),'%',null,'');
   cells+=_mtCell('Presi\u00f3n',(pres==null?'\u2014':Math.round(pres)),'hPa',null,'');
   cells+=_mtCell('Humedad',(hum==null?'\u2014':Math.round(hum)),'%',null,'');
@@ -843,7 +849,7 @@ function renderAutInfo(){const el=$('autInfo');if(!el)return;const au=autById($(
 function verZonaAut(id){nav('mapa');setTimeout(()=>{const a=autById(id);if(a&&a.poly&&a.poly.length&&map){const bb=[];a.poly.forEach(p=>p.forEach(pt=>bb.push(pt)));if(bb.length){try{map.fitBounds(bb,{padding:[30,30]});}catch(e){}}}},450);}
 function onAutSelect(){const au=autById($('g_autId').value);renderAutInfo();
   $('a_rad').value=au?(au.radicado||''):'';$('a_id').value=au?(au.idAut||''):'';$('a_ini').value=au?(au.ini||''):'';$('a_fin').value=au?(au.fin||''):'';
-  st.autPdf=au&&au.pdf?au.pdf:null;st.autPdfInfo=au&&au.pdfInfo?au.pdfInfo:null;renderPdfRow();verdict();saveDraft();}
+  st.autPdf=au&&au.pdf?au.pdf:null;st.autPdfInfo=au&&au.pdfInfo?au.pdfInfo:null;renderPdfRow();refreshDronSelect();renderSorties();verdict();saveDraft();}
 function saveDrone(){const m=$('d_modelo').value.trim();if(!m){toast('Poné el modelo');return}
   const o={id:editDroneId||uid(),dr:$('d_dr').value.trim(),modelo:m,serial:$('d_serial').value.trim(),ruas:$('d_ruas').value.trim(),maximo:$('d_maximo').value.trim(),
     poliza:$('d_poliza').value.trim(),polizaVence:$('d_polizaVence').value,mant:$('d_mant').value,habNocturno:$('d_hnoc').checked,habBVLOS:$('d_hbvlos').checked};
@@ -883,7 +889,26 @@ function comboOpen(input,opts,onPick){comboState={input,opts,onPick};comboRender
 function comboFilter(input){if(comboState&&comboState.input===input)comboRender(input.value);}
 function comboClose(){const p=$('comboPop');if(p)p.style.display='none';comboState=null;}
 function comboPick(e){if(!comboState)return;const it=e.target.closest('.cbo');if(!it||it.classList.contains('dis'))return;e.preventDefault();const o=comboState.opts[+it.dataset.i];const fn=comboState.onPick;comboState.input.value=o.label;comboClose();fn(o.value);}
-function pilotOpts(){return pilotos.map(p=>({value:p.id,label:(p.nombre||'(sin nombre)')+(!pilotHabil(p)?' — inhabilitado':''),dis:''}));}
+function _opAu(){return autById(($('g_autId')&&$('g_autId').value)||'');}
+function _certOpPilot(p){if(isOp('bvlos')&&!hasCert(p,'BVLOS'))return false;if(isOp('nocturna')&&!hasCert(p,'Nocturno'))return false;return true;}
+function _certOpDron(d){if(isOp('bvlos')&&!d.habBVLOS)return false;if(isOp('nocturna')&&!d.habNocturno)return false;return true;}
+function pilotOpts(){var au=_opAu(),antes=antesDelCorte();
+  if(!antes){
+    if(!au)return [{value:'',label:'⚠ No se ha seleccionado autorización de vuelo',dis:'sin autorización'}];
+    var f=pilotos.filter(function(p){return pilotAutOK(au,p)&&pilotHabil(p)&&_certOpPilot(p);});
+    return f.length?f.map(function(p){return {value:p.id,label:(p.nombre||'(sin nombre)'),dis:''};}):[{value:'',label:'⚠ Ningún piloto apto (autorización · habilitación · certificación) para esta operación',dis:'—'}];
+  }
+  return pilotos.map(function(p){return {value:p.id,label:(p.nombre||'(sin nombre)')+(!pilotHabil(p)?' — inhabilitado':''),dis:''};});}
+function _vueloDentro(s,au){if(!au||!au.poly||!au.poly.length)return null;var la=parseFloat(s.lat),lo=parseFloat(s.lon);if(isNaN(la)||isNaN(lo))return null;return _mtPtInAuth(la,lo,au);}
+function geoVueloChip(s){var au=_opAu();if(!au||!au.poly||!au.poly.length)return '';var dv=_vueloDentro(s,au);if(dv===null)return '<div class="hint" style="margin:2px 0 6px">Geocerco: ingresá lat/lon para verificar el polígono</div>';if(dv)return '<div style="margin:2px 0 6px;padding:6px 9px;border-radius:8px;background:#f0fdf4;border:1px solid #bbf7d0;color:#166534;font-size:12px;font-weight:700">✅ Dentro de la autorización</div>';return '<div style="margin:2px 0 6px;padding:6px 9px;border-radius:8px;background:#fef2f2;border:1px solid #fecaca;color:#991b1b;font-size:12px;font-weight:700">⛔ FUERA del polígono de la autorización</div>';}
+function limpiarSPilot(i,field){st.sorties[i][field]='';renderSorties();verdict();saveDraft();}
+function refreshDronSelect(){var sd=$('g_dron');if(!sd)return;var au=_opAu(),antes=antesDelCorte(),cur=sd.value;
+  if(!antes){
+    if(!au){sd.innerHTML='<option value="">⚠ No se ha seleccionado autorización de vuelo</option>';return;}
+    var list=flota.filter(function(d){return dronAutOK(au,d)&&d.activo!==false&&!(d.polizaVence&&daysTo(d.polizaVence)<0)&&_certOpDron(d);});
+    sd.innerHTML=list.length?('<option value="">— dron —</option>'+list.map(function(d){return '<option value="'+d.id+'"'+(d.id===cur?' selected':'')+'>'+esc(dronLabel(d))+'</option>';}).join('')):'<option value="">— sin drones aptos para esta operación —</option>';
+    return;}
+  sd.innerHTML='<option value="">— dron —</option>'+flota.map(function(d){return '<option value="'+d.id+'"'+(d.id===cur?' selected':'')+'>'+esc(dronLabel(d))+'</option>';}).join('');}
 function autOpts(){return autorizaciones.map(a=>({value:a.id,label:autLabel(a)+(autVencida(a)?' — vencida':'')}));}
 function pickPiloto(id){$('g_pilotoId').value=id;$('g_pilotoQ').value=pilotName(id);verdict();renderPilotoInfo();saveDraft();}
 function pickAut(id){const a=autById(id);$('g_autId').value=id;$('g_autQ').value=a?autLabel(a):'';onAutSelect();}
@@ -920,10 +945,10 @@ function morCheck(){const el=$('morFlag');if(el)el.innerHTML='';}
 /* ---------- sorties ---------- */
 function addSortie(d){st.sorties.push(d||{fecha:($('p_inicio').value||'').slice(0,10),inicio:'',fin:'',pilotoId:$('g_pilotoId').value||'',observadorId:'',batDesp:'',batAter:'',obs:'',lat:'',lon:''});renderSorties();saveDraft();}
 function renderSorties(){
-  $('sortieList').innerHTML=st.sorties.map((s,i)=>{const dur=sortieDur(s);const needObs=!s.observadorId;
+  $('sortieList').innerHTML=st.sorties.map((s,i)=>{const dur=sortieDur(s);const needObs=!s.observadorId;const _gz=geoVueloChip(s);
     return `<div class="sortie"><div class="sh"><span class="n">Vuelo #${i+1}</span><span class="dur">${dur!=null?dur+' min de vuelo':''}</span><button class="rm" onclick="rmSortie(${i})">Quitar</button></div>
-      <div class="field"><label>Piloto</label><input value="${esc(pilotName(s.pilotoId))}" placeholder="Tocá para ver la lista…" autocomplete="off" onfocus="comboOpen(this,pilotOpts(),(id)=>pickSortie(${i},'pilotoId',id))" oninput="comboFilter(this)" onchange="setSPilot(${i},'pilotoId',this.value)" onblur="setTimeout(comboClose,150)"></div>
-      <div class="field"><label>Observador ${needObs?'<span style="color:#dc2626">· obligatorio</span>':''}</label><input value="${esc(pilotName(s.observadorId))}" placeholder="Tocá para ver la lista…" autocomplete="off" onfocus="comboOpen(this,pilotOpts(),(id)=>pickSortie(${i},'observadorId',id))" oninput="comboFilter(this)" onchange="setSPilot(${i},'observadorId',this.value)" onblur="setTimeout(comboClose,150)"></div>
+      <div class="field"><label>Piloto</label><div style="display:flex;gap:6px;align-items:center"><input style="flex:1;min-width:0" value="${esc(pilotName(s.pilotoId))}" placeholder="Tocá para ver la lista…" autocomplete="off" onfocus="comboOpen(this,pilotOpts(),(id)=>pickSortie(${i},'pilotoId',id))" oninput="comboFilter(this)" onchange="setSPilot(${i},'pilotoId',this.value)" onblur="setTimeout(comboClose,150)"><button type="button" class="btn sec sm noprint" title="Borrar piloto" onclick="limpiarSPilot(${i},'pilotoId')" style="padding:6px 11px">✕</button></div></div>
+      <div class="field"><label>Observador ${needObs?'<span style="color:#dc2626">· obligatorio</span>':''}</label><div style="display:flex;gap:6px;align-items:center"><input style="flex:1;min-width:0" value="${esc(pilotName(s.observadorId))}" placeholder="Tocá para ver la lista…" autocomplete="off" onfocus="comboOpen(this,pilotOpts(),(id)=>pickSortie(${i},'observadorId',id))" oninput="comboFilter(this)" onchange="setSPilot(${i},'observadorId',this.value)" onblur="setTimeout(comboClose,150)"><button type="button" class="btn sec sm noprint" title="Borrar observador" onclick="limpiarSPilot(${i},'observadorId')" style="padding:6px 11px">✕</button></div></div>
       <div class="field"><label>Fecha</label><input type="date" value="${s.fecha||''}" onchange="setS(${i},'fecha',this.value)"></div>
       <div class="row2"><div class="field"><label>Hora inicio</label><input type="time" value="${s.inicio||''}" onchange="setS(${i},'inicio',this.value)"></div>
       <div class="field"><label>Hora fin</label><input type="time" value="${s.fin||''}" onchange="setS(${i},'fin',this.value)"></div></div>
@@ -932,9 +957,9 @@ function renderSorties(){
       <div class="field"><label>Observaciones del vuelo</label><input type="text" value="${esc(s.obs)}" onchange="setS(${i},'obs',this.value)"></div>
       <div class="row2"><div class="field"><label>Latitud</label><input type="text" class="mono" value="${esc(s.lat||'')}" placeholder="6.53" onchange="setS(${i},'lat',this.value)"></div>
       <div class="field"><label>Longitud</label><input type="text" class="mono" value="${esc(s.lon||'')}" placeholder="-75.25" onchange="setS(${i},'lon',this.value)"></div></div>
-      <button type="button" class="btn sec sm noprint" onclick="capturarGPSVuelo(${i})">📍 Usar mi ubicación</button><div class="hint" id="gpsHintV${i}"></div></div>`}).join('');
+      ${_gz}<button type="button" class="btn sec sm noprint" onclick="capturarGPSVuelo(${i})">📍 Usar mi ubicación</button><div class="hint" id="gpsHintV${i}"></div></div>`}).join('');
   updateDash();}
-function setS(i,k,v){st.sorties[i][k]=v;if(k==='inicio'||k==='fin'||k==='observadorId')renderSorties();saveDraft();}
+function setS(i,k,v){st.sorties[i][k]=v;if(k==='inicio'||k==='fin'||k==='observadorId'||k==='lat'||k==='lon'||k==='fecha')renderSorties();if(k==='fecha'||k==='inicio'||k==='fin')refreshDronSelect();verdict();saveDraft();}
 function rmSortie(i){st.sorties.splice(i,1);renderSorties();saveDraft();}
 function sortieDur(s){if(!s.inicio||!s.fin)return null;let[h1,m1]=s.inicio.split(':').map(Number),[h2,m2]=s.fin.split(':').map(Number);let d=(h2*60+m2)-(h1*60+m1);if(d<0)d+=1440;return d;}
 function totalMins(a){return(a||[]).reduce((x,s)=>x+(sortieDur(s)||0),0)}
@@ -973,7 +998,8 @@ function verdict(){const box=$('verdictBox'),word=$('vWord'),desc=$('vDesc'),lig
   const _au=autById($('g_autId').value);
   if(_au){opTipoMsgs(_au).forEach(x=>block.push(x));if(!antes){if(d&&!dronAutOK(_au,d))block.push('El dron no está autorizado en esta autorización');
     if(p&&!pilotAutOK(_au,p))block.push('El piloto principal no está autorizado en esta autorización');
-    st.sorties.forEach((s,i)=>{const sp=pilotById(s.pilotoId),so=pilotById(s.observadorId);if(sp&&!pilotAutOK(_au,sp))block.push('Piloto del vuelo #'+(i+1)+' no autorizado en esta autorización');if(so&&!pilotAutOK(_au,so))block.push('Observador del vuelo #'+(i+1)+' no autorizado en esta autorización');});}}
+    st.sorties.forEach((s,i)=>{const sp=pilotById(s.pilotoId),so=pilotById(s.observadorId);if(sp&&!pilotAutOK(_au,sp))block.push('Piloto del vuelo #'+(i+1)+' no autorizado en esta autorización');if(so&&!pilotAutOK(_au,so))block.push('Observador del vuelo #'+(i+1)+' no autorizado en esta autorización');});
+    if(_au.poly&&_au.poly.length)st.sorties.forEach((s,i)=>{if(_vueloDentro(s,_au)===false)block.push('Vuelo #'+(i+1)+' fuera del polígono de la autorización');});}}
   // Observador obligatorio en cada vuelo (siempre)
   st.sorties.forEach((s,i)=>{if(!s.observadorId)block.push('Vuelo #'+(i+1)+' sin observador (obligatorio)');});
   // En nocturno o BVLOS, piloto y observador deben estar certificados
@@ -1059,7 +1085,7 @@ function prepNueva(){
   if(hasDraft)loadDraft();
   if(!pilotos.length)w+='<div class="alert warn"><span>⚠️</span><div>No hay <b>pilotos</b> cargados. Agregá al menos uno.</div></div>';
   if(!flota.length)w+='<div class="alert bad"><span>⛔</span><div>La <b>flota</b> está vacía. Agregá un dron.</div></div>';
-  $('setupWarn').innerHTML=w;verdict();}
+  $('setupWarn').innerHTML=w;refreshDronSelect();renderSorties();verdict();}
 
 /* ---------- guardar operación ---------- */
 function nextCodigo(base){let n=0;operaciones.forEach(o=>{if(o.codigo&&o.codigo.indexOf(base+'-')===0){const m=o.codigo.slice(base.length+1).match(/^(\d+)/);if(m)n=Math.max(n,+m[1]);}});return base+'-'+(n+1);}
@@ -1442,7 +1468,7 @@ function modoPiloto(){return localStorage.getItem('bvd_modoPiloto')==='1';}
 function applyModo(){const on=modoPiloto();['fleetForm','pilotForm'].forEach(id=>{const el=$(id);if(el)el.style.display=on?'none':'';});const c=$('modoPilotoChk');if(c)c.checked=on;}
 function setModoPiloto(on){localStorage.setItem('bvd_modoPiloto',on?'1':'');applyModo();renderFleet();renderPilots();toast(on?'Modo piloto activado (solo consulta)':'Modo maestro (edición habilitada)');}
 function mergeCatalog(local,incoming,key){if(!incoming)return 0;let n=0;incoming.forEach(item=>{let i=local.findIndex(x=>x.id===item.id);if(i<0&&key&&item[key])i=local.findIndex(x=>String(x[key]||'').trim()===String(item[key]||'').trim());if(i<0){local.push(item);n++;}else local[i]=item;});return n;}
-const APP_VER='v95';
+const APP_VER='v98';
 function renderSyncInfo(){const t=Number(localStorage.getItem('bvd_lastSync')||0);const v=localStorage.getItem('bvd_seedVerShown')||localStorage.getItem('bvd_seedVersion')||'';const cf=localStorage.getItem('bvd_catalogoFecha')||'';const p=n=>String(n).padStart(2,'0');
   let ts='',short='';if(t){const d=new Date(t);ts=p(d.getDate())+'-'+p(d.getMonth()+1)+'-'+d.getFullYear()+' '+p(d.getHours())+':'+p(d.getMinutes());short=p(d.getDate())+'-'+p(d.getMonth()+1)+' '+p(d.getHours())+':'+p(d.getMinutes());}
   const hv=$('hdrVer');if(hv)hv.innerHTML='App '+APP_VER+(short?'<br>'+short:'');
