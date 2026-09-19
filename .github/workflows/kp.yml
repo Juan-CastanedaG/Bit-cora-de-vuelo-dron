@@ -1,0 +1,72 @@
+name: Actualizar Kp
+# Baja el índice Kp (NOAA, con GFZ de respaldo) del lado del servidor —sin CORS—
+# y guarda kp.json en el repo. La app lo lee del mismo dominio (github.io), sin CORS.
+on:
+  schedule:
+    - cron: '7,37 * * * *'   # cada 30 min (minutos 07 y 37, UTC)
+  workflow_dispatch: {}       # permite ejecutarlo a mano desde la pestaña Actions
+permissions:
+  contents: write
+concurrency:
+  group: kp-update
+  cancel-in-progress: false
+jobs:
+  kp:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Obtener Kp y escribir kp.json
+        run: |
+          python3 - <<'PY'
+          import json, urllib.request, datetime
+          def get(u):
+              req = urllib.request.Request(u, headers={'User-Agent': 'epm-bitacora-kp'})
+              return urllib.request.urlopen(req, timeout=30).read().decode()
+          kp = None
+          # 1) NOAA SWPC
+          try:
+              a = json.loads(get('https://services.swpc.noaa.gov/products/noaa-planetary-k-index.json'))
+              for row in reversed(a[1:]):
+                  try:
+                      kp = {'kp': float(row[1]), 'time': row[0], 'src': 'NOAA'}
+                      break
+                  except Exception:
+                      pass
+          except Exception as e:
+              print('NOAA fail:', e)
+          # 2) GFZ Potsdam (respaldo)
+          if not kp:
+              try:
+                  now = datetime.datetime.utcnow()
+                  end = now.strftime('%Y-%m-%d')
+                  start = (now - datetime.timedelta(hours=36)).strftime('%Y-%m-%d')
+                  j = json.loads(get('https://kp.gfz.de/app/json/?start=%s&end=%s&index=Kp' % (start, end)))
+                  ka = j.get('Kp') or j.get('kp')
+                  da = j.get('datetime') or j.get('time')
+                  if ka:
+                      for i in range(len(ka) - 1, -1, -1):
+                          try:
+                              kp = {'kp': float(ka[i]), 'time': (da[i] if da else ''), 'src': 'GFZ'}
+                              break
+                          except Exception:
+                              pass
+              except Exception as e:
+                  print('GFZ fail:', e)
+          if not kp:
+              print('Sin Kp de ninguna fuente; se conserva kp.json anterior')
+              raise SystemExit(0)
+          with open('kp.json', 'w') as f:
+              f.write(json.dumps(kp))
+          print('kp.json =', kp)
+          PY
+      - name: Commit si cambió
+        run: |
+          if [ -n "$(git status --porcelain kp.json)" ]; then
+            git config user.name  "kp-bot"
+            git config user.email "kp-bot@users.noreply.github.com"
+            git add kp.json
+            git commit -m "Kp update $(date -u +%FT%TZ)"
+            git push
+          else
+            echo "Sin cambios en kp.json"
+          fi
