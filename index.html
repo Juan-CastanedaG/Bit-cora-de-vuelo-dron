@@ -443,6 +443,7 @@ input[readonly]{background:#eef3f1;color:var(--muted);cursor:not-allowed}
 .mt-src{font-size:10px;color:#9ca3af;margin-top:8px;text-align:center}
 </style>
 <section class="view" id="v-meteo">
+  <div style="background:#fef2f2;border:2px solid #dc2626;color:#991b1b;border-radius:12px;padding:14px 16px;margin-bottom:12px;text-align:center;font-weight:800;font-size:18px">🚧 EN CONSTRUCCIÓN<div style="font-weight:600;font-size:13px;margin-top:5px;line-height:1.35">Módulo en pruebas — <b>NO usar para decidir vuelos.</b><br>Verificá el clima con tu fuente habitual.</div></div>
   <div class="card"><h2>Meteo · Chequeo de vuelo</h2>
   <div class="hint" id="meteoLoc">Ubicación: —</div>
   <div class="btnrow" style="margin-top:8px;flex-wrap:wrap;gap:6px">
@@ -1480,7 +1481,7 @@ function modoPiloto(){return localStorage.getItem('bvd_modoPiloto')==='1';}
 function applyModo(){const on=modoPiloto();['fleetForm','pilotForm'].forEach(id=>{const el=$(id);if(el)el.style.display=on?'none':'';});const c=$('modoPilotoChk');if(c)c.checked=on;}
 function setModoPiloto(on){localStorage.setItem('bvd_modoPiloto',on?'1':'');applyModo();renderFleet();renderPilots();toast(on?'Modo piloto activado (solo consulta)':'Modo maestro (edición habilitada)');}
 function mergeCatalog(local,incoming,key){if(!incoming)return 0;let n=0;incoming.forEach(item=>{let i=local.findIndex(x=>x.id===item.id);if(i<0&&key&&item[key])i=local.findIndex(x=>String(x[key]||'').trim()===String(item[key]||'').trim());if(i<0){local.push(item);n++;}else local[i]=item;});return n;}
-const APP_VER='v101';
+const APP_VER='v102';
 function renderSyncInfo(){const t=Number(localStorage.getItem('bvd_lastSync')||0);const v=localStorage.getItem('bvd_seedVerShown')||localStorage.getItem('bvd_seedVersion')||'';const cf=localStorage.getItem('bvd_catalogoFecha')||'';const p=n=>String(n).padStart(2,'0');
   let ts='',short='';if(t){const d=new Date(t);ts=p(d.getDate())+'-'+p(d.getMonth()+1)+'-'+d.getFullYear()+' '+p(d.getHours())+':'+p(d.getMinutes());short=p(d.getDate())+'-'+p(d.getMonth()+1)+' '+p(d.getHours())+':'+p(d.getMinutes());}
   const hv=$('hdrVer');if(hv)hv.innerHTML='App '+APP_VER+(short?'<br>'+short:'');

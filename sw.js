@@ -1,6 +1,6 @@
 /* Service worker de la Bitácora de Vuelo Dron.
    Subí el número de versión (bvd-vN) al publicar una versión nueva del index.html. */
-const CACHE = 'bvd-v101';
+const CACHE = 'bvd-v102';
 const TILES = 'bvd-tiles';           // caché de mapa: NO se borra al actualizar
 const CART  = 'bvd-cartilla';        // caché de cartilla: NO se borra al actualizar
 const ASSETS = [
