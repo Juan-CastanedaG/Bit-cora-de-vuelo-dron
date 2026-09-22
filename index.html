@@ -348,12 +348,12 @@ input[readonly]{background:#eef3f1;color:var(--muted);cursor:not-allowed}
     <h2><span class="step">6</span>Chequeo pos-vuelo</h2>
     <div id="chkPosvuelo"></div>
     <div class="field" style="margin-top:10px"><label>Fin de la operación</label><input type="datetime-local" id="q_fin" oninput="saveDraft()"></div>
-    <div class="sectlabel">Evento asociado a indicador de rendimiento de seguridad (SPI)</div>
-    <div class="hint" style="margin:-4px 0 10px">Marcá "Sí" si el evento ocurrió durante la operación.</div>
-    <div id="ocurrList"></div>
-    <div class="sectlabel" style="margin-top:14px">Eventos de reporte obligatorio (MOR)</div>
+    <div class="sectlabel">Eventos de reporte obligatorio (MOR)</div>
     <div class="hint" style="margin:-4px 0 10px">Directiva 02-24 · Marcá "Sí" solo si el evento se presentó durante la operación.</div>
     <div id="morList"></div><div id="morFlag"></div>
+    <div class="sectlabel" style="margin-top:14px">Evento asociado a indicador de rendimiento de seguridad (SPI)</div>
+    <div class="hint" style="margin:-4px 0 10px">Marcá "Sí" si el evento ocurrió durante la operación.</div>
+    <div id="ocurrList"></div>
     <div class="field" style="margin-top:10px"><label>Observaciones pos-vuelo</label><textarea id="q_obs" oninput="saveDraft()"></textarea></div>
     <div class="field"><label>Fotografías pos-vuelo</label>
       <div class="btnrow noprint"><button class="btn sec sm" onclick="document.getElementById('cam2').click()">📷 Cámara</button><button class="btn sec sm" onclick="document.getElementById('gal2').click()">🖼️ Galería</button></div>
@@ -1501,7 +1501,7 @@ function modoPiloto(){return localStorage.getItem('bvd_modoPiloto')==='1';}
 function applyModo(){const on=modoPiloto();['fleetForm','pilotForm'].forEach(id=>{const el=$(id);if(el)el.style.display=on?'none':'';});const c=$('modoPilotoChk');if(c)c.checked=on;}
 function setModoPiloto(on){localStorage.setItem('bvd_modoPiloto',on?'1':'');applyModo();renderFleet();renderPilots();toast(on?'Modo piloto activado (solo consulta)':'Modo maestro (edición habilitada)');}
 function mergeCatalog(local,incoming,key){if(!incoming)return 0;let n=0;incoming.forEach(item=>{let i=local.findIndex(x=>x.id===item.id);if(i<0&&key&&item[key])i=local.findIndex(x=>String(x[key]||'').trim()===String(item[key]||'').trim());if(i<0){local.push(item);n++;}else local[i]=item;});return n;}
-const APP_VER='v103';
+const APP_VER='v104';
 function renderSyncInfo(){const t=Number(localStorage.getItem('bvd_lastSync')||0);const v=localStorage.getItem('bvd_seedVerShown')||localStorage.getItem('bvd_seedVersion')||'';const cf=localStorage.getItem('bvd_catalogoFecha')||'';const p=n=>String(n).padStart(2,'0');
   let ts='',short='';if(t){const d=new Date(t);ts=p(d.getDate())+'-'+p(d.getMonth()+1)+'-'+d.getFullYear()+' '+p(d.getHours())+':'+p(d.getMinutes());short=p(d.getDate())+'-'+p(d.getMonth()+1)+' '+p(d.getHours())+':'+p(d.getMinutes());}
   const hv=$('hdrVer');if(hv)hv.innerHTML='App '+APP_VER+(short?'<br>'+short:'');
