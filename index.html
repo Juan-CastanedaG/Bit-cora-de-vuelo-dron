@@ -1046,7 +1046,7 @@ function verdict(){const box=$('verdictBox'),word=$('vWord'),desc=$('vDesc'),lig
   else if(pend.length){cls='pend';w='PENDIENTE';ic='!';dtxt=pend.length+' verificación(es) crítica(s) sin responder';}
   else{cls='go';w='GO';ic='✓';dtxt=warn.length?warn.length+' advertencia(s), sin bloqueos':'Sin banderas rojas';}
   box.className='verdict '+cls;light.textContent=ic;word.textContent=w;desc.textContent=dtxt;
-  const _svb=$('secVueloBody'),_vl=$('vueloLock');if(_svb)_svb.classList.toggle('locked',w==='NO-GO');if(_vl)_vl.innerHTML=w==='NO-GO'?'<div class="alert bad"><span>⛔</span><div>Operación en NO-GO: resolvé los bloqueos antes de registrar vuelos.</div></div>':'';
+  const _svb=$('secVueloBody'),_vl=$('vueloLock');var _preBlocks=block.filter(function(b){return !(/^Piloto del vuelo #/.test(b)||/^Observador del vuelo #/.test(b)||/^Vuelo #/.test(b)||/sin CIPU/.test(b));});var _lock=_preBlocks.length>0;if(_svb)_svb.classList.toggle('locked',_lock);if(_vl)_vl.innerHTML=_lock?'<div class="alert bad"><span>⛔</span><div>Resolvé los bloqueos de pre-vuelo (autorización, dron, médico, checklist) antes de registrar vuelos.</div></div>':'';
   const all=block.map(r=>['b',r]).concat(pend.map(r=>['p',r])).concat(warn.map(r=>['w',r]));
   if(all.length){ul.style.display='block';ul.innerHTML=all.map(([t,r])=>`<li>${t==='b'?'⛔':t==='p'?'◻️':'⚠️'} ${esc(r)}</li>`).join('')}else ul.style.display='none';
   return{verdict:w,block,pend,warn};}
@@ -1501,7 +1501,7 @@ function modoPiloto(){return localStorage.getItem('bvd_modoPiloto')==='1';}
 function applyModo(){const on=modoPiloto();['fleetForm','pilotForm'].forEach(id=>{const el=$(id);if(el)el.style.display=on?'none':'';});const c=$('modoPilotoChk');if(c)c.checked=on;}
 function setModoPiloto(on){localStorage.setItem('bvd_modoPiloto',on?'1':'');applyModo();renderFleet();renderPilots();toast(on?'Modo piloto activado (solo consulta)':'Modo maestro (edición habilitada)');}
 function mergeCatalog(local,incoming,key){if(!incoming)return 0;let n=0;incoming.forEach(item=>{let i=local.findIndex(x=>x.id===item.id);if(i<0&&key&&item[key])i=local.findIndex(x=>String(x[key]||'').trim()===String(item[key]||'').trim());if(i<0){local.push(item);n++;}else local[i]=item;});return n;}
-const APP_VER='v104';
+const APP_VER='v105';
 function renderSyncInfo(){const t=Number(localStorage.getItem('bvd_lastSync')||0);const v=localStorage.getItem('bvd_seedVerShown')||localStorage.getItem('bvd_seedVersion')||'';const cf=localStorage.getItem('bvd_catalogoFecha')||'';const p=n=>String(n).padStart(2,'0');
   let ts='',short='';if(t){const d=new Date(t);ts=p(d.getDate())+'-'+p(d.getMonth()+1)+'-'+d.getFullYear()+' '+p(d.getHours())+':'+p(d.getMinutes());short=p(d.getDate())+'-'+p(d.getMonth()+1)+' '+p(d.getHours())+':'+p(d.getMinutes());}
   const hv=$('hdrVer');if(hv)hv.innerHTML='App '+APP_VER+(short?'<br>'+short:'');
