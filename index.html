@@ -292,7 +292,6 @@ input[readonly]{background:#eef3f1;color:var(--muted);cursor:not-allowed}
       <div class="field"><label>Departamento</label><select id="g_depto" onchange="onDeptoChange();saveDraft()"></select></div>
       <div class="field"><label>Municipio</label><select id="g_muni" onchange="saveDraft()"></select></div>
     </div>
-    <div class="field"><label>Dron</label><select id="g_dron" onchange="verdict();renderSorties();renderDronInfo();saveDraft()"></select><div id="dronInfo" class="infoBox"></div></div>
   </div>
 
   <div class="card">
@@ -306,6 +305,7 @@ input[readonly]{background:#eef3f1;color:var(--muted);cursor:not-allowed}
       <div class="field"><label>Vigencia inicio</label><input type="date" id="a_ini" readonly></div>
       <div class="field"><label>Vigencia final</label><input type="date" id="a_fin" readonly></div>
     </div>
+    <div class="field"><label>Dron</label><select id="g_dron" onchange="verdict();renderSorties();renderDronInfo();saveDraft()"></select><div id="dronInfo" class="infoBox"></div></div>
   </div>
 
   <div class="card"><h2><span class="step">3</span>Chequeo en oficina</h2><div id="chkOficina"></div></div>
@@ -979,9 +979,9 @@ function renderSorties(){
       <div class="field"><label>Observador ${needObs?'<span style="color:#dc2626">· obligatorio</span>':''}</label><div style="display:flex;gap:6px;align-items:center"><input style="flex:1;min-width:0" value="${esc(pilotName(s.observadorId))}" placeholder="Tocá para ver la lista…" autocomplete="off" onfocus="comboOpen(this,pilotOpts(),(id)=>pickSortie(${i},'observadorId',id))" oninput="comboFilter(this)" onchange="setSPilot(${i},'observadorId',this.value)" onblur="setTimeout(comboClose,150)"><button type="button" class="btn sec sm noprint" title="Borrar observador" onclick="limpiarSPilot(${i},'observadorId')" style="padding:6px 11px">✕</button></div></div>
       <div class="field"><label>Fecha</label><input type="date" value="${s.fecha||''}" onchange="setS(${i},'fecha',this.value)"></div>
       <div class="row2"><div class="field"><label>Hora inicio</label><input type="time" value="${s.inicio||''}" onchange="setS(${i},'inicio',this.value)"></div>
-      <div class="field"><label>Hora fin</label><input type="time" value="${s.fin||''}" onchange="setS(${i},'fin',this.value)"></div></div>
-      <div class="row2"><div class="field"><label>Batería despegue (%)</label><input type="number" class="mono" value="${s.batDesp}" onchange="setS(${i},'batDesp',this.value)"></div>
-      <div class="field"><label>Batería aterrizaje (%)</label><input type="number" class="mono" value="${s.batAter}" onchange="setS(${i},'batAter',this.value)"></div></div>
+      <div class="field"><label>Batería inicio (%)</label><input type="number" class="mono" value="${s.batDesp}" onchange="setS(${i},'batDesp',this.value)"></div></div>
+      <div class="row2"><div class="field"><label>Hora fin</label><input type="time" value="${s.fin||''}" onchange="setS(${i},'fin',this.value)"></div>
+      <div class="field"><label>Batería fin (%)</label><input type="number" class="mono" value="${s.batAter}" onchange="setS(${i},'batAter',this.value)"></div></div>
       <div class="field"><label>Observaciones del vuelo</label><input type="text" value="${esc(s.obs)}" onchange="setS(${i},'obs',this.value)"></div>
       <div class="row2"><div class="field"><label>Latitud</label><input type="text" class="mono" value="${esc(s.lat||'')}" placeholder="6.53" onchange="setS(${i},'lat',this.value)"></div>
       <div class="field"><label>Longitud</label><input type="text" class="mono" value="${esc(s.lon||'')}" placeholder="-75.25" onchange="setS(${i},'lon',this.value)"></div></div>
@@ -1501,7 +1501,7 @@ function modoPiloto(){return localStorage.getItem('bvd_modoPiloto')==='1';}
 function applyModo(){const on=modoPiloto();['fleetForm','pilotForm'].forEach(id=>{const el=$(id);if(el)el.style.display=on?'none':'';});const c=$('modoPilotoChk');if(c)c.checked=on;}
 function setModoPiloto(on){localStorage.setItem('bvd_modoPiloto',on?'1':'');applyModo();renderFleet();renderPilots();toast(on?'Modo piloto activado (solo consulta)':'Modo maestro (edición habilitada)');}
 function mergeCatalog(local,incoming,key){if(!incoming)return 0;let n=0;incoming.forEach(item=>{let i=local.findIndex(x=>x.id===item.id);if(i<0&&key&&item[key])i=local.findIndex(x=>String(x[key]||'').trim()===String(item[key]||'').trim());if(i<0){local.push(item);n++;}else local[i]=item;});return n;}
-const APP_VER='v105';
+const APP_VER='v106';
 function renderSyncInfo(){const t=Number(localStorage.getItem('bvd_lastSync')||0);const v=localStorage.getItem('bvd_seedVerShown')||localStorage.getItem('bvd_seedVersion')||'';const cf=localStorage.getItem('bvd_catalogoFecha')||'';const p=n=>String(n).padStart(2,'0');
   let ts='',short='';if(t){const d=new Date(t);ts=p(d.getDate())+'-'+p(d.getMonth()+1)+'-'+d.getFullYear()+' '+p(d.getHours())+':'+p(d.getMinutes());short=p(d.getDate())+'-'+p(d.getMonth()+1)+' '+p(d.getHours())+':'+p(d.getMinutes());}
   const hv=$('hdrVer');if(hv)hv.innerHTML='App '+APP_VER+(short?'<br>'+short:'');
