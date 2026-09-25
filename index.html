@@ -668,15 +668,23 @@ function meteoManual(){
 }
 function meteoUseMap(){var M=(typeof map!=='undefined'&&map)||null;if(M&&M.getCenter){var c=M.getCenter();meteoFetch(c.lat,c.lng,'Centro del mapa');}else toast('Abr\u00ed el mapa primero');}
 function meteoRefresh(){if(meteoState.lat!=null)meteoFetch(meteoState.lat,meteoState.lon,meteoState.label);else meteoUseGPS();}
+async function meteoGeoInfo(lat,lon){var elev=null,place=null;
+  try{var r=await fetch("https://api.open-meteo.com/v1/elevation?latitude="+lat+"&longitude="+lon);var j=await r.json();if(j&&j.elevation&&j.elevation.length)elev=j.elevation[0];}catch(e){}
+  try{var r2=await fetch("https://nominatim.openstreetmap.org/reverse?format=json&zoom=14&accept-language=es&lat="+lat+"&lon="+lon);var j2=await r2.json();if(j2){var a=j2.address||{};place=[a.city||a.town||a.village||a.hamlet||a.municipality||a.county,a.state].filter(Boolean).join(", ")||j2.display_name||null;}}catch(e){}
+  meteoState.elev=elev;meteoState.place=place;
+  var el=$("meteoLoc");if(el){var extra=(place?" \u00b7 "+place:"")+(elev!=null?" \u00b7 "+Math.round(elev)+" m s.n.m.":"");
+    el.textContent="Ubicaci\u00f3n: "+(meteoState.label||"")+" \u00b7 "+lat.toFixed(4)+", "+lon.toFixed(4)+extra;}
+}
 async function meteoFetch(lat,lon,label){
   meteoState.lat=lat;meteoState.lon=lon;if(label)meteoState.label=label;
   var el=$('meteoLoc');if(el)el.textContent='Ubicaci\u00f3n: '+(meteoState.label||'')+' \u00b7 '+lat.toFixed(4)+', '+lon.toFixed(4);
   if(!meteoState.wx)$('meteoBody').innerHTML='<div class="card">Consultando meteorolog\u00eda\u2026</div>';
+  meteoGeoInfo(lat,lon);
   var wx=null,kp=null;
   try{
     var u='https://api.open-meteo.com/v1/forecast?latitude='+lat+'&longitude='+lon
-      +'&current=temperature_2m,apparent_temperature,relative_humidity_2m,precipitation,rain,weather_code,cloud_cover,pressure_msl,wind_speed_10m,wind_direction_10m,wind_gusts_10m,visibility,uv_index'
-      +'&hourly=wind_speed_10m,wind_gusts_10m,precipitation,precipitation_probability,visibility,temperature_2m,weather_code&daily=sunrise,sunset&wind_speed_unit=ms&timezone=auto&forecast_days=2';
+      +'&current=temperature_2m,apparent_temperature,relative_humidity_2m,precipitation,rain,weather_code,cloud_cover,pressure_msl,wind_speed_10m,wind_direction_10m,wind_gusts_10m,visibility,uv_index,wind_speed_80m,wind_speed_120m,wind_direction_80m,wind_direction_120m'
+      +'&hourly=wind_speed_10m,wind_gusts_10m,precipitation,precipitation_probability,visibility,temperature_2m,weather_code,wind_speed_80m,cloud_cover&daily=sunrise,sunset&wind_speed_unit=ms&timezone=auto&forecast_days=2';
     var r=await fetch(u);wx=await r.json();
   }catch(e){wx=null;}
   try{
@@ -708,6 +716,19 @@ function _mtCell(l,v,u,verd,extra){
   var ex=extra?'<div class="s2">'+extra+'</div>':'';
   var uu=u?'<span class="u"> '+u+'</span>':'';
   return '<div class="mt-cell '+cls+'"><div class="l">'+l+'</div><div class="v">'+v+uu+'</div>'+s+ex+'</div>';
+}
+function _mtWindAlt(wx){var c=wx&&wx.current;if(!c)return '';
+  var rows=[['10 m (superficie)',c.wind_speed_10m,c.wind_direction_10m],['80 m',c.wind_speed_80m,c.wind_direction_80m],['120 m (altura de vuelo)',c.wind_speed_120m,c.wind_direction_120m]];
+  var body=rows.map(function(r){var w=r[1];var vd=vWind(w);var col=vd?(({go:'#16a34a',prec:'#d97706',nogo:'#dc2626'}[vd.l])||'#374151'):'#374151';
+    return '<div style="display:flex;justify-content:space-between;align-items:center;padding:7px 0;border-top:1px solid #eef2f7"><span style="color:#64748b;font-size:12px;flex:1">'+r[0]+'</span><span style="font-weight:700;color:'+col+';margin:0 8px">'+(w==null?'\u2014':Math.round(w)+' m/s \u00b7 '+Math.round(w*3.6)+' km/h')+'</span><span style="color:#94a3b8;font-size:11px;min-width:56px;text-align:right">'+(r[2]==null?'':_mtWindDir(r[2])+' '+Math.round(r[2])+'\u00b0')+'</span></div>';}).join('');
+  return '<div class="card" style="margin-top:10px"><div style="font-weight:700">Viento por altura</div><div class="hint" style="margin:2px 0">El dron enfrenta el viento a su altura de vuelo, no el de superficie.</div>'+body+'</div>';
+}
+function _mtTabla(wx){var H=wx&&wx.hourly;if(!H||!H.time||!wx.current)return '';
+  var idx=H.time.indexOf(wx.current.time);if(idx<0)idx=0;var n=Math.min(idx+24,H.time.length),rows='';
+  for(var i=idx;i<n;i++){var t=H.temperature_2m&&H.temperature_2m[i],w=H.wind_speed_10m&&H.wind_speed_10m[i],w8=H.wind_speed_80m&&H.wind_speed_80m[i],g=H.wind_gusts_10m&&H.wind_gusts_10m[i],pb=H.precipitation_probability?H.precipitation_probability[i]:null,cc=H.cloud_cover?H.cloud_cover[i]:null;
+    var td='padding:4px 6px;text-align:center;border-top:1px solid #f1f5f9';
+    rows+='<tr><td style="padding:4px 6px;font-weight:600;border-top:1px solid #f1f5f9">'+_mtHora(H.time[i])+'</td><td style="'+td+'">'+(t==null?'\u2014':Math.round(t)+'\u00b0')+'</td><td style="'+td+'">'+(w==null?'\u2014':Math.round(w))+'</td><td style="'+td+';font-weight:600">'+(w8==null?'\u2014':Math.round(w8))+'</td><td style="'+td+'">'+(g==null?'\u2014':Math.round(g))+'</td><td style="'+td+'">'+(pb==null?'\u2014':pb+'%')+'</td><td style="'+td+'">'+(cc==null?'\u2014':cc+'%')+'</td></tr>';}
+  return '<div class="card" style="margin-top:10px"><div style="font-weight:700;margin-bottom:6px">Tabla horaria (24 h)</div><div style="overflow-x:auto"><table style="width:100%;border-collapse:collapse;font-size:12px"><thead><tr style="color:#64748b;font-size:11px"><th style="padding:4px 6px;text-align:left">Hora</th><th>T\u00b0</th><th>V10</th><th>V80</th><th>R\u00e1f</th><th>Lluvia</th><th>Nubes</th></tr></thead><tbody>'+rows+'</tbody></table></div><div class="hint" style="margin-top:4px">Viento en m/s. V80 \u2248 altura de vuelo. R\u00e1f = r\u00e1fagas.</div></div>';
 }
 function _mtStrip(wx){
   var H=wx&&wx.hourly;if(!H||!H.time||!wx.current)return '';
@@ -762,7 +783,9 @@ function meteoRender(fromCache){
   $('meteoBody').innerHTML=off
     +'<div class="mt-banner mt-'+worst+'">'+bTxt+(lim.length?'<div class="mt-lim">Atenci\u00f3n: '+lim.join(', ')+'</div>':'')+'</div>'
     +_mtStrip(wx)
+    +_mtWindAlt(wx)
     +'<div class="mt-grid">'+cells+'</div>'
+    +_mtTabla(wx)
     +'<div class="mt-src">Datos: Open-Meteo (CC BY 4.0) y NOAA SWPC \u00b7 '+(when?'lectura '+when:'')+'</div>';
 }
 function toggleNav(){$('navGrid').classList.toggle('collapsed');syncNav();}
@@ -1501,7 +1524,7 @@ function modoPiloto(){return localStorage.getItem('bvd_modoPiloto')==='1';}
 function applyModo(){const on=modoPiloto();['fleetForm','pilotForm'].forEach(id=>{const el=$(id);if(el)el.style.display=on?'none':'';});const c=$('modoPilotoChk');if(c)c.checked=on;}
 function setModoPiloto(on){localStorage.setItem('bvd_modoPiloto',on?'1':'');applyModo();renderFleet();renderPilots();toast(on?'Modo piloto activado (solo consulta)':'Modo maestro (edición habilitada)');}
 function mergeCatalog(local,incoming,key){if(!incoming)return 0;let n=0;incoming.forEach(item=>{let i=local.findIndex(x=>x.id===item.id);if(i<0&&key&&item[key])i=local.findIndex(x=>String(x[key]||'').trim()===String(item[key]||'').trim());if(i<0){local.push(item);n++;}else local[i]=item;});return n;}
-const APP_VER='v106';
+const APP_VER='v108';
 function renderSyncInfo(){const t=Number(localStorage.getItem('bvd_lastSync')||0);const v=localStorage.getItem('bvd_seedVerShown')||localStorage.getItem('bvd_seedVersion')||'';const cf=localStorage.getItem('bvd_catalogoFecha')||'';const p=n=>String(n).padStart(2,'0');
   let ts='',short='';if(t){const d=new Date(t);ts=p(d.getDate())+'-'+p(d.getMonth()+1)+'-'+d.getFullYear()+' '+p(d.getHours())+':'+p(d.getMinutes());short=p(d.getDate())+'-'+p(d.getMonth()+1)+' '+p(d.getHours())+':'+p(d.getMinutes());}
   const hv=$('hdrVer');if(hv)hv.innerHTML='App '+APP_VER+(short?'<br>'+short:'');
