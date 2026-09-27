@@ -1465,9 +1465,9 @@ async function printReport(list,titulo){toast('Preparando reporte…');
   .vd{display:inline-block;font-weight:800;font-size:13px;padding:4px 12px;border-radius:20px;color:#fff}
   .vd.GO{background:#16a34a}.vd.NOGO{background:#dc2626}.vd.PEND{background:#d97706}
   table{width:100%;border-collapse:collapse;font-size:12px;margin-top:4px}td{padding:4px 6px;border-bottom:1px solid #eee;vertical-align:top}
-  td.k{color:#444;width:70%}td.v{text-align:right;font-weight:700}td.v.no{color:#dc2626}td.v.si{color:#16a34a}.kv td.k{width:36%;font-weight:600}
+  td.k{color:#444;width:70%}td.v{text-align:right;font-weight:700}td.v.no{color:#dc2626}td.v.si{color:#16a34a}.kv td.k{width:36%;font-weight:600}.reg td.k{width:45%}
   .rz{background:#fee2e2;border-radius:8px;padding:8px 12px;margin-top:8px;font-size:11.5px;color:#991b1b}
-  .imgs{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}.imgs img{width:110px;height:110px;object-fit:cover;border-radius:6px}
+  .imgs{display:block;margin-top:8px}.imgs img{width:100%;height:auto;object-fit:contain;border-radius:6px;margin-bottom:8px;display:block;break-inside:avoid;page-break-inside:avoid}
   @media print{.blk{page-break-inside:avoid}}</style></head><body>
   <div class="hd"><img src="${EPM_LOGO}" style="width:99px;height:44px;object-fit:contain;display:block"><div><h1>Bitácora de Vuelo Dron</h1><div class="s">F-EPM-03 · RAC 100 · ${esc(titulo)}</div></div></div>
   ${body}${annex}<p style="font-size:10px;color:#999;margin-top:18px">Generado ${(function(){const n=new Date(),p=x=>String(x).padStart(2,'0');return p(n.getDate())+'-'+p(n.getMonth()+1)+'-'+n.getFullYear()+' '+p(n.getHours())+':'+p(n.getMinutes());})()} · Documento de soporte operacional</p></body></html>`);_showReport(_doc);}
@@ -1481,12 +1481,13 @@ function opBlock(o){const kv=(k,val)=>val?`<tr><td class="k">${k}</td><td>${esc(
   <h3>Autorización</h3><table class="kv">${kv('Radicado',o.aut&&o.aut.radicado)}${kv('ID',o.aut&&o.aut.id)}${kv('Vigencia',o.aut?(o.aut.ini||'?')+' a '+(o.aut.fin||'?'):'')}${o.aut&&o.aut.pdf?kv('Certificado',o.aut.pdf.name):''}</table>
   <h3>Chequeo en oficina</h3>${siNoTable(CHK_OFICINA,o.oficina||{})}
   <h3>Chequeo pre-vuelo</h3>${kv('Inicio operación',fmtDT(o.inicioOp))}${siNoTable(CHK_PREVUELO,o.prevuelo||{})}<h3>Análisis de riesgo</h3>${riesgoTable(o)}${o.obsPre?`<table class="kv">${kv('Obs. pre-vuelo',o.obsPre)}</table>`:''}
-  <h3>Registro durante la operación</h3><table>${sr||'<tr><td class="k">Sin vuelos</td><td></td></tr>'}<tr><td class="k"><b>Total</b></td><td><b>${(o.sorties||[]).length} vuelo(s) · ${(mins/60).toFixed(1)} h</b></td></tr></table>
+  <h3>Registro durante la operación</h3><table class="reg">${sr||'<tr><td class="k">Sin vuelos</td><td></td></tr>'}<tr><td class="k"><b>Total</b></td><td><b>${(o.sorties||[]).length} vuelo(s) · ${(mins/60).toFixed(1)} h</b></td></tr></table>
   <h3>Chequeo pos-vuelo</h3>${siNoTable(CHK_POSVUELO,o.posvuelo||{})}${kv('Fin operación',fmtDT(o.finOp))}
+  <h3>Eventos de reporte obligatorio (MOR)</h3>${siNoTable(MOR_QS,o.mor||{},true)}
   <h3>Ocurrencias</h3>${siNoTable(OCURRENCIAS,o.ocurr||{},true)}${o.obsPos?`<table class="kv">${kv('Obs. pos-vuelo',o.obsPos)}</table>`:''}
   ${o.block&&o.block.length?`<div class="rz"><b>NO-GO:</b> ${o.block.map(esc).join(' · ')}</div>`:''}
   ${(o.fotoDron||o.fotoMeteo)?'<h3>Registros obligatorios</h3><div class="imgs">'+(o.fotoDron?'<img src="'+assetSrc(o.fotoDron)+'" title="Dron/puerto">':'')+(o.fotoMeteo?'<img src="'+assetSrc(o.fotoMeteo)+'" title="Meteorología">':'')+'</div>':''}
-  ${(function(){const src=(o.fotosPre||[]).concat(o.fotosPos||[]).map(assetSrc).filter(Boolean);return src.length?`<div class="imgs">${src.map(d=>`<img src="${d}">`).join('')}</div>`:''})()}</div>`;}
+  ${(function(){const src=(o.fotosPre||[]).concat(o.fotosPos||[],(o.sorties||[]).map(s=>s&&s.fotoPuerto).filter(Boolean)).map(assetSrc).filter(Boolean);return src.length?`<h3>Registro fotográfico</h3><div class="imgs">${src.map(d=>`<img src="${d}">`).join('')}</div>`:''})()}</div>`;}
 function riesgoTable(o){const hf=o.hf||{};
   const rows=RIESGO.map(f=>{const opt=f.opts.find(x=>x[0]===hf[f.k]);return opt?`<tr><td class="k">${esc(f.q)}</td><td>${esc(opt[1])}</td></tr>`:''}).filter(Boolean).join('');
   const rr=o.riesgo||{};const calif=rr.calif==='SEGURO'?'SEGURO PARA OPERACIÓN UAS':rr.calif==='INSEGURO'?'INSEGURO PARA OPERACIÓN UAS — Reevalúe':(rr.calif||'');
@@ -1579,7 +1580,7 @@ function modoPiloto(){return localStorage.getItem('bvd_modoPiloto')==='1';}
 function applyModo(){const on=modoPiloto();['fleetForm','pilotForm'].forEach(id=>{const el=$(id);if(el)el.style.display=on?'none':'';});const c=$('modoPilotoChk');if(c)c.checked=on;}
 function setModoPiloto(on){localStorage.setItem('bvd_modoPiloto',on?'1':'');applyModo();renderFleet();renderPilots();toast(on?'Modo piloto activado (solo consulta)':'Modo maestro (edición habilitada)');}
 function mergeCatalog(local,incoming,key){if(!incoming)return 0;let n=0;incoming.forEach(item=>{let i=local.findIndex(x=>x.id===item.id);if(i<0&&key&&item[key])i=local.findIndex(x=>String(x[key]||'').trim()===String(item[key]||'').trim());if(i<0){local.push(item);n++;}else local[i]=item;});return n;}
-const APP_VER='v117';
+const APP_VER='v118';
 function renderSyncInfo(){const t=Number(localStorage.getItem('bvd_lastSync')||0);const v=localStorage.getItem('bvd_seedVerShown')||localStorage.getItem('bvd_seedVersion')||'';const cf=localStorage.getItem('bvd_catalogoFecha')||'';const p=n=>String(n).padStart(2,'0');
   let ts='',short='';if(t){const d=new Date(t);ts=p(d.getDate())+'-'+p(d.getMonth()+1)+'-'+d.getFullYear()+' '+p(d.getHours())+':'+p(d.getMinutes());short=p(d.getDate())+'-'+p(d.getMonth()+1)+' '+p(d.getHours())+':'+p(d.getMinutes());}
   const hv=$('hdrVer');if(hv)hv.innerHTML='App '+APP_VER+(short?'<br>'+short:'');
