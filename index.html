@@ -34,10 +34,10 @@ header::after{content:"";position:absolute;left:0;right:0;bottom:0;height:3px;ba
 .logoEPM{background:#fff;padding:7px 11px;border-radius:10px;height:46px;box-sizing:border-box;flex:0 0 auto}
 .brand h1{font-size:18px;letter-spacing:.2px}
 .brand .sub{font-size:10px;color:#8fd3b0;font-family:var(--mono);letter-spacing:.5px;text-transform:uppercase}
-.dash{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:14px}
-.chip{background:var(--bg2);border:1px solid #1c6349;border-radius:12px;padding:9px 6px;text-align:center}
-.chip .n{font-size:19px;font-weight:800;font-family:var(--mono);line-height:1}
-.chip .l{font-size:9.5px;color:#8fd3b0;text-transform:uppercase;letter-spacing:.4px;margin-top:4px}
+.dash{display:grid;grid-template-columns:repeat(5,1fr);gap:5px;margin-top:14px}
+.chip{background:var(--bg2);border:1px solid #1c6349;border-radius:10px;padding:8px 2px;text-align:center}
+.chip .n{font-size:16px;font-weight:800;font-family:var(--mono);line-height:1}
+.chip .l{font-size:8px;color:#8fd3b0;text-transform:uppercase;letter-spacing:.2px;margin-top:4px}
 .chip.go .n{color:#4ade80}.chip.nogo .n{color:#f87171}.chip.hrs .n{color:#7ee7b0}
 
 main{max-width:760px;margin:0 auto;padding:16px}
@@ -200,10 +200,10 @@ input[readonly]{background:#eef3f1;color:var(--muted);cursor:not-allowed}
   </div>
   <div class="dash">
     <div class="chip"><div class="n" id="dTot">0</div><div class="l">Operac.</div></div>
+    <div class="chip"><div class="n" id="dVuelos">0</div><div class="l">Vuelos</div></div>
     <div class="chip go"><div class="n" id="dGo">0</div><div class="l">GO</div></div>
     <div class="chip nogo"><div class="n" id="dNogo">0</div><div class="l">NO-GO</div></div>
     <div class="chip hrs"><div class="n" id="dHrs">0.0</div><div class="l">Horas</div></div>
-    <div class="chip"><div class="n" id="dVuelos">0</div><div class="l">Vuelos</div></div>
   </div>
 </header>
 
@@ -461,7 +461,7 @@ input[readonly]{background:#eef3f1;color:var(--muted);cursor:not-allowed}
     <select id="meteoAut" onchange="meteoSetAut(this.value)" style="width:100%;padding:9px;border:1px solid var(--line,#e5e7eb);border-radius:10px;font-family:inherit;font-size:14px;background:var(--surface,#fff)"></select>
   </div></div>
   <div id="meteoBody"></div>
-  <div id="meteoRadarCard" class="card" style="display:none"><div class="btnrow" style="justify-content:space-between;align-items:center"><b>🌧️ Radar de lluvia (en vivo)</b><button class="btn sec sm" onclick="meteoRadarRefresh()">↻</button></div><div id="meteoRadar" style="height:280px;margin-top:8px;border:1px solid var(--line);border-radius:12px;overflow:hidden"></div><div class="hint" id="meteoRadarTs" style="margin-top:4px"></div>
+  <div id="meteoRadarCard" class="card" style="display:none"><div class="btnrow" style="justify-content:space-between;align-items:center"><b>🌧️ Radar de lluvia (en vivo)</b><button class="btn sec sm" id="meteoRadarModeBtn" onclick="meteoRadarToggle()" style="margin-right:6px">Ver satélite</button><button class="btn sec sm" onclick="meteoRadarRefresh()">↻</button></div><div id="meteoRadar" style="height:280px;margin-top:8px;border:1px solid var(--line);border-radius:12px;overflow:hidden"></div><div class="hint" id="meteoRadarTs" style="margin-top:4px"></div>
 </section>
 
 </main>
@@ -733,7 +733,7 @@ function _mtTabla(wx){var H=wx&&wx.hourly;if(!H||!H.time||!wx.current)return '';
     rows+='<tr><td style="padding:4px 6px;font-weight:600;border-top:1px solid #f1f5f9">'+_mtHora(H.time[i])+'</td><td style="'+td+'">'+(t==null?'—':Math.round(t)+'°')+'</td><td style="'+td+'">'+(w==null?'—':Math.round(w))+'</td><td style="'+td+';font-weight:600">'+(w8==null?'—':Math.round(w8))+'</td><td style="'+td+'">'+(g==null?'—':Math.round(g))+'</td><td style="'+td+'">'+(pr==null?'—':(pr>0?pr.toFixed(1):'0'))+'</td><td style="'+td+'">'+(pb==null?'—':pb+'%')+'</td><td style="'+td+'">'+(cc==null?'—':cc+'%')+'</td><td style="'+td+';font-weight:600">'+(kpv==null?'—':kpv.toFixed(1))+'</td></tr>';}
   return '<div class="card" style="margin-top:10px"><div style="font-weight:700;margin-bottom:6px">Tabla horaria (24 h)</div><div style="overflow-x:auto"><table style="width:100%;border-collapse:collapse;font-size:12px"><thead><tr style="color:#64748b;font-size:11px"><th style="padding:4px 6px;text-align:left">Hora</th><th>Temp (°C)</th><th>V10 (m/s)</th><th>V80 (m/s)</th><th>Ráf (m/s)</th><th>Lluvia (mm)</th><th>Prob (%)</th><th>Nubes (%)</th><th>Kp</th></tr></thead><tbody>'+rows+'</tbody></table></div><div class="hint" style="margin-top:4px">Viento m/s · Lluvia mm · Prob = prob. de lluvia · Kp = índice geomagnético actual (global 3 h).</div></div>';
 }
-var _mtRadarMap=null,_mtRadarLayer=null,_mtRadarMarker=null;
+var _mtRadarMap=null,_mtRadarLayer=null,_mtRadarMarker=null,_mtRadarMode='radar';
 async function meteoRadar(lat,lon){var card=$('meteoRadarCard');if(!card)return;card.style.display='';if(typeof L==='undefined')return;
   if(!_mtRadarMap){_mtRadarMap=L.map('meteoRadar').setView([lat,lon],9);
     L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Topo_Map/MapServer/tile/{z}/{y}/{x}',{maxZoom:19,attribution:'© Esri'}).addTo(_mtRadarMap);
@@ -743,12 +743,13 @@ async function meteoRadar(lat,lon){var card=$('meteoRadarCard');if(!card)return;
   await meteoRadarFrame();}
 async function meteoRadarFrame(){try{
     var r=await fetch('https://api.rainviewer.com/public/weather-maps.json');var j=await r.json();
-    var host=j.host,past=(j.radar&&j.radar.past)||[];if(!past.length)return;
-    var f=past[past.length-1];var url=host+f.path+'/256/{z}/{x}/{y}/2/1_1.png';
+    var host=j.host;var sat=_mtRadarMode==='sat';var frames=sat?((j.satellite&&j.satellite.infrared)||[]):((j.radar&&j.radar.past)||[]);var _el0=$('meteoRadarTs');if(!frames.length){if(_el0)_el0.textContent=sat?'Satélite no disponible':'Radar no disponible';return;}
+    var f=frames[frames.length-1];var url=host+f.path+'/256/{z}/{x}/{y}/'+(sat?'0/0_0':'2/1_1')+'.png';
     if(_mtRadarLayer)_mtRadarMap.removeLayer(_mtRadarLayer);
-    _mtRadarLayer=L.tileLayer(url,{opacity:0.65,zIndex:400}).addTo(_mtRadarMap);
-    var t=new Date(f.time*1000);var el=$('meteoRadarTs');if(el)el.textContent='Radar: '+t.toLocaleTimeString('es-CO',{hour:'2-digit',minute:'2-digit'})+' · RainViewer';
+    _mtRadarLayer=L.tileLayer(url,{opacity:_mtRadarMode==='sat'?0.7:0.65,zIndex:400}).addTo(_mtRadarMap);
+    var t=new Date(f.time*1000);var el=$('meteoRadarTs');if(el)el.textContent=(_mtRadarMode==='sat'?'Satélite IR: ':'Radar: ')+t.toLocaleTimeString('es-CO',{hour:'2-digit',minute:'2-digit'})+' · RainViewer';
   }catch(e){var el=$('meteoRadarTs');if(el)el.textContent='Radar no disponible (sin conexión)';}}
+function meteoRadarToggle(){_mtRadarMode=_mtRadarMode==='radar'?'sat':'radar';var b=$('meteoRadarModeBtn');if(b)b.textContent=_mtRadarMode==='radar'?'Ver satélite':'Ver radar';meteoRadarFrame();}
 function meteoRadarRefresh(){if(meteoState.lat!=null)meteoRadar(meteoState.lat,meteoState.lon);}
 function _mtStrip(wx){
   var H=wx&&wx.hourly;if(!H||!H.time||!wx.current)return '';
@@ -1578,7 +1579,7 @@ function modoPiloto(){return localStorage.getItem('bvd_modoPiloto')==='1';}
 function applyModo(){const on=modoPiloto();['fleetForm','pilotForm'].forEach(id=>{const el=$(id);if(el)el.style.display=on?'none':'';});const c=$('modoPilotoChk');if(c)c.checked=on;}
 function setModoPiloto(on){localStorage.setItem('bvd_modoPiloto',on?'1':'');applyModo();renderFleet();renderPilots();toast(on?'Modo piloto activado (solo consulta)':'Modo maestro (edición habilitada)');}
 function mergeCatalog(local,incoming,key){if(!incoming)return 0;let n=0;incoming.forEach(item=>{let i=local.findIndex(x=>x.id===item.id);if(i<0&&key&&item[key])i=local.findIndex(x=>String(x[key]||'').trim()===String(item[key]||'').trim());if(i<0){local.push(item);n++;}else local[i]=item;});return n;}
-const APP_VER='v116';
+const APP_VER='v117';
 function renderSyncInfo(){const t=Number(localStorage.getItem('bvd_lastSync')||0);const v=localStorage.getItem('bvd_seedVerShown')||localStorage.getItem('bvd_seedVersion')||'';const cf=localStorage.getItem('bvd_catalogoFecha')||'';const p=n=>String(n).padStart(2,'0');
   let ts='',short='';if(t){const d=new Date(t);ts=p(d.getDate())+'-'+p(d.getMonth()+1)+'-'+d.getFullYear()+' '+p(d.getHours())+':'+p(d.getMinutes());short=p(d.getDate())+'-'+p(d.getMonth()+1)+' '+p(d.getHours())+':'+p(d.getMinutes());}
   const hv=$('hdrVer');if(hv)hv.innerHTML='App '+APP_VER+(short?'<br>'+short:'');
