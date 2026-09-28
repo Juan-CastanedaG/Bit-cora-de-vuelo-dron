@@ -1006,13 +1006,13 @@ function pilotOpts(){var au=_opAu(),antes=antesDelCorte();
 function _vueloDentro(s,au){if(!au||!au.poly||!au.poly.length)return null;var la=parseFloat(s.lat),lo=parseFloat(s.lon);if(isNaN(la)||isNaN(lo))return null;return _mtPtInAuth(la,lo,au);}
 function geoVueloChip(s){var au=_opAu();if(!au||!au.poly||!au.poly.length)return '';var dv=_vueloDentro(s,au);if(dv===null)return '<div class="hint" style="margin:2px 0 6px">Geocerco: ingresá lat/lon para verificar el polígono</div>';if(dv)return '<div style="margin:2px 0 6px;padding:6px 9px;border-radius:8px;background:#f0fdf4;border:1px solid #bbf7d0;color:#166534;font-size:12px;font-weight:700">✅ Dentro de la autorización</div>';return '<div style="margin:2px 0 6px;padding:6px 9px;border-radius:8px;background:#fef2f2;border:1px solid #fecaca;color:#991b1b;font-size:12px;font-weight:700">⛔ FUERA del polígono de la autorización</div>';}
 function limpiarSPilot(i,field){st.sorties[i][field]='';renderSorties();verdict();saveDraft();}
-function refreshDronSelect(){var sd=$('g_dron');if(!sd)return;var au=_opAu(),antes=antesDelCorte(),cur=sd.value;
+function refreshDronSelect(){var sd=$('g_dron');if(!sd)return;var au=_opAu(),antes=(antesDelCorte()||(au&&autVencida(au))),cur=sd.value;
   if(!antes){
     if(!au){sd.innerHTML='<option value="">⚠ No se ha seleccionado autorización de vuelo</option>';return;}
     var list=flota.filter(function(d){return dronAutOK(au,d)&&d.activo!==false&&!(d.polizaVence&&daysTo(d.polizaVence)<0)&&_certOpDron(d);});
     sd.innerHTML=list.length?('<option value="">— dron —</option>'+list.map(function(d){return '<option value="'+d.id+'"'+(d.id===cur?' selected':'')+'>'+esc(dronLabel(d))+'</option>';}).join('')):'<option value="">— sin drones aptos para esta operación —</option>';
     return;}
-  sd.innerHTML='<option value="">— dron —</option>'+flota.map(function(d){return '<option value="'+d.id+'"'+(d.id===cur?' selected':'')+'>'+esc(dronLabel(d))+'</option>';}).join('');}
+  sd.innerHTML='<option value="">— dron —</option>'+(au?flota.filter(function(d){return dronAutOK(au,d);}):flota).map(function(d){return '<option value="'+d.id+'"'+(d.id===cur?' selected':'')+'>'+esc(dronLabel(d))+'</option>';}).join('');}
 function autOpts(){return autorizaciones.slice().sort((a,b)=>{const t=(b.ts||0)-(a.ts||0);if(t)return t;const ia=Number(String(a.idAut||'').replace(/\D/g,''))||0,ib=Number(String(b.idAut||'').replace(/\D/g,''))||0;if(ia!==ib)return ib-ia;const ra=Number(String(a.radicado||'').replace(/\D/g,''))||0,rb=Number(String(b.radicado||'').replace(/\D/g,''))||0;return rb-ra;}).map(a=>({value:a.id,label:autLabel(a)+(autVencida(a)?' — vencida':'')}));}
 function pickPiloto(id){$('g_pilotoId').value=id;$('g_pilotoQ').value=pilotName(id);verdict();renderPilotoInfo();saveDraft();}
 function pickAut(id){const a=autById(id);$('g_autId').value=id;$('g_autQ').value=a?autLabel(a):'';onAutSelect();}
@@ -1605,7 +1605,7 @@ function modoPiloto(){return localStorage.getItem('bvd_modoPiloto')==='1';}
 function applyModo(){const on=modoPiloto();['fleetForm','pilotForm'].forEach(id=>{const el=$(id);if(el)el.style.display=on?'none':'';});const c=$('modoPilotoChk');if(c)c.checked=on;}
 function setModoPiloto(on){localStorage.setItem('bvd_modoPiloto',on?'1':'');applyModo();renderFleet();renderPilots();toast(on?'Modo piloto activado (solo consulta)':'Modo maestro (edición habilitada)');}
 function mergeCatalog(local,incoming,key){if(!incoming)return 0;let n=0;incoming.forEach(item=>{let i=local.findIndex(x=>x.id===item.id);if(i<0&&key&&item[key])i=local.findIndex(x=>String(x[key]||'').trim()===String(item[key]||'').trim());if(i<0){local.push(item);n++;}else local[i]=item;});return n;}
-const APP_VER='v121';
+const APP_VER='v122';
 function renderSyncInfo(){const t=Number(localStorage.getItem('bvd_lastSync')||0);const v=localStorage.getItem('bvd_seedVerShown')||localStorage.getItem('bvd_seedVersion')||'';const cf=localStorage.getItem('bvd_catalogoFecha')||'';const p=n=>String(n).padStart(2,'0');
   let ts='',short='';if(t){const d=new Date(t);ts=p(d.getDate())+'-'+p(d.getMonth()+1)+'-'+d.getFullYear()+' '+p(d.getHours())+':'+p(d.getMinutes());short=p(d.getDate())+'-'+p(d.getMonth()+1)+' '+p(d.getHours())+':'+p(d.getMinutes());}
   const hv=$('hdrVer');if(hv)hv.innerHTML='App '+APP_VER+(short?'<br>'+short:'');
