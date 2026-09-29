@@ -851,7 +851,7 @@ function renderPilots(){const l=$('pilotList');
     const cip=pilotCipus(p).map(c=>cipuLabel(c)).join(', ')||'—';
     const inh=!pilotHabil(p);const adic=`${hasCert(p,'Nocturno')?'✓ Vuelo nocturno ':''}${hasCert(p,'BVLOS')?'✓ BVLOS':''}`.trim();return `<div class="item"><div class="top"><div style="width:100%"><div class="name">${esc(p.nombre)}</div>
     <div class="meta">${inh?'<span style="color:var(--rojo);font-weight:700">⛔ INHABILITADO</span>':'<span style="color:var(--verde);font-weight:700">✓ HABILITADO</span>'}</div>
-    <div class="meta">Certificaciones: ${cip}</div>
+    ${pilotGer(p)?'<div class="meta"><b>GERENCIA:</b> '+esc(pilotGer(p))+'</div>':''}${pilotArea(p)?'<div class="meta"><b>\u00c1REA:</b> '+esc(pilotArea(p))+'</div>':''}<div class="meta">Certificaciones: ${cip}</div>
     ${adic?`<div class="meta">${adic}</div>`:''}
     <div class="meta">${med}</div></div>
     </div></div>`}).join(''):'<div class="card empty">No hay pilotos en este filtro.</div>');}
@@ -968,7 +968,7 @@ function pilotOptions(sel){return '<option value="">— piloto —</option>'+pil
 function pilotName(id){const p=pilotById(id);return p?(p.nombre||''):'';}
 function habilMap(){try{return JSON.parse(localStorage.getItem('bvd_habil')||'{}')}catch(e){return{}}}
 function medMap(){try{return JSON.parse(localStorage.getItem('bvd_med')||'{}')}catch(e){return{}}}
-function pilotMed(p){if(!p)return '';const m=medMap();const k=pilotKey(p);const v=mapVal(m,k);return v?v:(p.med||'');}
+function pilotMed(p){if(!p)return '';const m=medMap();const k=pilotKey(p);const v=mapVal(m,k);return v?v:(p.med||'');}function gerMap(){try{return JSON.parse(localStorage.getItem('bvd_ger')||'{}')}catch(e){return{}}}function areaMap(){try{return JSON.parse(localStorage.getItem('bvd_area')||'{}')}catch(e){return{}}}function pilotGer(p){if(!p)return '';var v=mapVal(gerMap(),pilotKey(p));return v||p.gerencia||'';}function pilotArea(p){if(!p)return '';var v=mapVal(areaMap(),pilotKey(p));return v||p.area||'';}
 function pilotKey(p){return (p&&p.codigo&&String(p.codigo).trim())||String((p&&p.id)||'').replace(/^plt-/,'')||(p&&p.id)||'';}
 function mapVal(m,k){if(k in m)return m[k];const pk='plt-'+k;if(pk in m)return m[pk];const bare=String(k).replace(/^plt-/,'');if(bare in m)return m[bare];return undefined;}
 function pilotHabil(p){if(!p)return true;const m=habilMap();const k=pilotKey(p);const v=mapVal(m,k);const flag=(v===undefined)||(v!==false);const md=pilotMed(p);return flag&&!(md&&daysTo(md)<0);}
@@ -1605,7 +1605,7 @@ function modoPiloto(){return localStorage.getItem('bvd_modoPiloto')==='1';}
 function applyModo(){const on=modoPiloto();['fleetForm','pilotForm'].forEach(id=>{const el=$(id);if(el)el.style.display=on?'none':'';});const c=$('modoPilotoChk');if(c)c.checked=on;}
 function setModoPiloto(on){localStorage.setItem('bvd_modoPiloto',on?'1':'');applyModo();renderFleet();renderPilots();toast(on?'Modo piloto activado (solo consulta)':'Modo maestro (edición habilitada)');}
 function mergeCatalog(local,incoming,key){if(!incoming)return 0;let n=0;incoming.forEach(item=>{let i=local.findIndex(x=>x.id===item.id);if(i<0&&key&&item[key])i=local.findIndex(x=>String(x[key]||'').trim()===String(item[key]||'').trim());if(i<0){local.push(item);n++;}else local[i]=item;});return n;}
-const APP_VER='v122';
+const APP_VER='v123';
 function renderSyncInfo(){const t=Number(localStorage.getItem('bvd_lastSync')||0);const v=localStorage.getItem('bvd_seedVerShown')||localStorage.getItem('bvd_seedVersion')||'';const cf=localStorage.getItem('bvd_catalogoFecha')||'';const p=n=>String(n).padStart(2,'0');
   let ts='',short='';if(t){const d=new Date(t);ts=p(d.getDate())+'-'+p(d.getMonth()+1)+'-'+d.getFullYear()+' '+p(d.getHours())+':'+p(d.getMinutes());short=p(d.getDate())+'-'+p(d.getMonth()+1)+' '+p(d.getHours())+':'+p(d.getMinutes());}
   const hv=$('hdrVer');if(hv)hv.innerHTML='App '+APP_VER+(short?'<br>'+short:'');
@@ -1625,7 +1625,7 @@ async function loadSeed(){try{
   if(seed.flota){mergeCatalog(flota,seed.flota,'serial');save(K.fl,flota);}
   if(seed.habil)localStorage.setItem('bvd_habil',JSON.stringify(seed.habil));
   if(seed.med)localStorage.setItem('bvd_med',JSON.stringify(seed.med));
-  if(seed.certs)localStorage.setItem('bvd_certs',JSON.stringify(seed.certs));
+  if(seed.certs)localStorage.setItem('bvd_certs',JSON.stringify(seed.certs));if(seed.ger)localStorage.setItem('bvd_ger',JSON.stringify(seed.ger));if(seed.area)localStorage.setItem('bvd_area',JSON.stringify(seed.area));
   if(seed.catalogoActualizado)localStorage.setItem('bvd_catalogoFecha',seed.catalogoActualizado);
   localStorage.setItem('bvd_seedVersion',String(seed.seedVersion));
   renderAut();renderFleet();renderSyncInfo();
