@@ -1,5 +1,5 @@
 {
- "seedVersion": 35,
+ "seedVersion": 36,
  "actualizado": "2026-09-29",
  "catalogoActualizado": "2026-09-03",
  "autorizaciones": [
@@ -4362,7 +4362,11 @@
    "mant": "2026-09-28",
    "habNocturno": true,
    "habBVLOS": true,
-   "activo": false
+   "activo": false,
+   "gerencia": "EPM Distribucion de Energia",
+   "area": "PROFESIONAL A OPERACIONES NEGO",
+   "responsable": "EDER ALEXANDER MERCADO RODRIGUEZ",
+   "responsableId": "plt-CIPU-100-24-1353"
   },
   {
    "id": "drn-DR2",
@@ -4376,7 +4380,11 @@
    "mant": "2026-09-28",
    "habNocturno": false,
    "habBVLOS": true,
-   "activo": false
+   "activo": false,
+   "gerencia": "EPM Distribucion de Energia",
+   "area": "PROFESIONAL B GESTIÓN PROYECTO",
+   "responsable": "JUAN PABLO CASTANEDA GUTIERREZ",
+   "responsableId": "plt-CIPU-100-24-0865"
   },
   {
    "id": "drn-DR3",
@@ -4389,7 +4397,11 @@
    "polizaVence": "2026-09-26",
    "mant": "2026-09-28",
    "habBVLOS": true,
-   "habNocturno": true
+   "habNocturno": true,
+   "gerencia": "EPM Distribucion de Energia",
+   "area": "PROFESIONAL B GESTIÓN PROYECTO",
+   "responsable": "JUAN PABLO CASTANEDA GUTIERREZ",
+   "responsableId": "plt-CIPU-100-24-0865"
   },
   {
    "id": "drn-DR4",
@@ -4402,7 +4414,11 @@
    "polizaVence": "2026-09-26",
    "mant": "2026-09-28",
    "habBVLOS": false,
-   "habNocturno": true
+   "habNocturno": true,
+   "gerencia": "EPM Generacion de Energia",
+   "area": "PROFESIONAL B OPERACIONES NEGO",
+   "responsable": "JUAN DAVID CORREA CASTRO",
+   "responsableId": "plt-CIPU-100-24-1269"
   },
   {
    "id": "drn-DR5",
@@ -4415,7 +4431,11 @@
    "polizaVence": "2026-09-26",
    "mant": "2026-09-28",
    "habBVLOS": true,
-   "habNocturno": true
+   "habNocturno": true,
+   "gerencia": "EPM Institucional",
+   "area": "PROFESIONAL A EN GESTIÓN INMOB",
+   "responsable": "JORGE IVAN ACEVEDO HENAO",
+   "responsableId": "plt-CIPU-100-24-0905"
   },
   {
    "id": "drn-DR8",
@@ -4428,7 +4448,11 @@
    "polizaVence": "2026-09-26",
    "mant": "2026-09-28",
    "habBVLOS": true,
-   "habNocturno": true
+   "habNocturno": true,
+   "gerencia": "EPM Generacion de Energia",
+   "area": "AR IC E HIDROMETEOROLO GEN ENG",
+   "responsable": "CAMILO ECHEVERRI GUISAO",
+   "responsableId": "plt-CIPU-100-24-1106"
   },
   {
    "id": "drn-DR9",
@@ -4441,7 +4465,11 @@
    "polizaVence": "2026-09-26",
    "mant": "2026-09-28",
    "habBVLOS": true,
-   "habNocturno": true
+   "habNocturno": true,
+   "gerencia": "EPM Distribucion de Energia",
+   "area": "ÁREA SUBESTACIONES Y LÍNEAS",
+   "responsable": "ANDRES FELIPE RAMIREZ AMAYA",
+   "responsableId": "plt-CIPU-100-24-1446"
   },
   {
    "id": "drn-DR10",
@@ -4454,7 +4482,11 @@
    "polizaVence": "2026-09-26",
    "mant": "2026-09-28",
    "habBVLOS": true,
-   "habNocturno": true
+   "habNocturno": true,
+   "gerencia": "EPM Distribucion de Energia",
+   "area": "ÁREA SUBESTACIONES Y LÍNEAS",
+   "responsable": "ANDRES FELIPE RAMIREZ AMAYA",
+   "responsableId": "plt-CIPU-100-24-1446"
   },
   {
    "id": "drn-DR11",
@@ -4468,7 +4500,11 @@
    "mant": "",
    "habNocturno": true,
    "habBVLOS": true,
-   "activo": false
+   "activo": false,
+   "gerencia": "EPM Generacion Ituango",
+   "area": "ÁREA OPERACIONES ITUANGO",
+   "responsable": "ANDRES ANTONIO GUTIERREZ SERNA",
+   "responsableId": "plt-CIPU-100-24-1445"
   },
   {
    "id": "drn-DR12",
@@ -4481,7 +4517,11 @@
    "polizaVence": "2026-09-26",
    "mant": "2026-09-28",
    "habBVLOS": true,
-   "habNocturno": false
+   "habNocturno": false,
+   "gerencia": "EPM Generacion de Energia",
+   "area": "PROFESIONAL A AMBIENTAL Y SOCI",
+   "responsable": "MENDELSSOHN MARTINEZ CASTANO",
+   "responsableId": "plt-CIPU-100-25-0353"
   },
   {
    "id": "drn-DR14",
@@ -4494,7 +4534,11 @@
    "polizaVence": "2026-09-26",
    "mant": "2026-09-28",
    "habBVLOS": true,
-   "habNocturno": true
+   "habNocturno": true,
+   "gerencia": "EPM Distribucion de Energia",
+   "area": "PROFESIONAL A OPERACIONES NEGO",
+   "responsable": "EDER ALEXANDER MERCADO RODRIGUEZ",
+   "responsableId": "plt-CIPU-100-24-1353"
   },
   {
    "id": "drn-DR15",
@@ -4507,7 +4551,11 @@
    "polizaVence": "2026-09-26",
    "mant": "2026-09-28",
    "habBVLOS": true,
-   "habNocturno": true
+   "habNocturno": true,
+   "gerencia": "EPM Generacion Ituango",
+   "area": "PROFESIONAL C AMBIENTAL Y SOCI",
+   "responsable": "WILLIAM ALFONSO RAMIREZ VERGARA",
+   "responsableId": "plt-CIPU-100-24-0623"
   },
   {
    "id": "drn-DR16",
@@ -4520,7 +4568,11 @@
    "polizaVence": "2026-09-26",
    "mant": "2026-09-28",
    "habBVLOS": true,
-   "habNocturno": true
+   "habNocturno": true,
+   "gerencia": "EPM Generacion Ituango",
+   "area": "PROFESIONAL A AMBIENTAL Y SOCI",
+   "responsable": "TOMAS BOTERO ARANGO",
+   "responsableId": "plt-CIPU-100-24-1448"
   },
   {
    "id": "drn-DR17",
@@ -4533,7 +4585,11 @@
    "polizaVence": "2026-09-26",
    "mant": "2026-09-28",
    "habBVLOS": true,
-   "habNocturno": true
+   "habNocturno": true,
+   "gerencia": "EPM Generacion Ituango",
+   "area": "PROFESIONAL C AMBIENTAL Y SOCI",
+   "responsable": "WILLIAM ALFONSO RAMIREZ VERGARA",
+   "responsableId": "plt-CIPU-100-24-0623"
   },
   {
    "id": "drn-DR20",
@@ -4546,7 +4602,11 @@
    "polizaVence": "2026-09-26",
    "mant": "2026-09-28",
    "habBVLOS": true,
-   "habNocturno": true
+   "habNocturno": true,
+   "gerencia": "EPM Acueducto",
+   "area": "TÉCNICO-TÉCNICA DE LA OPERACIÓ",
+   "responsable": "MAYCOL DARIO BEDOYA ESCOBAR",
+   "responsableId": "plt-CIPU-100-24-0740"
   },
   {
    "id": "drn-DR21",
@@ -4559,7 +4619,11 @@
    "polizaVence": "2026-09-26",
    "mant": "2026-09-28",
    "habBVLOS": true,
-   "habNocturno": true
+   "habNocturno": true,
+   "gerencia": "EPM Acueducto",
+   "area": "TÉCNICO-TÉCNICA DE LA OPERACIÓ",
+   "responsable": "MAYCOL DARIO BEDOYA ESCOBAR",
+   "responsableId": "plt-CIPU-100-24-0740"
   },
   {
    "id": "drn-DR22",
@@ -4572,7 +4636,11 @@
    "polizaVence": "2026-09-26",
    "mant": "2026-09-28",
    "habBVLOS": true,
-   "habNocturno": true
+   "habNocturno": true,
+   "gerencia": "EPM Distribucion de Energia",
+   "area": "AR AMBIENTAL Y SOCIAL TYD ENG",
+   "responsable": "ALEJANDRO MARIN ORTEGA",
+   "responsableId": "plt-CIPU-100-24-1704"
   },
   {
    "id": "drn-DR24",
@@ -4585,7 +4653,11 @@
    "polizaVence": "2026-09-26",
    "mant": "2026-09-28",
    "habBVLOS": true,
-   "habNocturno": true
+   "habNocturno": true,
+   "gerencia": "EPM Alcantarillado",
+   "area": "ÁREA MNTO REDES ALCANTARILLADO",
+   "responsable": "CARLOS EDUARDO USUGA JIMENEZ",
+   "responsableId": "plt-CIPU-100-24-0721"
   },
   {
    "id": "drn-DR25",
@@ -4598,7 +4670,10 @@
    "polizaVence": "2026-09-26",
    "mant": "2026-09-28",
    "habBVLOS": true,
-   "habNocturno": true
+   "habNocturno": true,
+   "gerencia": "EPM Institucional",
+   "responsable": "DAVID TRUJILLO CATANO",
+   "responsableId": "plt-CIPU-100-24-0755"
   },
   {
    "id": "drn-DR26",
@@ -4611,7 +4686,10 @@
    "polizaVence": "2026-09-26",
    "mant": "2026-09-28",
    "habBVLOS": true,
-   "habNocturno": true
+   "habNocturno": true,
+   "gerencia": "EPM Institucional",
+   "responsable": "DUVAN FERNEY ALVAREZ ATILANO",
+   "responsableId": ""
   },
   {
    "id": "drn-DR27",
@@ -4624,7 +4702,11 @@
    "polizaVence": "2026-09-26",
    "mant": "2026-09-28",
    "habBVLOS": true,
-   "habNocturno": true
+   "habNocturno": true,
+   "gerencia": "EPM Generacion Ituango",
+   "area": "SUBG DESARROLLO PROY ITUANGO",
+   "responsable": "ANDRES FELIPE JARAMILLO CORREA",
+   "responsableId": "plt-CIPU-100-24-0724"
   },
   {
    "id": "drn-DR28",
@@ -4637,7 +4719,9 @@
    "polizaVence": "2026-09-26",
    "mant": "2026-09-28",
    "habBVLOS": true,
-   "habNocturno": true
+   "habNocturno": true,
+   "responsable": "LUK BRYAN LOPEZ MEJIA",
+   "responsableId": ""
   },
   {
    "id": "drn-DR29",
@@ -4651,7 +4735,11 @@
    "mant": "",
    "habNocturno": true,
    "habBVLOS": true,
-   "activo": false
+   "activo": false,
+   "gerencia": "EPM Institucional",
+   "area": "TECNÓLOGO-TECNÓLOGA MEDIOS AUD",
+   "responsable": "ELVIS DANIEL ZAPATA TORRES",
+   "responsableId": ""
   },
   {
    "id": "drn-DR23",
@@ -4665,7 +4753,11 @@
    "mant": "2026-09-28",
    "habNocturno": false,
    "habBVLOS": true,
-   "activo": false
+   "activo": false,
+   "gerencia": "EPM Generacion Ituango",
+   "area": "SUBG DESARROLLO PROY ITUANGO",
+   "responsable": "ANDRES FELIPE JARAMILLO CORREA",
+   "responsableId": "plt-CIPU-100-24-0724"
   }
  ],
  "habil": {
@@ -4789,17 +4881,20 @@
  "certs": {
   "CIPU-100-24-1704": [
    {
-    "tipo": "Piloto"
+    "tipo": "Piloto",
+    "num": "CIPU-100-24-1704"
    }
   ],
   "CIPU-100-24-0906": [
    {
-    "tipo": "Piloto"
+    "tipo": "Piloto",
+    "num": "CIPU-100-24-0906"
    }
   ],
   "CIPU-100-24-0725": [
    {
-    "tipo": "Piloto"
+    "tipo": "Piloto",
+    "num": "CIPU-100-24-0725"
    }
   ],
   "CIPU-100-24-1445": [
@@ -4818,52 +4913,62 @@
   ],
   "CIPU-100-24-0724": [
    {
-    "tipo": "Piloto"
+    "tipo": "Piloto",
+    "num": "CIPU-100-24-0724"
    }
   ],
   "CIPU-100-24-1446": [
    {
-    "tipo": "Piloto"
+    "tipo": "Piloto",
+    "num": "CIPU-100-24-1446"
    }
   ],
   "CIPU-100-24-0871": [
    {
-    "tipo": "Piloto"
+    "tipo": "Piloto",
+    "num": "CIPU-100-24-0871"
    }
   ],
   "CIPU-100-24-1106": [
    {
-    "tipo": "Piloto"
+    "tipo": "Piloto",
+    "num": "CIPU-100-24-1106"
    }
   ],
   "CIPU-100-24-0710": [
    {
-    "tipo": "Piloto"
+    "tipo": "Piloto",
+    "num": "CIPU-100-24-0710"
    }
   ],
   "CIPU-100-24-1827": [
    {
-    "tipo": "Piloto"
+    "tipo": "Piloto",
+    "num": "CIPU-100-24-1827"
    }
   ],
   "CIPU-100-24-0873": [
    {
-    "tipo": "Piloto"
+    "tipo": "Piloto",
+    "num": "CIPU-100-24-0873"
    }
   ],
   "CIPU-100-24-0721": [
    {
-    "tipo": "Piloto"
+    "tipo": "Piloto",
+    "num": "CIPU-100-24-0721"
    }
   ],
   "CIPU-100-24-0876": [
    {
-    "tipo": "Piloto"
+    "tipo": "Piloto",
+    "num": "CIPU-100-24-0876"
    }
   ],
   "CIPU-100-24-1076": [
    {
-    "tipo": "Piloto"
+    "tipo": "Piloto",
+    "num": "CIPU-100-24-1076"
    },
    {
     "tipo": "BVLOS"
@@ -4871,7 +4976,8 @@
   ],
   "CIPU-100-24-1745": [
    {
-    "tipo": "Piloto"
+    "tipo": "Piloto",
+    "num": "CIPU-100-24-1633"
    }
   ],
   "CIPU-100-24-0755": [
@@ -4890,37 +4996,44 @@
   ],
   "CIPU-100-24-0717": [
    {
-    "tipo": "Piloto"
+    "tipo": "Piloto",
+    "num": "CIPU-100-24-0717"
    }
   ],
   "CIPU-100-24-1353": [
    {
-    "tipo": "Piloto"
+    "tipo": "Piloto",
+    "num": "CIPU-100-24-1353"
    }
   ],
   "CIPU-100-24-0860": [
    {
-    "tipo": "Piloto"
+    "tipo": "Piloto",
+    "num": "CIPU-100-24-0860"
    }
   ],
   "CIPU-100-24-1184": [
    {
-    "tipo": "Piloto"
+    "tipo": "Piloto",
+    "num": "CIPU-100-24-1184"
    }
   ],
   "CIPU-100-24-1072": [
    {
-    "tipo": "Piloto"
+    "tipo": "Piloto",
+    "num": "CIPU-100-24-1072"
    }
   ],
   "CIPU-100-24-0878": [
    {
-    "tipo": "Piloto"
+    "tipo": "Piloto",
+    "num": "CIPU-100-24-0878"
    }
   ],
   "CIPU-100-24-0866": [
    {
-    "tipo": "Piloto"
+    "tipo": "Piloto",
+    "num": "CIPU-100-24-0866"
    },
    {
     "tipo": "BVLOS"
@@ -4928,22 +5041,26 @@
   ],
   "CIPU-100-24-0737": [
    {
-    "tipo": "Piloto"
+    "tipo": "Piloto",
+    "num": "CIPU-100-24-0737"
    }
   ],
   "CIPU-100-24-1155": [
    {
-    "tipo": "Piloto"
+    "tipo": "Piloto",
+    "num": "CIPU-100-24-1155"
    }
   ],
   "CIPU-100-24-0882": [
    {
-    "tipo": "Piloto"
+    "tipo": "Piloto",
+    "num": "CIPU-100-24-0882"
    }
   ],
   "CIPU-100-24-0573": [
    {
-    "tipo": "Piloto"
+    "tipo": "Piloto",
+    "num": "CIPU-100-24-0573"
    },
    {
     "tipo": "BVLOS"
@@ -4970,32 +5087,38 @@
   ],
   "CIPU-100-24-1789": [
    {
-    "tipo": "Piloto"
+    "tipo": "Piloto",
+    "num": "CIPU-100-24-1789"
    }
   ],
   "CIPU-100-24-0728": [
    {
-    "tipo": "Piloto"
+    "tipo": "Piloto",
+    "num": "CIPU-100-24-0728"
    }
   ],
   "CIPU-100-24-1269": [
    {
-    "tipo": "Piloto"
+    "tipo": "Piloto",
+    "num": "CIPU-100-24-1269"
    }
   ],
   "CIPU-100-24-0722": [
    {
-    "tipo": "Piloto"
+    "tipo": "Piloto",
+    "num": "CIPU-100-24-0722"
    }
   ],
   "CIPU-100-24-1781": [
    {
-    "tipo": "Piloto"
+    "tipo": "Piloto",
+    "num": "CIPU-100-24-1781"
    }
   ],
   "CIPU-100-24-0865": [
    {
-    "tipo": "Piloto"
+    "tipo": "Piloto",
+    "num": "CIPU-100-24-0865"
    },
    {
     "tipo": "BVLOS"
@@ -5006,12 +5129,14 @@
   ],
   "CIPU-100-24-1756": [
    {
-    "tipo": "Piloto"
+    "tipo": "Piloto",
+    "num": "CIPU-100-24-1756"
    }
   ],
   "CIPU-100-24-0723": [
    {
-    "tipo": "Piloto"
+    "tipo": "Piloto",
+    "num": "CIPU-100-24-0723"
    },
    {
     "num": "CIPU-100-25-C75J",
@@ -5020,7 +5145,8 @@
   ],
   "CIPU-100-24-0874": [
    {
-    "tipo": "Piloto"
+    "tipo": "Piloto",
+    "num": "CIPU-100-24-0874"
    },
    {
     "tipo": "BVLOS"
@@ -5028,12 +5154,14 @@
   ],
   "CIPU-100-24-0740": [
    {
-    "tipo": "Piloto"
+    "tipo": "Piloto",
+    "num": "CIPU-100-24-0740"
    }
   ],
   "CIPU-100-25-0353": [
    {
-    "tipo": "Piloto"
+    "tipo": "Piloto",
+    "num": "CIPU-100-25-0353"
    },
    {
     "tipo": "BVLOS"
@@ -5041,42 +5169,50 @@
   ],
   "CIPU-100-24-0872": [
    {
-    "tipo": "Piloto"
+    "tipo": "Piloto",
+    "num": "CIPU-100-24-0872"
    }
   ],
   "CIPU-100-24-1577": [
    {
-    "tipo": "Piloto"
+    "tipo": "Piloto",
+    "num": "CIPU-100-24-1577"
    }
   ],
   "CIPU-100-24-0961": [
    {
-    "tipo": "Piloto"
+    "tipo": "Piloto",
+    "num": "CIPU-100-24-0961"
    }
   ],
   "CIPU-100-24-0716": [
    {
-    "tipo": "Piloto"
+    "tipo": "Piloto",
+    "num": "CIPU-100-24-0716"
    }
   ],
   "CIPU-100-24-1355": [
    {
-    "tipo": "Piloto"
+    "tipo": "Piloto",
+    "num": "CIPU-100-24-1355"
    }
   ],
   "CIPU-100-24-0738": [
    {
-    "tipo": "Piloto"
+    "tipo": "Piloto",
+    "num": "CIPU-100-24-0738"
    }
   ],
   "CIPU-100-24-1354": [
    {
-    "tipo": "Piloto"
+    "tipo": "Piloto",
+    "num": "CIPU-100-24-1354"
    }
   ],
   "CIPU-100-24-0756": [
    {
-    "tipo": "Piloto"
+    "tipo": "Piloto",
+    "num": "CIPU-100-24-0756"
    },
    {
     "tipo": "BVLOS"
@@ -5087,7 +5223,8 @@
   ],
   "CIPU-100-24-0733": [
    {
-    "tipo": "Piloto"
+    "tipo": "Piloto",
+    "num": "CIPU-100-24-0733"
    }
   ],
   "CIPU-100-24-1335": [
@@ -5098,12 +5235,14 @@
   ],
   "CIPU-100-24-0720": [
    {
-    "tipo": "Piloto"
+    "tipo": "Piloto",
+    "num": "CIPU-100-24-0720"
    }
   ],
   "CIPU-100-24-1448": [
    {
-    "tipo": "Piloto"
+    "tipo": "Piloto",
+    "num": "CIPU-100-24-1448"
    }
   ],
   "CIPU-100-24-2167": [
@@ -5122,7 +5261,8 @@
   ],
   "CIPU-100-24-0623": [
    {
-    "tipo": "Piloto"
+    "tipo": "Piloto",
+    "num": "CIPU-100-24-0623"
    },
    {
     "tipo": "BVLOS"
@@ -5133,7 +5273,8 @@
   ],
   "CIPU-100-24-1066": [
    {
-    "tipo": "Piloto"
+    "tipo": "Piloto",
+    "num": "CIPU-100-24-1066"
    }
   ],
   "mtnjsgza3y7fnl": [
@@ -5147,6 +5288,122 @@
     "tipo": "Piloto"
    }
   ]
+ },
+ "ger": {
+  "CIPU-100-24-1704": "TYD ENERGÍA",
+  "CIPU-100-24-0906": "PROYECTO ITUANGO",
+  "CIPU-100-24-0725": "GENERACIÓN ENERGÍA",
+  "CIPU-100-24-1445": "GENERACIÓN ENERGÍA",
+  "CIPU-100-24-0724": "PROYECTO ITUANGO",
+  "CIPU-100-24-1446": "TYD ENERGÍA",
+  "CIPU-100-24-0871": "TYD ENERGÍA",
+  "CIPU-100-24-1106": "GENERACIÓN ENERGÍA",
+  "CIPU-100-24-0710": "TYD ENERGÍA",
+  "CIPU-100-24-1827": "TYD ENERGÍA",
+  "CIPU-100-24-0873": "PROYECTO ITUANGO",
+  "CIPU-100-24-0721": "ACUEDUCTO Y ALCANTARILLADO",
+  "CIPU-100-24-0876": "GENERACIÓN ENERGÍA",
+  "CIPU-100-24-1076": "ABASTECIMIENTO Y LOGISTICA",
+  "CIPU-100-24-1745": "TYD ENERGÍA",
+  "CIPU-100-24-0755": "PROYECTO ITUANGO",
+  "CIPU-100-24-0717": "GENERACIÓN ENERGÍA",
+  "CIPU-100-24-1353": "TYD ENERGÍA",
+  "CIPU-100-24-0860": "ACUEDUCTO Y ALCANTARILLADO",
+  "CIPU-100-24-1184": "TYD ENERGÍA",
+  "CIPU-100-24-1072": "PROYECTO ITUANGO",
+  "CIPU-100-24-0878": "PROYECTO ITUANGO",
+  "CIPU-100-24-0866": "GENERACIÓN ENERGÍA",
+  "CIPU-100-24-0737": "GENERACIÓN ENERGÍA",
+  "CIPU-100-24-1155": "COMUNICACIONES Y RELACIONES EXTERNAS",
+  "CIPU-100-24-0882": "GENERACIÓN ENERGÍA",
+  "CIPU-100-24-0573": "TECNOLOGÍAS Y PROCESOS",
+  "CIPU-100-24-0905": "ABASTECIMIENTO Y LOGISTICA",
+  "CIPU-100-24-0709": "TYD ENERGÍA",
+  "CIPU-100-24-1789": "TYD ENERGÍA",
+  "CIPU-100-24-0728": "GENERACIÓN ENERGÍA",
+  "CIPU-100-24-1269": "GENERACIÓN ENERGÍA",
+  "CIPU-100-24-0722": "PROYECTO ITUANGO",
+  "CIPU-100-24-1781": "TYD ENERGÍA",
+  "CIPU-100-24-0865": "TYD ENERGÍA",
+  "CIPU-100-24-1756": "PROYECTO ITUANGO",
+  "CIPU-100-24-0723": "TYD ENERGÍA",
+  "CIPU-100-24-0874": "TYD ENERGÍA",
+  "CIPU-100-24-0740": "ACUEDUCTO Y ALCANTARILLADO",
+  "CIPU-100-25-0353": "GENERACIÓN ENERGÍA",
+  "CIPU-100-24-0872": "TYD ENERGÍA",
+  "CIPU-100-24-1577": "PROYECTO ITUANGO",
+  "CIPU-100-24-0961": "SERVICIOS TECNICOS",
+  "CIPU-100-24-0716": "ACUEDUCTO Y ALCANTARILLADO",
+  "CIPU-100-24-1355": "PROYECTO ITUANGO",
+  "CIPU-100-24-0738": "SERVICIOS TECNICOS",
+  "CIPU-100-24-1354": "TYD ENERGÍA",
+  "CIPU-100-24-0756": "TYD ENERGÍA",
+  "CIPU-100-24-0733": "TYD ENERGÍA",
+  "CIPU-100-24-1335": "SERVICIOS TECNICOS",
+  "CIPU-100-24-0720": "ABASTECIMIENTO Y LOGISTICA",
+  "CIPU-100-24-1448": "PROYECTO ITUANGO",
+  "CIPU-100-24-2167": "FINANZAS Y RIESGOS",
+  "CIPU-100-24-0623": "PROYECTO ITUANGO",
+  "CIPU-100-24-1066": "ACUEDUCTO Y ALCANTARILLADO",
+  "mtnjsgza3y7fnl": "ACUEDUCTO Y ALCANTARILLADO"
+ },
+ "area": {
+  "CIPU-100-24-1704": "AMBIENTAL Y SOCIAL TRANSMISION Y DISTRIBUCION ENERGIA",
+  "CIPU-100-24-0906": "DESARROLLO PROYECTO ITUANGO",
+  "CIPU-100-24-0725": "INFRAESTRUCTURA CIVIL E HIDROMETEOROLOGIA GENERACION",
+  "CIPU-100-24-1445": "OPERACIONES ITUANGO",
+  "CIPU-100-24-0724": "DESARROLLO PROYECTO ITUANGO",
+  "CIPU-100-24-1446": "PROYECTOS TRANSMISION Y DISTRIBUCION ENERGIA 2",
+  "CIPU-100-24-0871": "SUBESTACIONES Y LÍNEAS",
+  "CIPU-100-24-1106": "INFRAESTRUCTURA CIVIL E HIDROMETEOROLOGIA GENERACION",
+  "CIPU-100-24-0710": "PROYECTOS TRANSMISION Y DISTRIBUCION ENERGIA 2",
+  "CIPU-100-24-1827": "AMBIENTAL Y SOCIAL TRANSMISION Y DISTRIBUCION ENERGIA",
+  "CIPU-100-24-0873": "AMBIENTAL Y SOCIAL TRANSMISION Y DISTRIBUCION ENERGIA",
+  "CIPU-100-24-0721": "MANTENIMIENTO REDES ALCANTARILLADO",
+  "CIPU-100-24-0876": "OPERACIONES PEQUENAS CENTRALES Y PLANTAS ENERGÍAS RENOVABLES NO CONVENCIONALES",
+  "CIPU-100-24-1076": "SOLUCIONES INMOBILIARIAS",
+  "CIPU-100-24-1745": "PROYECTOS TRANSMISION Y DISTRIBUCION ENERGIA 2",
+  "CIPU-100-24-0755": "AMBIENTAL Y SOCIAL PROYECTO ITUANGO",
+  "CIPU-100-24-0717": "INFRAESTRUCTURA CIVIL E HIDROMETEOROLOGIA GENERACION",
+  "CIPU-100-24-1353": "PROGRAMACION Y SEGUIMIENTO DEL MANTENIMIENTO TYD",
+  "CIPU-100-24-0860": "MANTENIMIENTO SISTEMA MATRIZ ACUEDUCTO",
+  "CIPU-100-24-1184": "PROGRAMACION Y SEGUIMIENTO DEL MANTENIMIENTO TYD",
+  "CIPU-100-24-1072": "AMBIENTAL Y SOCIAL PROYECTO ITUANGO",
+  "CIPU-100-24-0878": "DESARROLLO PROYECTO ITUANGO",
+  "CIPU-100-24-0866": "DEPARTAMENTO ARTICULACION Y COMISIONAMIENTO ITUANGO FASE 1",
+  "CIPU-100-24-0737": "OPERACIONES PEQUENAS CENTRALES Y PLANTAS ENERGÍAS RENOVABLES NO CONVENCIONALES",
+  "CIPU-100-24-1155": "COMUNICACIONES Y MARCA",
+  "CIPU-100-24-0882": "DEPARTAMENTO AMBIENTAL Y SOCIAL PRODUCCION ENERGIA",
+  "CIPU-100-24-0573": "TECNOLOGÍAS DE OPERACIÓN",
+  "CIPU-100-24-0905": "SOLUCIONES INMOBILIARIAS",
+  "CIPU-100-24-0709": "AMBIENTAL Y SOCIAL TRANSMISION Y DISTRIBUCION ENERGIA",
+  "CIPU-100-24-1789": "PROGRAMACION Y SEGUIMIENTO DEL MANTENIMIENTO TYD",
+  "CIPU-100-24-0728": "INFRAESTRUCTURA CIVIL E HIDROMETEOROLOGIA GENERACION",
+  "CIPU-100-24-1269": "INFRAESTRUCTURA CIVIL E HIDROMETEOROLOGIA GENERACION",
+  "CIPU-100-24-0722": "DESARROLLO PROYECTO ITUANGO",
+  "CIPU-100-24-1781": "PROGRAMACION Y SEGUIMIENTO DEL MANTENIMIENTO TYD",
+  "CIPU-100-24-0865": "PLANEACIÓN Y FORMULACIÓN PROYECTOS TYD",
+  "CIPU-100-24-1756": "AMBIENTAL Y SOCIAL PROYECTO ITUANGO",
+  "CIPU-100-24-0723": "PLANEACIÓN Y FORMULACIÓN PROYECTOS TYD",
+  "CIPU-100-24-0874": "AMBIENTAL Y SOCIAL TRANSMISION Y DISTRIBUCION ENERGIA",
+  "CIPU-100-24-0740": "MANTENIMIENTO SISTEMA MATRIZ ACUEDUCTO",
+  "CIPU-100-25-0353": "DEPARTAMENTO AMBIENTAL Y SOCIAL PRODUCCION ENERGIA",
+  "CIPU-100-24-0872": "AMBIENTAL Y SOCIAL TRANSMISION Y DISTRIBUCION ENERGIA",
+  "CIPU-100-24-1577": "DESARROLLO PROYECTO ITUANGO",
+  "CIPU-100-24-0961": "CENTROS DE GESTIÓN SERVICIOS TECNICOS",
+  "CIPU-100-24-0716": "AMBIENTAL Y SOCIAL ACUEDUCTO Y ALCANTARILLADO",
+  "CIPU-100-24-1355": "DESARROLLO PROYECTO ITUANGO",
+  "CIPU-100-24-0738": "ARQUITECTURA, DESARROLLO URBANO Y TERRITORIAL",
+  "CIPU-100-24-1354": "PROYECTOS TRANSMISION Y DISTRIBUCION ENERGIA 2",
+  "CIPU-100-24-0756": "PROGRAMACION Y SEGUIMIENTO DEL MANTENIMIENTO TYD",
+  "CIPU-100-24-0733": "AMBIENTAL Y SOCIAL TRANSMISION Y DISTRIBUCION ENERGIA",
+  "CIPU-100-24-1335": "ARQUITECTURA, DESARROLLO URBANO Y TERRITORIAL",
+  "CIPU-100-24-0720": "SOLUCIONES SERVICIOS GENERALES",
+  "CIPU-100-24-1448": "AMBIENTAL Y SOCIAL PROYECTO ITUANGO",
+  "CIPU-100-24-2167": "RIESGOS Y SEGUROS",
+  "CIPU-100-24-0623": "AMBIENTAL Y SOCIAL PROYECTO ITUANGO",
+  "CIPU-100-24-1066": "MANTENIMIENTO SISTEMA MATRIZ ACUEDUCTO",
+  "mtnjsgza3y7fnl": "MANTENIMIENTO REDES ALCANTARILLADO"
  },
  "assets": {}
 }
