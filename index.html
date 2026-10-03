@@ -1628,7 +1628,7 @@ function _showReport(doc){
   ov=document.createElement('div');ov.id='reportView';
   ov.style.cssText='position:fixed;inset:0;z-index:99999;background:#4b5563;display:flex;flex-direction:column';
   var bar=document.createElement('div');bar.style.cssText='display:flex;gap:8px;padding:10px;background:#007934';
-  var bp=document.createElement('button');bp.textContent='\U0001f5a8 Imprimir / Guardar PDF';bp.style.cssText='flex:1;padding:12px;border:0;border-radius:8px;background:#7AD400;color:#083d1e;font-weight:800;font-size:15px';
+  var bp=document.createElement('button');bp.textContent='\ud83d\udda8\ufe0f Imprimir / Guardar PDF';bp.style.cssText='flex:1;padding:12px;border:0;border-radius:8px;background:#7AD400;color:#083d1e;font-weight:800;font-size:15px';
   var bc=document.createElement('button');bc.textContent='Cerrar';bc.style.cssText='padding:12px 16px;border:0;border-radius:8px;background:#fff;font-weight:800';
   var fr=document.createElement('iframe');fr.style.cssText='flex:1;border:0;width:100%;background:#fff';
   bp.onclick=function(){try{fr.contentWindow.focus();fr.contentWindow.print();}catch(e){toast('No se pudo imprimir');}};
@@ -1670,7 +1670,7 @@ async function printReport(list,titulo){toast('Preparando reporte…');
   ${body}${annex}<p style="font-size:10px;color:#999;margin-top:18px">Generado ${(function(){const n=new Date(),p=x=>String(x).padStart(2,'0');return p(n.getDate())+'-'+p(n.getMonth()+1)+'-'+n.getFullYear()+' '+p(n.getHours())+':'+p(n.getMinutes());})()} · Documento de soporte operacional</p></body></html>`);_showReport(_doc);}
 function opBlock(o){const kv=(k,val)=>val?`<tr><td class="k">${k}</td><td>${esc(String(val))}</td></tr>`:'';
   const tipos=Object.entries(o.tipoOp||{}).filter(([,x])=>x).map(([k])=>k.toUpperCase()).join(', ');const mins=totalMins(o.sorties);
-  const cipu=o.operadorPiloto&&o.operadorPiloto.cipus?o.operadorPiloto.cipus.map(c=>(c.num||c)+' ('+(c.tipo||'Piloto')+')').join(', '):'';
+  const _pc=(function(){try{const pp=pilotById(o.pilotoId);return pp?pilotCipus(pp):[];}catch(e){return [];}})();const _src=(o.operadorPiloto&&o.operadorPiloto.cipus&&o.operadorPiloto.cipus.length)?o.operadorPiloto.cipus:_pc;const cipu=_src.map(c=>{const t=(c&&typeof c==='object')?(c.tipo||'Piloto'):String(c||'Piloto');let n=(c&&typeof c==='object')?(c.num||c.codigo||''):'';if(!n){const m=_pc.find(x=>x&&typeof x==='object'&&(x.tipo||'Piloto')===t&&x.num);if(m)n=m.num;}const lb=t==='Nocturno'?'Vuelo nocturno':t==='BVLOS'?'BVLOS':'Piloto UAS';return n?n+' ('+lb+')':lb;}).join(' \u00b7 ');
   const ced=o.operadorPiloto?o.operadorPiloto.cedula:'';
   const sr=(o.sorties||[]).map((s,i)=>`<tr><td class="k">#${i+1} — ${esc(s.piloto||'')}${s.observador?' / obs '+esc(s.observador):''}${s.obs?' · '+esc(s.obs):''}</td><td>${s.inicio||'?'}–${s.fin||'?'} · ${s.dur!=null?s.dur+' min':''} · bat ${s.batDesp||'?'}→${s.batAter||'?'}%${(s.lat||s.lon)?' · '+esc(s.lat||'')+', '+esc(s.lon||''):''}</td></tr>`).join('');
   return `<div class="blk"><div><span class="vd ${o.verdict==='GO'?'GO':o.verdict==='NO-GO'?'NOGO':'PEND'}">${o.verdict}</span></div>
@@ -1777,7 +1777,7 @@ function modoPiloto(){return localStorage.getItem('bvd_modoPiloto')==='1';}
 function applyModo(){const on=modoPiloto();['fleetForm','pilotForm'].forEach(id=>{const el=$(id);if(el)el.style.display=on?'none':'';});const c=$('modoPilotoChk');if(c)c.checked=on;}
 function setModoPiloto(on){localStorage.setItem('bvd_modoPiloto',on?'1':'');applyModo();renderFleet();renderPilots();toast(on?'Modo piloto activado (solo consulta)':'Modo maestro (edición habilitada)');}
 function mergeCatalog(local,incoming,key){if(!incoming)return 0;let n=0;incoming.forEach(item=>{let i=local.findIndex(x=>x.id===item.id);if(i<0&&key&&item[key])i=local.findIndex(x=>String(x[key]||'').trim()===String(item[key]||'').trim());if(i<0){local.push(item);n++;}else local[i]=item;});return n;}
-const APP_VER='v128';
+const APP_VER='v129';
 function renderSyncInfo(){const t=Number(localStorage.getItem('bvd_lastSync')||0);const v=localStorage.getItem('bvd_seedVerShown')||localStorage.getItem('bvd_seedVersion')||'';const cf=localStorage.getItem('bvd_catalogoFecha')||'';const p=n=>String(n).padStart(2,'0');
   let ts='',short='';if(t){const d=new Date(t);ts=p(d.getDate())+'-'+p(d.getMonth()+1)+'-'+d.getFullYear()+' '+p(d.getHours())+':'+p(d.getMinutes());short=p(d.getDate())+'-'+p(d.getMonth()+1)+' '+p(d.getHours())+':'+p(d.getMinutes());}
   const hv=$('hdrVer');if(hv)hv.innerHTML='App '+APP_VER+(short?'<br>'+short:'');
