@@ -1,5 +1,5 @@
 {
- "seedVersion": 39,
+ "seedVersion": 40,
  "actualizado": "2026-10-06",
  "catalogoActualizado": "2026-09-03",
  "autorizaciones": [
@@ -5219,61 +5219,61 @@
   }
  ],
  "habil": {
-  "CIPU-100-24-1704": false,
+  "CIPU-100-24-1704": true,
   "CIPU-100-24-0906": true,
-  "CIPU-100-24-0725": false,
-  "CIPU-100-24-1445": false,
+  "CIPU-100-24-0725": true,
+  "CIPU-100-24-1445": true,
   "CIPU-100-24-0724": false,
-  "CIPU-100-24-1446": false,
-  "CIPU-100-24-0871": false,
-  "CIPU-100-24-1106": false,
-  "CIPU-100-24-0710": false,
-  "CIPU-100-24-1827": false,
-  "CIPU-100-24-0873": false,
+  "CIPU-100-24-1446": true,
+  "CIPU-100-24-0871": true,
+  "CIPU-100-24-1106": true,
+  "CIPU-100-24-0710": true,
+  "CIPU-100-24-1827": true,
+  "CIPU-100-24-0873": true,
   "CIPU-100-24-0721": true,
-  "CIPU-100-24-0876": false,
-  "CIPU-100-24-1076": false,
-  "CIPU-100-24-1745": false,
-  "CIPU-100-24-0755": false,
+  "CIPU-100-24-0876": true,
+  "CIPU-100-24-1076": true,
+  "CIPU-100-24-1745": true,
+  "CIPU-100-24-0755": true,
   "CIPU-100-24-0717": true,
-  "CIPU-100-24-1353": false,
-  "CIPU-100-24-0860": false,
+  "CIPU-100-24-1353": true,
+  "CIPU-100-24-0860": true,
   "CIPU-100-24-1184": true,
-  "CIPU-100-24-1072": false,
+  "CIPU-100-24-1072": true,
   "CIPU-100-24-0878": true,
-  "CIPU-100-24-0866": false,
-  "CIPU-100-24-0737": false,
-  "CIPU-100-24-1155": false,
+  "CIPU-100-24-0866": true,
+  "CIPU-100-24-0737": true,
+  "CIPU-100-24-1155": true,
   "CIPU-100-24-0882": true,
   "CIPU-100-24-0573": true,
-  "CIPU-100-24-0905": false,
+  "CIPU-100-24-0905": true,
   "CIPU-100-24-0709": false,
-  "CIPU-100-24-1789": false,
-  "CIPU-100-24-0728": false,
+  "CIPU-100-24-1789": true,
+  "CIPU-100-24-0728": true,
   "CIPU-100-24-1269": true,
-  "CIPU-100-24-0722": false,
-  "CIPU-100-24-1781": false,
+  "CIPU-100-24-0722": true,
+  "CIPU-100-24-1781": true,
   "CIPU-100-24-0865": true,
-  "CIPU-100-24-1756": false,
+  "CIPU-100-24-1756": true,
   "CIPU-100-24-0723": true,
   "CIPU-100-24-0874": true,
-  "CIPU-100-24-0740": false,
-  "CIPU-100-25-0353": false,
-  "CIPU-100-24-0872": false,
-  "CIPU-100-24-1577": false,
+  "CIPU-100-24-0740": true,
+  "CIPU-100-25-0353": true,
+  "CIPU-100-24-0872": true,
+  "CIPU-100-24-1577": true,
   "CIPU-100-24-0961": true,
-  "CIPU-100-24-0716": false,
+  "CIPU-100-24-0716": true,
   "CIPU-100-24-1355": true,
   "CIPU-100-24-0738": true,
-  "CIPU-100-24-1354": false,
+  "CIPU-100-24-1354": true,
   "CIPU-100-24-0756": true,
-  "CIPU-100-24-0733": false,
+  "CIPU-100-24-0733": true,
   "CIPU-100-24-1335": false,
   "CIPU-100-24-0720": false,
-  "CIPU-100-24-1448": false,
-  "CIPU-100-24-2167": false,
+  "CIPU-100-24-1448": true,
+  "CIPU-100-24-2167": true,
   "CIPU-100-24-0623": true,
-  "CIPU-100-24-1066": false,
+  "CIPU-100-24-1066": true,
   "mtnjsgza3y7fnl": false,
   "CIPU-100-24-0718": false
  },
@@ -6511,8 +6511,7 @@
   "CIPU-100-24-1704": {
    "pct": null,
    "si": 0,
-   "tot": 0,
-   "lock": "Inhabilitado por asistencia — 2026 Trim 1 0% · 31-03-2026"
+   "tot": 0
   },
   "CIPU-100-24-0906": {
    "pct": null,
@@ -6522,14 +6521,12 @@
   "CIPU-100-24-0725": {
    "pct": null,
    "si": 0,
-   "tot": 0,
-   "lock": "Inhabilitado por asistencia — 2026 Trim 1 33% · 31-03-2026"
+   "tot": 0
   },
   "CIPU-100-24-1445": {
    "pct": null,
    "si": 0,
-   "tot": 0,
-   "lock": "Inhabilitado por asistencia — 2026 Trim 2 67% · 30-06-2026"
+   "tot": 0
   },
   "CIPU-100-24-0724": {
    "pct": null,
@@ -6539,38 +6536,32 @@
   "CIPU-100-24-1446": {
    "pct": null,
    "si": 0,
-   "tot": 0,
-   "lock": "Inhabilitado por asistencia — 2026 Trim 1 67% · 31-03-2026"
+   "tot": 0
   },
   "CIPU-100-24-0871": {
    "pct": null,
    "si": 0,
-   "tot": 0,
-   "lock": "Inhabilitado por asistencia — 2026 Trim 2 67% · 30-06-2026"
+   "tot": 0
   },
   "CIPU-100-24-1106": {
    "pct": null,
    "si": 0,
-   "tot": 0,
-   "lock": "Inhabilitado por asistencia — 2026 Trim 2 67% · 30-06-2026"
+   "tot": 0
   },
   "CIPU-100-24-0710": {
    "pct": null,
    "si": 0,
-   "tot": 0,
-   "lock": "Inhabilitado por asistencia — 2026 Trim 1 0% · 31-03-2026"
+   "tot": 0
   },
   "CIPU-100-24-1827": {
    "pct": null,
    "si": 0,
-   "tot": 0,
-   "lock": "Inhabilitado por asistencia — 2026 Trim 1 33% · 31-03-2026"
+   "tot": 0
   },
   "CIPU-100-24-0873": {
    "pct": null,
    "si": 0,
-   "tot": 0,
-   "lock": "Inhabilitado por asistencia — 2026 Trim 2 67% · 30-06-2026"
+   "tot": 0
   },
   "CIPU-100-24-0721": {
    "pct": null,
@@ -6580,26 +6571,22 @@
   "CIPU-100-24-0876": {
    "pct": null,
    "si": 0,
-   "tot": 0,
-   "lock": "Inhabilitado por asistencia — 2026 Trim 2 67% · 30-06-2026"
+   "tot": 0
   },
   "CIPU-100-24-1076": {
    "pct": null,
    "si": 0,
-   "tot": 0,
-   "lock": "Inhabilitado por asistencia — 2026 Trim 1 67% · 31-03-2026"
+   "tot": 0
   },
   "CIPU-100-24-1745": {
    "pct": null,
    "si": 0,
-   "tot": 0,
-   "lock": "Inhabilitado por asistencia — 2026 Trim 1 0% · 31-03-2026"
+   "tot": 0
   },
   "CIPU-100-24-0755": {
    "pct": null,
    "si": 0,
-   "tot": 0,
-   "lock": "Inhabilitado por asistencia — 2026 Trim 1 67% · 31-03-2026"
+   "tot": 0
   },
   "CIPU-100-24-0717": {
    "pct": null,
@@ -6609,14 +6596,12 @@
   "CIPU-100-24-1353": {
    "pct": null,
    "si": 0,
-   "tot": 0,
-   "lock": "Inhabilitado por asistencia — 2026 Trim 1 33% · 31-03-2026"
+   "tot": 0
   },
   "CIPU-100-24-0860": {
    "pct": null,
    "si": 0,
-   "tot": 0,
-   "lock": "Inhabilitado por asistencia — 2026 Trim 1 33% · 31-03-2026"
+   "tot": 0
   },
   "CIPU-100-24-1184": {
    "pct": null,
@@ -6626,8 +6611,7 @@
   "CIPU-100-24-1072": {
    "pct": null,
    "si": 0,
-   "tot": 0,
-   "lock": "Inhabilitado por asistencia — 2026 Trim 1 67% · 31-03-2026"
+   "tot": 0
   },
   "CIPU-100-24-0878": {
    "pct": null,
@@ -6637,20 +6621,17 @@
   "CIPU-100-24-0866": {
    "pct": null,
    "si": 0,
-   "tot": 0,
-   "lock": "Inhabilitado por asistencia — 2026 Trim 1 67% · 31-03-2026"
+   "tot": 0
   },
   "CIPU-100-24-0737": {
    "pct": null,
    "si": 0,
-   "tot": 0,
-   "lock": "Inhabilitado por asistencia — 2026 Trim 1 67% · 31-03-2026"
+   "tot": 0
   },
   "CIPU-100-24-1155": {
    "pct": null,
    "si": 0,
-   "tot": 0,
-   "lock": "Inhabilitado por asistencia — 2026 Trim 1 67% · 31-03-2026"
+   "tot": 0
   },
   "CIPU-100-24-0882": {
    "pct": null,
@@ -6665,26 +6646,22 @@
   "CIPU-100-24-0905": {
    "pct": null,
    "si": 0,
-   "tot": 0,
-   "lock": "Inhabilitado por asistencia — 2026 Trim 1 67% · 31-03-2026"
+   "tot": 0
   },
   "CIPU-100-24-0709": {
    "pct": null,
    "si": 0,
-   "tot": 0,
-   "lock": "Inhabilitado por asistencia — 2026 Trim 2 67% · 30-06-2026"
+   "tot": 0
   },
   "CIPU-100-24-1789": {
    "pct": null,
    "si": 0,
-   "tot": 0,
-   "lock": "Inhabilitado por asistencia — 2026 Trim 1 0% · 31-03-2026"
+   "tot": 0
   },
   "CIPU-100-24-0728": {
    "pct": null,
    "si": 0,
-   "tot": 0,
-   "lock": "Inhabilitado por asistencia — 2026 Trim 2 67% · 30-06-2026"
+   "tot": 0
   },
   "CIPU-100-24-1269": {
    "pct": null,
@@ -6694,14 +6671,12 @@
   "CIPU-100-24-0722": {
    "pct": null,
    "si": 0,
-   "tot": 0,
-   "lock": "Inhabilitado por asistencia — 2026 Trim 2 67% · 30-06-2026"
+   "tot": 0
   },
   "CIPU-100-24-1781": {
    "pct": null,
    "si": 0,
-   "tot": 0,
-   "lock": "Inhabilitado por asistencia — 2026 Trim 1 67% · 31-03-2026"
+   "tot": 0
   },
   "CIPU-100-24-0865": {
    "pct": null,
@@ -6711,8 +6686,7 @@
   "CIPU-100-24-1756": {
    "pct": null,
    "si": 0,
-   "tot": 0,
-   "lock": "Inhabilitado por asistencia — 2026 Trim 1 33% · 31-03-2026"
+   "tot": 0
   },
   "CIPU-100-24-0723": {
    "pct": null,
@@ -6727,26 +6701,22 @@
   "CIPU-100-24-0740": {
    "pct": null,
    "si": 0,
-   "tot": 0,
-   "lock": "Inhabilitado por asistencia — 2026 Trim 1 67% · 31-03-2026"
+   "tot": 0
   },
   "CIPU-100-25-0353": {
    "pct": null,
    "si": 0,
-   "tot": 0,
-   "lock": "Inhabilitado por asistencia — 2026 Trim 2 67% · 30-06-2026"
+   "tot": 0
   },
   "CIPU-100-24-0872": {
    "pct": null,
    "si": 0,
-   "tot": 0,
-   "lock": "Inhabilitado por asistencia — 2026 Trim 1 67% · 31-03-2026"
+   "tot": 0
   },
   "CIPU-100-24-1577": {
    "pct": null,
    "si": 0,
-   "tot": 0,
-   "lock": "Inhabilitado por asistencia — 2026 Trim 1 67% · 31-03-2026"
+   "tot": 0
   },
   "CIPU-100-24-0961": {
    "pct": null,
@@ -6756,8 +6726,7 @@
   "CIPU-100-24-0716": {
    "pct": null,
    "si": 0,
-   "tot": 0,
-   "lock": "Inhabilitado por asistencia — 2026 Trim 1 67% · 31-03-2026"
+   "tot": 0
   },
   "CIPU-100-24-1355": {
    "pct": null,
@@ -6772,8 +6741,7 @@
   "CIPU-100-24-1354": {
    "pct": null,
    "si": 0,
-   "tot": 0,
-   "lock": "Inhabilitado por asistencia — 2026 Trim 2 0% · 30-06-2026"
+   "tot": 0
   },
   "CIPU-100-24-0756": {
    "pct": null,
@@ -6783,14 +6751,12 @@
   "CIPU-100-24-0733": {
    "pct": null,
    "si": 0,
-   "tot": 0,
-   "lock": "Inhabilitado por asistencia — 2026 Trim 1 67% · 31-03-2026"
+   "tot": 0
   },
   "CIPU-100-24-1335": {
    "pct": null,
    "si": 0,
-   "tot": 0,
-   "lock": "Inhabilitado por asistencia — 2026 Trim 1 67% · 31-03-2026"
+   "tot": 0
   },
   "CIPU-100-24-0720": {
    "pct": null,
@@ -6800,14 +6766,12 @@
   "CIPU-100-24-1448": {
    "pct": null,
    "si": 0,
-   "tot": 0,
-   "lock": "Inhabilitado por asistencia — 2026 Trim 1 67% · 31-03-2026"
+   "tot": 0
   },
   "CIPU-100-24-2167": {
    "pct": null,
    "si": 0,
-   "tot": 0,
-   "lock": "Inhabilitado por asistencia — 2026 Trim 2 67% · 30-06-2026"
+   "tot": 0
   },
   "CIPU-100-24-0623": {
    "pct": null,
@@ -6817,8 +6781,7 @@
   "CIPU-100-24-1066": {
    "pct": null,
    "si": 0,
-   "tot": 0,
-   "lock": "Inhabilitado por asistencia — 2026 Trim 1 67% · 31-03-2026"
+   "tot": 0
   },
   "mtnjsgza3y7fnl": {
    "pct": null,
@@ -6833,131 +6796,73 @@
  },
  "inh": {
   "CIPU-100-24-1704": [
-   "Certificado médico vencido (25-05-2026)",
-   "Inhabilitado por asistencia — 2026 Trim 1 0% · 31-03-2026"
+   "Certificado médico vencido (25-05-2026)"
   ],
   "CIPU-100-24-0725": [
-   "Certificado médico vencido (25-05-2026)",
-   "Inhabilitado por asistencia — 2026 Trim 1 33% · 31-03-2026"
-  ],
-  "CIPU-100-24-1445": [
-   "Inhabilitado por asistencia — 2026 Trim 2 67% · 30-06-2026"
+   "Certificado médico vencido (25-05-2026)"
   ],
   "CIPU-100-24-0724": [
    "Inhabilitado por la jefatura de pilotos (02-09-2026)"
   ],
-  "CIPU-100-24-1446": [
-   "Inhabilitado por asistencia — 2026 Trim 1 67% · 31-03-2026"
-  ],
   "CIPU-100-24-0871": [
-   "Certificado médico vencido (25-05-2026)",
-   "Inhabilitado por asistencia — 2026 Trim 2 67% · 30-06-2026"
+   "Certificado médico vencido (25-05-2026)"
   ],
   "CIPU-100-24-1106": [
-   "Certificado médico vencido (25-05-2026)",
-   "Inhabilitado por asistencia — 2026 Trim 2 67% · 30-06-2026"
+   "Certificado médico vencido (25-05-2026)"
   ],
   "CIPU-100-24-0710": [
-   "Certificado médico vencido (25-05-2026)",
-   "Inhabilitado por asistencia — 2026 Trim 1 0% · 31-03-2026"
+   "Certificado médico vencido (25-05-2026)"
   ],
   "CIPU-100-24-1827": [
-   "Certificado médico vencido (25-05-2026)",
-   "Inhabilitado por asistencia — 2026 Trim 1 33% · 31-03-2026"
-  ],
-  "CIPU-100-24-0873": [
-   "Inhabilitado por asistencia — 2026 Trim 2 67% · 30-06-2026"
+   "Certificado médico vencido (25-05-2026)"
   ],
   "CIPU-100-24-0876": [
-   "Certificado médico vencido (25-05-2026)",
-   "Inhabilitado por asistencia — 2026 Trim 2 67% · 30-06-2026"
-  ],
-  "CIPU-100-24-1076": [
-   "Inhabilitado por asistencia — 2026 Trim 1 67% · 31-03-2026"
-  ],
-  "CIPU-100-24-1745": [
-   "Inhabilitado por asistencia — 2026 Trim 1 0% · 31-03-2026"
-  ],
-  "CIPU-100-24-0755": [
-   "Inhabilitado por asistencia — 2026 Trim 1 67% · 31-03-2026"
+   "Certificado médico vencido (25-05-2026)"
   ],
   "CIPU-100-24-0717": [
    "Certificado médico vencido (25-05-2026)"
   ],
   "CIPU-100-24-1353": [
-   "Certificado médico vencido (25-05-2026)",
-   "Inhabilitado por asistencia — 2026 Trim 1 33% · 31-03-2026"
-  ],
-  "CIPU-100-24-0860": [
-   "Inhabilitado por asistencia — 2026 Trim 1 33% · 31-03-2026"
+   "Certificado médico vencido (25-05-2026)"
   ],
   "CIPU-100-24-1184": [
    "Certificado médico vencido (25-05-2026)"
   ],
   "CIPU-100-24-1072": [
-   "Certificado médico vencido (25-05-2026)",
-   "Inhabilitado por asistencia — 2026 Trim 1 67% · 31-03-2026"
-  ],
-  "CIPU-100-24-0866": [
-   "Inhabilitado por asistencia — 2026 Trim 1 67% · 31-03-2026"
+   "Certificado médico vencido (25-05-2026)"
   ],
   "CIPU-100-24-0737": [
-   "Certificado médico vencido (25-05-2026)",
-   "Inhabilitado por asistencia — 2026 Trim 1 67% · 31-03-2026"
+   "Certificado médico vencido (25-05-2026)"
   ],
   "CIPU-100-24-1155": [
-   "Certificado médico vencido (25-05-2026)",
-   "Inhabilitado por asistencia — 2026 Trim 1 67% · 31-03-2026"
+   "Certificado médico vencido (25-05-2026)"
   ],
   "CIPU-100-24-0882": [
    "Certificado médico vencido (25-05-2026)"
   ],
-  "CIPU-100-24-0905": [
-   "Inhabilitado por asistencia — 2026 Trim 1 67% · 31-03-2026"
-  ],
   "CIPU-100-24-0709": [
-   "Inhabilitado por asistencia — 2026 Trim 2 67% · 30-06-2026"
+   "Inhabilitado por la jefatura de pilotos (02-09-2026)"
   ],
   "CIPU-100-24-1789": [
-   "Certificado médico vencido (25-05-2026)",
-   "Inhabilitado por asistencia — 2026 Trim 1 0% · 31-03-2026"
+   "Certificado médico vencido (25-05-2026)"
   ],
   "CIPU-100-24-0728": [
-   "Certificado médico vencido (25-05-2026)",
-   "Inhabilitado por asistencia — 2026 Trim 2 67% · 30-06-2026"
+   "Certificado médico vencido (25-05-2026)"
   ],
   "CIPU-100-24-1269": [
    "Certificado médico vencido (25-05-2026)"
   ],
-  "CIPU-100-24-0722": [
-   "Inhabilitado por asistencia — 2026 Trim 2 67% · 30-06-2026"
-  ],
   "CIPU-100-24-1781": [
-   "Certificado médico vencido (25-05-2026)",
-   "Inhabilitado por asistencia — 2026 Trim 1 67% · 31-03-2026"
-  ],
-  "CIPU-100-24-1756": [
-   "Inhabilitado por asistencia — 2026 Trim 1 33% · 31-03-2026"
-  ],
-  "CIPU-100-24-0740": [
-   "Inhabilitado por asistencia — 2026 Trim 1 67% · 31-03-2026"
-  ],
-  "CIPU-100-25-0353": [
-   "Inhabilitado por asistencia — 2026 Trim 2 67% · 30-06-2026"
-  ],
-  "CIPU-100-24-0872": [
-   "Inhabilitado por asistencia — 2026 Trim 1 67% · 31-03-2026"
+   "Certificado médico vencido (25-05-2026)"
   ],
   "CIPU-100-24-1577": [
-   "Certificado médico vencido (25-05-2026)",
-   "Inhabilitado por asistencia — 2026 Trim 1 67% · 31-03-2026"
+   "Certificado médico vencido (25-05-2026)"
   ],
   "CIPU-100-24-0961": [
    "Certificado médico vencido (25-05-2026)"
   ],
   "CIPU-100-24-0716": [
-   "Certificado médico vencido (25-05-2026)",
-   "Inhabilitado por asistencia — 2026 Trim 1 67% · 31-03-2026"
+   "Certificado médico vencido (25-05-2026)"
   ],
   "CIPU-100-24-1355": [
    "Certificado médico vencido (25-05-2026)"
@@ -6966,29 +6871,22 @@
    "Certificado médico vencido (25-05-2026)"
   ],
   "CIPU-100-24-1354": [
-   "Certificado médico vencido (25-05-2026)",
-   "Inhabilitado por asistencia — 2026 Trim 2 0% · 30-06-2026"
+   "Certificado médico vencido (25-05-2026)"
   ],
   "CIPU-100-24-0733": [
-   "Certificado médico vencido (25-05-2026)",
-   "Inhabilitado por asistencia — 2026 Trim 1 67% · 31-03-2026"
+   "Certificado médico vencido (25-05-2026)"
   ],
   "CIPU-100-24-1335": [
-   "Inhabilitado por asistencia — 2026 Trim 1 67% · 31-03-2026"
+   "Inhabilitado por la jefatura de pilotos (02-09-2026)"
   ],
   "CIPU-100-24-0720": [
    "Inhabilitado por la jefatura de pilotos (02-09-2026)"
   ],
   "CIPU-100-24-1448": [
-   "Certificado médico vencido (25-05-2026)",
-   "Inhabilitado por asistencia — 2026 Trim 1 67% · 31-03-2026"
-  ],
-  "CIPU-100-24-2167": [
-   "Inhabilitado por asistencia — 2026 Trim 2 67% · 30-06-2026"
+   "Certificado médico vencido (25-05-2026)"
   ],
   "CIPU-100-24-1066": [
-   "Certificado médico vencido (25-05-2026)",
-   "Inhabilitado por asistencia — 2026 Trim 1 67% · 31-03-2026"
+   "Certificado médico vencido (25-05-2026)"
   ],
   "mtnjsgza3y7fnl": [
    "Inhabilitado por la jefatura de pilotos (02-09-2026)"
@@ -7007,6 +6905,10 @@
    {
     "fecha": "2026-10-06",
     "estado": "inh"
+   },
+   {
+    "fecha": "2026-10-06",
+    "estado": "hab"
    }
   ],
   "CIPU-100-24-0906": [
@@ -7031,6 +6933,10 @@
    {
     "fecha": "2026-10-06",
     "estado": "inh"
+   },
+   {
+    "fecha": "2026-10-06",
+    "estado": "hab"
    }
   ],
   "CIPU-100-24-1445": [
@@ -7041,6 +6947,10 @@
    {
     "fecha": "2026-10-06",
     "estado": "inh"
+   },
+   {
+    "fecha": "2026-10-06",
+    "estado": "hab"
    }
   ],
   "CIPU-100-24-0724": [
@@ -7057,6 +6967,10 @@
    {
     "fecha": "2026-10-06",
     "estado": "inh"
+   },
+   {
+    "fecha": "2026-10-06",
+    "estado": "hab"
    }
   ],
   "CIPU-100-24-0871": [
@@ -7067,6 +6981,10 @@
    {
     "fecha": "2026-10-06",
     "estado": "inh"
+   },
+   {
+    "fecha": "2026-10-06",
+    "estado": "hab"
    }
   ],
   "CIPU-100-24-1106": [
@@ -7077,6 +6995,10 @@
    {
     "fecha": "2026-10-06",
     "estado": "inh"
+   },
+   {
+    "fecha": "2026-10-06",
+    "estado": "hab"
    }
   ],
   "CIPU-100-24-0710": [
@@ -7087,6 +7009,10 @@
    {
     "fecha": "2026-10-06",
     "estado": "inh"
+   },
+   {
+    "fecha": "2026-10-06",
+    "estado": "hab"
    }
   ],
   "CIPU-100-24-1827": [
@@ -7097,6 +7023,10 @@
    {
     "fecha": "2026-10-06",
     "estado": "inh"
+   },
+   {
+    "fecha": "2026-10-06",
+    "estado": "hab"
    }
   ],
   "CIPU-100-24-0873": [
@@ -7107,6 +7037,10 @@
    {
     "fecha": "2026-10-06",
     "estado": "inh"
+   },
+   {
+    "fecha": "2026-10-06",
+    "estado": "hab"
    }
   ],
   "CIPU-100-24-0721": [
@@ -7123,6 +7057,10 @@
    {
     "fecha": "2026-10-06",
     "estado": "inh"
+   },
+   {
+    "fecha": "2026-10-06",
+    "estado": "hab"
    }
   ],
   "CIPU-100-24-1076": [
@@ -7133,6 +7071,10 @@
    {
     "fecha": "2026-10-06",
     "estado": "inh"
+   },
+   {
+    "fecha": "2026-10-06",
+    "estado": "hab"
    }
   ],
   "CIPU-100-24-1745": [
@@ -7143,6 +7085,10 @@
    {
     "fecha": "2026-10-06",
     "estado": "inh"
+   },
+   {
+    "fecha": "2026-10-06",
+    "estado": "hab"
    }
   ],
   "CIPU-100-24-0755": [
@@ -7153,6 +7099,10 @@
    {
     "fecha": "2026-10-06",
     "estado": "inh"
+   },
+   {
+    "fecha": "2026-10-06",
+    "estado": "hab"
    }
   ],
   "CIPU-100-24-0717": [
@@ -7169,6 +7119,10 @@
    {
     "fecha": "2026-10-06",
     "estado": "inh"
+   },
+   {
+    "fecha": "2026-10-06",
+    "estado": "hab"
    }
   ],
   "CIPU-100-24-0860": [
@@ -7179,6 +7133,10 @@
    {
     "fecha": "2026-10-06",
     "estado": "inh"
+   },
+   {
+    "fecha": "2026-10-06",
+    "estado": "hab"
    }
   ],
   "CIPU-100-24-1184": [
@@ -7195,6 +7153,10 @@
    {
     "fecha": "2026-10-06",
     "estado": "inh"
+   },
+   {
+    "fecha": "2026-10-06",
+    "estado": "hab"
    }
   ],
   "CIPU-100-24-0878": [
@@ -7211,6 +7173,10 @@
    {
     "fecha": "2026-10-06",
     "estado": "inh"
+   },
+   {
+    "fecha": "2026-10-06",
+    "estado": "hab"
    }
   ],
   "CIPU-100-24-0737": [
@@ -7221,6 +7187,10 @@
    {
     "fecha": "2026-10-06",
     "estado": "inh"
+   },
+   {
+    "fecha": "2026-10-06",
+    "estado": "hab"
    }
   ],
   "CIPU-100-24-1155": [
@@ -7231,6 +7201,10 @@
    {
     "fecha": "2026-10-06",
     "estado": "inh"
+   },
+   {
+    "fecha": "2026-10-06",
+    "estado": "hab"
    }
   ],
   "CIPU-100-24-0882": [
@@ -7253,6 +7227,10 @@
    {
     "fecha": "2026-10-06",
     "estado": "inh"
+   },
+   {
+    "fecha": "2026-10-06",
+    "estado": "hab"
    }
   ],
   "CIPU-100-24-0709": [
@@ -7269,6 +7247,10 @@
    {
     "fecha": "2026-10-06",
     "estado": "inh"
+   },
+   {
+    "fecha": "2026-10-06",
+    "estado": "hab"
    }
   ],
   "CIPU-100-24-0728": [
@@ -7279,6 +7261,10 @@
    {
     "fecha": "2026-10-06",
     "estado": "inh"
+   },
+   {
+    "fecha": "2026-10-06",
+    "estado": "hab"
    }
   ],
   "CIPU-100-24-1269": [
@@ -7295,6 +7281,10 @@
    {
     "fecha": "2026-10-06",
     "estado": "inh"
+   },
+   {
+    "fecha": "2026-10-06",
+    "estado": "hab"
    }
   ],
   "CIPU-100-24-1781": [
@@ -7305,6 +7295,10 @@
    {
     "fecha": "2026-10-06",
     "estado": "inh"
+   },
+   {
+    "fecha": "2026-10-06",
+    "estado": "hab"
    }
   ],
   "CIPU-100-24-0865": [
@@ -7321,6 +7315,10 @@
    {
     "fecha": "2026-10-06",
     "estado": "inh"
+   },
+   {
+    "fecha": "2026-10-06",
+    "estado": "hab"
    }
   ],
   "CIPU-100-24-0723": [
@@ -7343,6 +7341,10 @@
    {
     "fecha": "2026-10-06",
     "estado": "inh"
+   },
+   {
+    "fecha": "2026-10-06",
+    "estado": "hab"
    }
   ],
   "CIPU-100-25-0353": [
@@ -7353,6 +7355,10 @@
    {
     "fecha": "2026-10-06",
     "estado": "inh"
+   },
+   {
+    "fecha": "2026-10-06",
+    "estado": "hab"
    }
   ],
   "CIPU-100-24-0872": [
@@ -7363,6 +7369,10 @@
    {
     "fecha": "2026-10-06",
     "estado": "inh"
+   },
+   {
+    "fecha": "2026-10-06",
+    "estado": "hab"
    }
   ],
   "CIPU-100-24-1577": [
@@ -7373,6 +7383,10 @@
    {
     "fecha": "2026-10-06",
     "estado": "inh"
+   },
+   {
+    "fecha": "2026-10-06",
+    "estado": "hab"
    }
   ],
   "CIPU-100-24-0961": [
@@ -7389,6 +7403,10 @@
    {
     "fecha": "2026-10-06",
     "estado": "inh"
+   },
+   {
+    "fecha": "2026-10-06",
+    "estado": "hab"
    }
   ],
   "CIPU-100-24-1355": [
@@ -7411,6 +7429,10 @@
    {
     "fecha": "2026-10-06",
     "estado": "inh"
+   },
+   {
+    "fecha": "2026-10-06",
+    "estado": "hab"
    }
   ],
   "CIPU-100-24-0756": [
@@ -7427,6 +7449,10 @@
    {
     "fecha": "2026-10-06",
     "estado": "inh"
+   },
+   {
+    "fecha": "2026-10-06",
+    "estado": "hab"
    }
   ],
   "CIPU-100-24-1335": [
@@ -7449,6 +7475,10 @@
    {
     "fecha": "2026-10-06",
     "estado": "inh"
+   },
+   {
+    "fecha": "2026-10-06",
+    "estado": "hab"
    }
   ],
   "CIPU-100-24-2167": [
@@ -7459,6 +7489,10 @@
    {
     "fecha": "2026-10-06",
     "estado": "inh"
+   },
+   {
+    "fecha": "2026-10-06",
+    "estado": "hab"
    }
   ],
   "CIPU-100-24-0623": [
@@ -7475,6 +7509,10 @@
    {
     "fecha": "2026-10-06",
     "estado": "inh"
+   },
+   {
+    "fecha": "2026-10-06",
+    "estado": "hab"
    }
   ],
   "mtnjsgza3y7fnl": [
