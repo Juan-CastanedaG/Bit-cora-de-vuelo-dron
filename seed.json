@@ -1,5 +1,5 @@
 {
- "seedVersion": 38,
+ "seedVersion": 39,
  "actualizado": "2026-10-06",
  "catalogoActualizado": "2026-09-03",
  "autorizaciones": [
@@ -83,7 +83,9 @@
    ],
    "tipoVisual": "VLOS",
    "nocturno": false,
-   "especiales": "No Registra"
+   "especiales": "No Registra",
+   "_u": 1791285144791,
+   "_by": "jefe_pilotos"
   },
   {
    "id": "mtkhphhiufto54",
@@ -180,7 +182,9 @@
    ],
    "tipoVisual": "VLOS",
    "nocturno": false,
-   "especiales": "No Registra"
+   "especiales": "No Registra",
+   "_u": 1791285144791,
+   "_by": "jefe_pilotos"
   },
   {
    "id": "mtkhqr9noji9dl",
@@ -248,7 +252,9 @@
    ],
    "tipoVisual": "BVLOS",
    "nocturno": false,
-   "especiales": "No Registra"
+   "especiales": "No Registra",
+   "_u": 1791285144791,
+   "_by": "jefe_pilotos"
   },
   {
    "id": "mtkhs431hf8zrk",
@@ -304,7 +310,9 @@
    ],
    "tipoVisual": "VLOS",
    "nocturno": false,
-   "especiales": "No Registra"
+   "especiales": "No Registra",
+   "_u": 1791285144791,
+   "_by": "jefe_pilotos"
   },
   {
    "id": "mtkhtfwmv50so6",
@@ -522,7 +530,9 @@
    ],
    "tipoVisual": "VLOS",
    "nocturno": false,
-   "especiales": "No Registra"
+   "especiales": "No Registra",
+   "_u": 1791285144791,
+   "_by": "jefe_pilotos"
   },
   {
    "id": "mtkhukh1qj44oz",
@@ -582,7 +592,9 @@
    ],
    "tipoVisual": "VLOS",
    "nocturno": false,
-   "especiales": "No Registra"
+   "especiales": "No Registra",
+   "_u": 1791285144791,
+   "_by": "jefe_pilotos"
   },
   {
    "id": "mtkhvzvw7pqelg",
@@ -678,7 +690,9 @@
    ],
    "tipoVisual": "BVLOS",
    "nocturno": false,
-   "especiales": "No Registra"
+   "especiales": "No Registra",
+   "_u": 1791285144791,
+   "_by": "jefe_pilotos"
   },
   {
    "id": "mtkhxryvkl81b1",
@@ -900,7 +914,9 @@
    ],
    "tipoVisual": "VLOS",
    "nocturno": false,
-   "especiales": "Vuelo en zona urbana"
+   "especiales": "Vuelo en zona urbana",
+   "_u": 1791285144791,
+   "_by": "jefe_pilotos"
   },
   {
    "id": "mtkhzn04olxdym",
@@ -1737,7 +1753,9 @@
    ],
    "tipoVisual": "VLOS",
    "nocturno": true,
-   "especiales": "Vuelo nocturno; Vuelo en zona urbana"
+   "especiales": "Vuelo nocturno; Vuelo en zona urbana",
+   "_u": 1791285144791,
+   "_by": "jefe_pilotos"
   },
   {
    "id": "mtki1ojb1mam49",
@@ -1828,7 +1846,9 @@
    ],
    "tipoVisual": "VLOS",
    "nocturno": false,
-   "especiales": "No Registra"
+   "especiales": "No Registra",
+   "_u": 1791285144791,
+   "_by": "jefe_pilotos"
   },
   {
    "id": "mtki5jjf4b4j39",
@@ -1946,7 +1966,9 @@
    ],
    "tipoVisual": "BVLOS",
    "nocturno": false,
-   "especiales": "Vuelo en zona urbana; Vuelo autónomo"
+   "especiales": "Vuelo en zona urbana; Vuelo autónomo",
+   "_u": 1791285144791,
+   "_by": "jefe_pilotos"
   },
   {
    "id": "mtkibdm42obzu0",
@@ -2016,7 +2038,9 @@
    ],
    "tipoVisual": "BVLOS",
    "nocturno": false,
-   "especiales": "No Registra"
+   "especiales": "No Registra",
+   "_u": 1791285144791,
+   "_by": "jefe_pilotos"
   },
   {
    "id": "mtkie8u8iuep1q",
@@ -2135,7 +2159,9 @@
    ],
    "tipoVisual": "BVLOS",
    "nocturno": false,
-   "especiales": "No Registra"
+   "especiales": "No Registra",
+   "_u": 1791285144791,
+   "_by": "jefe_pilotos"
   },
   {
    "id": "mtkv6whsd7io2z",
@@ -2194,7 +2220,9 @@
    "tipoVisual": "BVLOS",
    "nocturno": false,
    "especiales": "No Registra",
-   "solicitud": "IEHV"
+   "solicitud": "IEHV",
+   "_u": 1791285144791,
+   "_by": "jefe_pilotos"
   },
   {
    "id": "aut-2026151070032382",
@@ -2225,7 +2253,9 @@
    "pdfInfo": {
     "id": "mtmzh574g5cr6y",
     "name": "Autorizacion_F8BS.pdf"
-   }
+   },
+   "_u": 1791285144791,
+   "_by": "jefe_pilotos"
   },
   {
    "id": "aut-2026151070054269",
@@ -2260,7 +2290,9 @@
     "name": "Autorizacion_G8BY (1).pdf"
    },
    "pdf": null,
-   "poly": null
+   "poly": null,
+   "_u": 1791285144791,
+   "_by": "jefe_pilotos"
   },
   {
    "id": "aut-2026151070034866",
@@ -2291,7 +2323,9 @@
    "pdfInfo": {
     "id": "mtmzh5832jexq8",
     "name": "Autorizacion_GATA.pdf"
-   }
+   },
+   "_u": 1791285144791,
+   "_by": "jefe_pilotos"
   },
   {
    "id": "aut-2026151070034887",
@@ -2324,7 +2358,9 @@
    "pdfInfo": {
     "id": "mtmzh58byzwwl0",
     "name": "Autorizacion_GAUD.pdf"
-   }
+   },
+   "_u": 1791285144791,
+   "_by": "jefe_pilotos"
   },
   {
    "id": "aut-2026151070035945",
@@ -2356,7 +2392,9 @@
    "pdfInfo": {
     "id": "mtmzh58jfs0501",
     "name": "Autorizacion_GB51.pdf"
-   }
+   },
+   "_u": 1791285144791,
+   "_by": "jefe_pilotos"
   },
   {
    "id": "aut-2026151070036098",
@@ -2383,7 +2421,9 @@
    "pdfInfo": {
     "id": "mtmzh58t28ls0f",
     "name": "Autorizacion_GCG9.pdf"
-   }
+   },
+   "_u": 1791285144791,
+   "_by": "jefe_pilotos"
   },
   {
    "id": "aut-2026151070038792",
@@ -2414,7 +2454,9 @@
    "pdfInfo": {
     "id": "mtmzh592yf8gm0",
     "name": "Autorizacion_GGZ8 (1).pdf"
-   }
+   },
+   "_u": 1791285144791,
+   "_by": "jefe_pilotos"
   },
   {
    "id": "aut-2026151070039073",
@@ -2446,7 +2488,9 @@
    "pdfInfo": {
     "id": "mtmzh59eyo7xvi",
     "name": "Autorizacion_GHES.pdf"
-   }
+   },
+   "_u": 1791285144791,
+   "_by": "jefe_pilotos"
   },
   {
    "id": "aut-2026151070039087",
@@ -2526,7 +2570,9 @@
    "pdfInfo": {
     "id": "mtmzh5b12e9zar",
     "name": "Autorizacion_GHFC.pdf"
-   }
+   },
+   "_u": 1791285144791,
+   "_by": "jefe_pilotos"
   },
   {
    "id": "aut-2026151070046836",
@@ -2555,7 +2601,9 @@
    "pdfInfo": {
     "id": "mtmzh5b8ddeg5r",
     "name": "Autorizacion_GS0T.pdf"
-   }
+   },
+   "_u": 1791285144791,
+   "_by": "jefe_pilotos"
   },
   {
    "id": "aut-2026151070046844",
@@ -2592,7 +2640,9 @@
    "pdfInfo": {
     "id": "mtmzh5cldc3pbc",
     "name": "Autorizacion_GS1B.pdf"
-   }
+   },
+   "_u": 1791285144791,
+   "_by": "jefe_pilotos"
   },
   {
    "id": "aut-2026151070046848",
@@ -2629,7 +2679,9 @@
    "pdfInfo": {
     "id": "mtnoxxba0grthr",
     "name": "Autorizacion_GS1R.pdf"
-   }
+   },
+   "_u": 1791285144791,
+   "_by": "jefe_pilotos"
   },
   {
    "id": "aut-2026151070046867",
@@ -2661,7 +2713,9 @@
    "pdfInfo": {
     "id": "mtmzh5d2d6nzzo",
     "name": "Autorizacion_GS2N.pdf"
-   }
+   },
+   "_u": 1791285144791,
+   "_by": "jefe_pilotos"
   },
   {
    "id": "aut-2026151070046901",
@@ -2697,7 +2751,9 @@
    "pdfInfo": {
     "id": "mtmzh5dhem1s42",
     "name": "Autorizacion_GS30.pdf"
-   }
+   },
+   "_u": 1791285144791,
+   "_by": "jefe_pilotos"
   },
   {
    "id": "aut-2026151070046926",
@@ -2728,7 +2784,9 @@
    "pdfInfo": {
     "id": "mtmzh5dwbp8ngd",
     "name": "Autorizacion_GS42.pdf"
-   }
+   },
+   "_u": 1791285144791,
+   "_by": "jefe_pilotos"
   },
   {
    "id": "aut-2026151070046833",
@@ -2761,7 +2819,9 @@
    "pdfInfo": {
     "id": "mtmzh5e4or9j9r",
     "name": "Autorizacion_GSZ6.pdf"
-   }
+   },
+   "_u": 1791285144791,
+   "_by": "jefe_pilotos"
   },
   {
    "id": "aut-2026151070058983",
@@ -2795,7 +2855,9 @@
    "pdfInfo": {
     "id": "mtmzh5eb5peasw",
     "name": "Autorizacion_HLB8.pdf"
-   }
+   },
+   "_u": 1791285144791,
+   "_by": "jefe_pilotos"
   },
   {
    "id": "aut-2026151070058979",
@@ -2831,7 +2893,9 @@
    "pdfInfo": {
     "id": "mtmzh5enx67ngh",
     "name": "Autorizacion_HLBR.pdf"
-   }
+   },
+   "_u": 1791285144791,
+   "_by": "jefe_pilotos"
   },
   {
    "id": "aut-2026151070058996",
@@ -2869,7 +2933,9 @@
    "pdfInfo": {
     "id": "mtmzh5ewtu3xdo",
     "name": "Autorizacion_HLC9 (1).pdf"
-   }
+   },
+   "_u": 1791285144791,
+   "_by": "jefe_pilotos"
   },
   {
    "id": "aut-2026151070059085",
@@ -2896,7 +2962,9 @@
    "pdfInfo": {
     "id": "mtmzh5femkhse2",
     "name": "Autorizacion_HLJR.pdf"
-   }
+   },
+   "_u": 1791285144791,
+   "_by": "jefe_pilotos"
   },
   {
    "id": "aut-2026151070059460",
@@ -2928,7 +2996,9 @@
    "pdfInfo": {
     "id": "mtmzh5flf3rvgw",
     "name": "Autorizacion_HMNR.pdf"
-   }
+   },
+   "_u": 1791285144791,
+   "_by": "jefe_pilotos"
   },
   {
    "id": "aut-2026151070062343",
@@ -2965,7 +3035,9 @@
    "pdfInfo": {
     "id": "mtmzh5g8xtv1tu",
     "name": "Autorizacion_HVUX.pdf"
-   }
+   },
+   "_u": 1791285144791,
+   "_by": "jefe_pilotos"
   },
   {
    "id": "aut-2026151070062755",
@@ -2994,7 +3066,9 @@
    "pdfInfo": {
     "id": "mtmzh5gdjq6huv",
     "name": "Autorizacion_HXHP.pdf"
-   }
+   },
+   "_u": 1791285144791,
+   "_by": "jefe_pilotos"
   },
   {
    "id": "aut-2026151070068233",
@@ -3027,7 +3101,9 @@
    "pdfInfo": {
     "id": "mtmzh5gkkqq6cd",
     "name": "Autorizacion_IAX6 (1).pdf"
-   }
+   },
+   "_u": 1791285144791,
+   "_by": "jefe_pilotos"
   },
   {
    "id": "aut-2026151070068780",
@@ -3059,7 +3135,9 @@
    "pdfInfo": {
     "id": "mtmzh5gtd0clkj",
     "name": "Autorizacion_IBUK.pdf"
-   }
+   },
+   "_u": 1791285144791,
+   "_by": "jefe_pilotos"
   },
   {
    "id": "aut-2026151070070544",
@@ -3091,7 +3169,9 @@
    "pdfInfo": {
     "id": "mtmzh5hbqf9nhu",
     "name": "Autorizacion_IEVX.pdf"
-   }
+   },
+   "_u": 1791285144791,
+   "_by": "jefe_pilotos"
   },
   {
    "id": "aut-2026151070071365",
@@ -3135,7 +3215,9 @@
    "pdfInfo": {
     "id": "mtnoxxcgpbqrdx",
     "name": "Autorizacion_IGMQ.pdf"
-   }
+   },
+   "_u": 1791285144791,
+   "_by": "jefe_pilotos"
   },
   {
    "id": "aut-2026151070078083",
@@ -3165,7 +3247,9 @@
    "pdfInfo": {
     "id": "mtmzh5igtrew6o",
     "name": "Autorizacion_IVBL.pdf"
-   }
+   },
+   "_u": 1791285144791,
+   "_by": "jefe_pilotos"
   },
   {
    "id": "aut-2026151070085681",
@@ -3194,7 +3278,9 @@
    "pdfInfo": {
     "id": "mtmzh5inoksnhf",
     "name": "Autorizacion_JDT5 (2).pdf"
-   }
+   },
+   "_u": 1791285144791,
+   "_by": "jefe_pilotos"
   },
   {
    "id": "aut-2026151070089595",
@@ -3244,7 +3330,9 @@
    "pdfInfo": {
     "id": "mtmzh5iwvlr7ji",
     "name": "Autorizacion_JO0P.pdf"
-   }
+   },
+   "_u": 1791285144791,
+   "_by": "jefe_pilotos"
   },
   {
    "id": "aut-2026151070089613",
@@ -3294,7 +3382,9 @@
    "pdfInfo": {
     "id": "mtmzh5j5gh33ig",
     "name": "Autorizacion_JO4N.pdf"
-   }
+   },
+   "_u": 1791285144791,
+   "_by": "jefe_pilotos"
   },
   {
    "id": "aut-2026151070089674",
@@ -3340,7 +3430,9 @@
    "pdfInfo": {
     "id": "mtmzh5jbb5clb1",
     "name": "Autorizacion_JPBT.pdf"
-   }
+   },
+   "_u": 1791285144791,
+   "_by": "jefe_pilotos"
   },
   {
    "id": "aut-2025251070057820",
@@ -3362,7 +3454,9 @@
    "pdfInfo": {
     "id": "mtnt8u7jvpmklm",
     "name": "2404964 (1).pdf"
-   }
+   },
+   "_u": 1791285144791,
+   "_by": "jefe_pilotos"
   },
   {
    "id": "aut-2025251070060650",
@@ -3384,7 +3478,9 @@
    "pdfInfo": {
     "id": "mtnt8u6zh1hsfa",
     "name": "2416425.pdf"
-   }
+   },
+   "_u": 1791285144791,
+   "_by": "jefe_pilotos"
   },
   {
    "id": "aut-2025251070061930",
@@ -3406,7 +3502,9 @@
    "pdfInfo": {
     "id": "mtnt8u62v52tuz",
     "name": "2421333.pdf"
-   }
+   },
+   "_u": 1791285144791,
+   "_by": "jefe_pilotos"
   },
   {
    "id": "aut-2025251070062994",
@@ -3429,7 +3527,9 @@
    "pdfInfo": {
     "id": "mtnt8u3f838z8x",
     "name": "2427091.pdf"
-   }
+   },
+   "_u": 1791285144791,
+   "_by": "jefe_pilotos"
   },
   {
    "id": "aut-2026251070014708",
@@ -3445,7 +3545,9 @@
    "pdfInfo": {
     "id": "mtnt8txe2mqqr8",
     "name": "2506987.pdf"
-   }
+   },
+   "_u": 1791285144791,
+   "_by": "jefe_pilotos"
   },
   {
    "id": "aut-2026251070018031",
@@ -3461,7 +3563,9 @@
    "pdfInfo": {
     "id": "mtnt8twtdij1gj",
     "name": "2520996.pdf"
-   }
+   },
+   "_u": 1791285144791,
+   "_by": "jefe_pilotos"
   },
   {
    "id": "aut-2026251070031645",
@@ -3479,7 +3583,9 @@
    "pdfInfo": {
     "id": "mtnt8tt5kpbm1i",
     "name": "2569646.pdf"
-   }
+   },
+   "_u": 1791285144791,
+   "_by": "jefe_pilotos"
   },
   {
    "id": "aut-2026251070008498",
@@ -3502,7 +3608,9 @@
    "pdfInfo": {
     "id": "mtnt8u17t4e0xp",
     "name": "2026151000021667.pdf"
-   }
+   },
+   "_u": 1791285144791,
+   "_by": "jefe_pilotos"
   },
   {
    "id": "aut-2025251070064603",
@@ -3523,7 +3631,9 @@
    "pdfInfo": {
     "id": "mtnt8u3yccklkl",
     "name": "Radicado_2025251070064603_Id_2434789.pdf"
-   }
+   },
+   "_u": 1791285144791,
+   "_by": "jefe_pilotos"
   },
   {
    "id": "mtnqgbk8ays3uq",
@@ -3543,7 +3653,9 @@
    "poligonos": [],
    "tipoVisual": "",
    "nocturno": false,
-   "especiales": []
+   "especiales": [],
+   "_u": 1791285144791,
+   "_by": "jefe_pilotos"
   },
   {
    "id": "aut-2025251060002783",
@@ -3565,7 +3677,9 @@
    "pdfInfo": {
     "id": "mtnt8u8lpcsdax",
     "name": "1594850.pdf"
-   }
+   },
+   "_u": 1791285144791,
+   "_by": "jefe_pilotos"
   },
   {
    "id": "aut-2025251060016546",
@@ -3587,7 +3701,9 @@
    "pdfInfo": {
     "id": "mtnt8tslf84ynl",
     "name": "Radicado_2025251060016546_Id_1658202.pdf"
-   }
+   },
+   "_u": 1791285144791,
+   "_by": "jefe_pilotos"
   },
   {
    "id": "aut-2026251070018022",
@@ -3603,7 +3719,9 @@
    "pdfInfo": {
     "id": "mtnt8thq5doaal",
     "name": "2520980.pdf"
-   }
+   },
+   "_u": 1791285144791,
+   "_by": "jefe_pilotos"
   },
   {
    "id": "aut-2026251070014706",
@@ -3619,7 +3737,9 @@
    "pdfInfo": {
     "id": "mtnt8tjnmd7wht",
     "name": "2506983.pdf"
-   }
+   },
+   "_u": 1791285144791,
+   "_by": "jefe_pilotos"
   },
   {
    "id": "aut-2025251070049200",
@@ -3642,7 +3762,9 @@
    "pdfInfo": {
     "id": "mtnt8tzw2vnv73",
     "name": "2367734.pdf"
-   }
+   },
+   "_u": 1791285144791,
+   "_by": "jefe_pilotos"
   },
   {
    "id": "aut-2025251070040386",
@@ -3664,7 +3786,9 @@
    "pdfInfo": {
     "id": "mtnt8tl6nu57sa",
     "name": "Radicado_2025251070040386_Id_2324005.pdf"
-   }
+   },
+   "_u": 1791285144791,
+   "_by": "jefe_pilotos"
   },
   {
    "id": "aut-2025251070040392",
@@ -3686,7 +3810,9 @@
    "pdfInfo": {
     "id": "mtnt8tlpnpu36f",
     "name": "Radicado_2025251070040392_Id_2324015_1.pdf"
-   }
+   },
+   "_u": 1791285144791,
+   "_by": "jefe_pilotos"
   },
   {
    "id": "aut-2026251070013277",
@@ -3702,7 +3828,9 @@
    "pdfInfo": {
     "id": "mtnt8tm8c04wg0",
     "name": "2499683.pdf"
-   }
+   },
+   "_u": 1791285144791,
+   "_by": "jefe_pilotos"
   },
   {
    "id": "aut-2026251070006332",
@@ -3727,7 +3855,9 @@
    "pdfInfo": {
     "id": "mtnt8tmu4neury",
     "name": "EPM 2026251070006332.pdf"
-   }
+   },
+   "_u": 1791285144791,
+   "_by": "jefe_pilotos"
   },
   {
    "id": "aut-2026251070006135",
@@ -3762,7 +3892,9 @@
    "pdfInfo": {
     "id": "mtnt8tnuub9u89",
     "name": "2468049.pdf"
-   }
+   },
+   "_u": 1791285144791,
+   "_by": "jefe_pilotos"
   },
   {
    "id": "aut-2026251070018038",
@@ -3778,7 +3910,9 @@
    "pdfInfo": {
     "id": "mtnt8tosiysmga",
     "name": "2521008.pdf"
-   }
+   },
+   "_u": 1791285144791,
+   "_by": "jefe_pilotos"
   },
   {
    "id": "aut-2026251070024595",
@@ -3795,7 +3929,9 @@
    "pdfInfo": {
     "id": "mtnt8tqwkj3c5m",
     "name": "2544115.pdf"
-   }
+   },
+   "_u": 1791285144791,
+   "_by": "jefe_pilotos"
   },
   {
    "id": "aut-2026251070039210",
@@ -3811,7 +3947,9 @@
    "pdfInfo": {
     "id": "mtnt8trjd9lhhz",
     "name": "2597366.pdf"
-   }
+   },
+   "_u": 1791285144791,
+   "_by": "jefe_pilotos"
   },
   {
    "id": "aut-2026251070018036",
@@ -3827,7 +3965,9 @@
    "pdfInfo": {
     "id": "mtnt8tw1g9ipsh",
     "name": "2521004.pdf"
-   }
+   },
+   "_u": 1791285144791,
+   "_by": "jefe_pilotos"
   },
   {
    "id": "aut-2026251070005396",
@@ -3850,7 +3990,9 @@
    "pdfInfo": {
     "id": "mtnt8ty14oczva",
     "name": "Radicado_2026251070005396_Id_2464152.pdf"
-   }
+   },
+   "_u": 1791285144791,
+   "_by": "jefe_pilotos"
   },
   {
    "id": "aut-2026251070005395",
@@ -3873,7 +4015,9 @@
    "pdfInfo": {
     "id": "mtnt8tyq841hdc",
     "name": "Radicado_2026251070005395_Id_2464149.pdf"
-   }
+   },
+   "_u": 1791285144791,
+   "_by": "jefe_pilotos"
   },
   {
    "id": "aut-2025251070049197",
@@ -3896,7 +4040,9 @@
    "pdfInfo": {
     "id": "mtnt8tzbqfuznf",
     "name": "2367731 (1).pdf"
-   }
+   },
+   "_u": 1791285144791,
+   "_by": "jefe_pilotos"
   },
   {
    "id": "aut-2026251070009258",
@@ -3919,7 +4065,9 @@
    "pdfInfo": {
     "id": "mtnt8u0isdmeu5",
     "name": "2482025 (1).pdf"
-   }
+   },
+   "_u": 1791285144791,
+   "_by": "jefe_pilotos"
   },
   {
    "id": "aut-2026251070009553",
@@ -3942,7 +4090,9 @@
    "pdfInfo": {
     "id": "mtnt8u1qj833hq",
     "name": "2483202 (1).pdf"
-   }
+   },
+   "_u": 1791285144791,
+   "_by": "jefe_pilotos"
   },
   {
    "id": "aut-2026251070009557",
@@ -3965,7 +4115,9 @@
    "pdfInfo": {
     "id": "mtnt8u2a3l7y6q",
     "name": "2483227.pdf"
-   }
+   },
+   "_u": 1791285144791,
+   "_by": "jefe_pilotos"
   },
   {
    "id": "aut-2026251070009546",
@@ -3988,7 +4140,9 @@
    "pdfInfo": {
     "id": "mtnt8u2utdpva7",
     "name": "2483182.pdf"
-   }
+   },
+   "_u": 1791285144791,
+   "_by": "jefe_pilotos"
   },
   {
    "id": "aut-2025251070040391",
@@ -4010,7 +4164,9 @@
    "pdfInfo": {
     "id": "mtnt8u82ctyhey",
     "name": "2324014.pdf"
-   }
+   },
+   "_u": 1791285144791,
+   "_by": "jefe_pilotos"
   },
   {
    "id": "aut-2026151070147974",
@@ -4063,7 +4219,9 @@
       -76.23345912806171
      ]
     ]
-   ]
+   ],
+   "_u": 1791285144791,
+   "_by": "jefe_pilotos"
   },
   {
    "id": "aut-2026151070148687",
@@ -4114,7 +4272,9 @@
       -74.53589269446643
      ]
     ]
-   ]
+   ],
+   "_u": 1791285144791,
+   "_by": "jefe_pilotos"
   },
   {
    "id": "aut-2026151070149822",
@@ -4165,7 +4325,9 @@
       -75.24723197325324
      ]
     ]
-   ]
+   ],
+   "_u": 1791285144791,
+   "_by": "jefe_pilotos"
   },
   {
    "id": "aut-2026151070149830",
@@ -4175,6 +4337,7 @@
    "ini": "2026-09-15",
    "fin": "2026-09-26",
    "dronesAut": [
+    "1581F7FVC253N00DPD1X",
     "1581F7FVC252A00CSK2T"
    ],
    "pilotosAut": [
@@ -4268,7 +4431,9 @@
      ]
     ]
    ],
-   "nocturno": false
+   "nocturno": false,
+   "_u": 1791285144791,
+   "_by": "jefe_pilotos"
   },
   {
    "id": "aut-2026251070010965",
@@ -4347,7 +4512,9 @@
       -75.52764106106564
      ]
     ]
-   ]
+   ],
+   "_u": 1791285144791,
+   "_by": "jefe_pilotos"
   },
   {
    "id": "aut-2026151070162172",
@@ -4601,7 +4768,9 @@
       -75.32761189579539
      ]
     ]
-   ]
+   ],
+   "_u": 1791285144791,
+   "_by": "jefe_pilotos"
   }
  ],
  "flota": [
@@ -4621,7 +4790,9 @@
    "gerencia": "EPM Distribucion de Energia",
    "area": "PROFESIONAL A OPERACIONES NEGO",
    "responsable": "EDER ALEXANDER MERCADO RODRIGUEZ",
-   "responsableId": "plt-CIPU-100-24-1353"
+   "responsableId": "plt-CIPU-100-24-1353",
+   "_u": 1791285144791,
+   "_by": "jefe_pilotos"
   },
   {
    "id": "drn-DR2",
@@ -4639,7 +4810,9 @@
    "gerencia": "EPM Distribucion de Energia",
    "area": "PROFESIONAL B GESTIÓN PROYECTO",
    "responsable": "JUAN PABLO CASTANEDA GUTIERREZ",
-   "responsableId": "plt-CIPU-100-24-0865"
+   "responsableId": "plt-CIPU-100-24-0865",
+   "_u": 1791285144791,
+   "_by": "jefe_pilotos"
   },
   {
    "id": "drn-DR3",
@@ -4656,7 +4829,9 @@
    "gerencia": "EPM Distribucion de Energia",
    "area": "PROFESIONAL B GESTIÓN PROYECTO",
    "responsable": "JUAN PABLO CASTANEDA GUTIERREZ",
-   "responsableId": "plt-CIPU-100-24-0865"
+   "responsableId": "plt-CIPU-100-24-0865",
+   "_u": 1791285144791,
+   "_by": "jefe_pilotos"
   },
   {
    "id": "drn-DR4",
@@ -4673,24 +4848,9 @@
    "gerencia": "EPM Generacion de Energia",
    "area": "PROFESIONAL B OPERACIONES NEGO",
    "responsable": "JUAN DAVID CORREA CASTRO",
-   "responsableId": "plt-CIPU-100-24-1269"
-  },
-  {
-   "id": "drn-DR5",
-   "dr": "DR5",
-   "maximo": "DR5",
-   "modelo": "DJI MATRICE 4E",
-   "serial": "1581F7FVC252A00CSK2T",
-   "ruas": "RUAS-100-25-D3TO",
-   "poliza": "900001438009",
-   "polizaVence": "2026-09-26",
-   "mant": "2026-09-28",
-   "habBVLOS": true,
-   "habNocturno": true,
-   "gerencia": "EPM Institucional",
-   "area": "PROFESIONAL A EN GESTIÓN INMOB",
-   "responsable": "JORGE IVAN ACEVEDO HENAO",
-   "responsableId": "plt-CIPU-100-24-0905"
+   "responsableId": "plt-CIPU-100-24-1269",
+   "_u": 1791285144791,
+   "_by": "jefe_pilotos"
   },
   {
    "id": "drn-DR8",
@@ -4707,7 +4867,9 @@
    "gerencia": "EPM Generacion de Energia",
    "area": "AR IC E HIDROMETEOROLO GEN ENG",
    "responsable": "CAMILO ECHEVERRI GUISAO",
-   "responsableId": "plt-CIPU-100-24-1106"
+   "responsableId": "plt-CIPU-100-24-1106",
+   "_u": 1791285144791,
+   "_by": "jefe_pilotos"
   },
   {
    "id": "drn-DR9",
@@ -4724,7 +4886,9 @@
    "gerencia": "EPM Distribucion de Energia",
    "area": "ÁREA SUBESTACIONES Y LÍNEAS",
    "responsable": "ANDRES FELIPE RAMIREZ AMAYA",
-   "responsableId": "plt-CIPU-100-24-1446"
+   "responsableId": "plt-CIPU-100-24-1446",
+   "_u": 1791285144791,
+   "_by": "jefe_pilotos"
   },
   {
    "id": "drn-DR10",
@@ -4741,7 +4905,9 @@
    "gerencia": "EPM Distribucion de Energia",
    "area": "ÁREA SUBESTACIONES Y LÍNEAS",
    "responsable": "ANDRES FELIPE RAMIREZ AMAYA",
-   "responsableId": "plt-CIPU-100-24-1446"
+   "responsableId": "plt-CIPU-100-24-1446",
+   "_u": 1791285144791,
+   "_by": "jefe_pilotos"
   },
   {
    "id": "drn-DR11",
@@ -4759,7 +4925,9 @@
    "gerencia": "EPM Generacion Ituango",
    "area": "ÁREA OPERACIONES ITUANGO",
    "responsable": "ANDRES ANTONIO GUTIERREZ SERNA",
-   "responsableId": "plt-CIPU-100-24-1445"
+   "responsableId": "plt-CIPU-100-24-1445",
+   "_u": 1791285144791,
+   "_by": "jefe_pilotos"
   },
   {
    "id": "drn-DR12",
@@ -4776,7 +4944,9 @@
    "gerencia": "EPM Generacion de Energia",
    "area": "PROFESIONAL A AMBIENTAL Y SOCI",
    "responsable": "MENDELSSOHN MARTINEZ CASTANO",
-   "responsableId": "plt-CIPU-100-25-0353"
+   "responsableId": "plt-CIPU-100-25-0353",
+   "_u": 1791285144791,
+   "_by": "jefe_pilotos"
   },
   {
    "id": "drn-DR14",
@@ -4793,7 +4963,9 @@
    "gerencia": "EPM Distribucion de Energia",
    "area": "PROFESIONAL A OPERACIONES NEGO",
    "responsable": "EDER ALEXANDER MERCADO RODRIGUEZ",
-   "responsableId": "plt-CIPU-100-24-1353"
+   "responsableId": "plt-CIPU-100-24-1353",
+   "_u": 1791285144791,
+   "_by": "jefe_pilotos"
   },
   {
    "id": "drn-DR15",
@@ -4810,7 +4982,9 @@
    "gerencia": "EPM Generacion Ituango",
    "area": "PROFESIONAL C AMBIENTAL Y SOCI",
    "responsable": "WILLIAM ALFONSO RAMIREZ VERGARA",
-   "responsableId": "plt-CIPU-100-24-0623"
+   "responsableId": "plt-CIPU-100-24-0623",
+   "_u": 1791285144791,
+   "_by": "jefe_pilotos"
   },
   {
    "id": "drn-DR16",
@@ -4827,7 +5001,9 @@
    "gerencia": "EPM Generacion Ituango",
    "area": "PROFESIONAL A AMBIENTAL Y SOCI",
    "responsable": "TOMAS BOTERO ARANGO",
-   "responsableId": "plt-CIPU-100-24-1448"
+   "responsableId": "plt-CIPU-100-24-1448",
+   "_u": 1791285144791,
+   "_by": "jefe_pilotos"
   },
   {
    "id": "drn-DR17",
@@ -4844,7 +5020,9 @@
    "gerencia": "EPM Generacion Ituango",
    "area": "PROFESIONAL C AMBIENTAL Y SOCI",
    "responsable": "WILLIAM ALFONSO RAMIREZ VERGARA",
-   "responsableId": "plt-CIPU-100-24-0623"
+   "responsableId": "plt-CIPU-100-24-0623",
+   "_u": 1791285144791,
+   "_by": "jefe_pilotos"
   },
   {
    "id": "drn-DR20",
@@ -4861,7 +5039,9 @@
    "gerencia": "EPM Acueducto",
    "area": "TÉCNICO-TÉCNICA DE LA OPERACIÓ",
    "responsable": "MAYCOL DARIO BEDOYA ESCOBAR",
-   "responsableId": "plt-CIPU-100-24-0740"
+   "responsableId": "plt-CIPU-100-24-0740",
+   "_u": 1791285144791,
+   "_by": "jefe_pilotos"
   },
   {
    "id": "drn-DR21",
@@ -4878,7 +5058,9 @@
    "gerencia": "EPM Acueducto",
    "area": "TÉCNICO-TÉCNICA DE LA OPERACIÓ",
    "responsable": "MAYCOL DARIO BEDOYA ESCOBAR",
-   "responsableId": "plt-CIPU-100-24-0740"
+   "responsableId": "plt-CIPU-100-24-0740",
+   "_u": 1791285144791,
+   "_by": "jefe_pilotos"
   },
   {
    "id": "drn-DR22",
@@ -4895,7 +5077,9 @@
    "gerencia": "EPM Distribucion de Energia",
    "area": "AR AMBIENTAL Y SOCIAL TYD ENG",
    "responsable": "ALEJANDRO MARIN ORTEGA",
-   "responsableId": "plt-CIPU-100-24-1704"
+   "responsableId": "plt-CIPU-100-24-1704",
+   "_u": 1791285144791,
+   "_by": "jefe_pilotos"
   },
   {
    "id": "drn-DR24",
@@ -4912,7 +5096,9 @@
    "gerencia": "EPM Alcantarillado",
    "area": "ÁREA MNTO REDES ALCANTARILLADO",
    "responsable": "CARLOS EDUARDO USUGA JIMENEZ",
-   "responsableId": "plt-CIPU-100-24-0721"
+   "responsableId": "plt-CIPU-100-24-0721",
+   "_u": 1791285144791,
+   "_by": "jefe_pilotos"
   },
   {
    "id": "drn-DR25",
@@ -4928,7 +5114,9 @@
    "habNocturno": true,
    "gerencia": "EPM Institucional",
    "responsable": "DAVID TRUJILLO CATANO",
-   "responsableId": "plt-CIPU-100-24-0755"
+   "responsableId": "plt-CIPU-100-24-0755",
+   "_u": 1791285144791,
+   "_by": "jefe_pilotos"
   },
   {
    "id": "drn-DR26",
@@ -4944,7 +5132,9 @@
    "habNocturno": true,
    "gerencia": "EPM Institucional",
    "responsable": "DUVAN FERNEY ALVAREZ ATILANO",
-   "responsableId": ""
+   "responsableId": "",
+   "_u": 1791285144791,
+   "_by": "jefe_pilotos"
   },
   {
    "id": "drn-DR27",
@@ -4961,7 +5151,9 @@
    "gerencia": "EPM Generacion Ituango",
    "area": "SUBG DESARROLLO PROY ITUANGO",
    "responsable": "ANDRES FELIPE JARAMILLO CORREA",
-   "responsableId": "plt-CIPU-100-24-0724"
+   "responsableId": "plt-CIPU-100-24-0724",
+   "_u": 1791285144791,
+   "_by": "jefe_pilotos"
   },
   {
    "id": "drn-DR28",
@@ -4976,7 +5168,9 @@
    "habBVLOS": true,
    "habNocturno": true,
    "responsable": "LUK BRYAN LOPEZ MEJIA",
-   "responsableId": ""
+   "responsableId": "",
+   "_u": 1791285144791,
+   "_by": "jefe_pilotos"
   },
   {
    "id": "drn-DR29",
@@ -4999,7 +5193,9 @@
      "estado": "ina",
      "motivo": "inicial"
     }
-   ]
+   ],
+   "_u": 1791285144791,
+   "_by": "jefe_pilotos"
   },
   {
    "id": "drn-DR23",
@@ -5017,65 +5213,67 @@
    "gerencia": "EPM Generacion Ituango",
    "area": "SUBG DESARROLLO PROY ITUANGO",
    "responsable": "ANDRES FELIPE JARAMILLO CORREA",
-   "responsableId": "plt-CIPU-100-24-0724"
+   "responsableId": "plt-CIPU-100-24-0724",
+   "_u": 1791285144791,
+   "_by": "jefe_pilotos"
   }
  ],
  "habil": {
-  "CIPU-100-24-1704": true,
+  "CIPU-100-24-1704": false,
   "CIPU-100-24-0906": true,
-  "CIPU-100-24-0725": true,
-  "CIPU-100-24-1445": true,
+  "CIPU-100-24-0725": false,
+  "CIPU-100-24-1445": false,
   "CIPU-100-24-0724": false,
-  "CIPU-100-24-1446": true,
-  "CIPU-100-24-0871": true,
-  "CIPU-100-24-1106": true,
-  "CIPU-100-24-0710": true,
-  "CIPU-100-24-1827": true,
-  "CIPU-100-24-0873": true,
+  "CIPU-100-24-1446": false,
+  "CIPU-100-24-0871": false,
+  "CIPU-100-24-1106": false,
+  "CIPU-100-24-0710": false,
+  "CIPU-100-24-1827": false,
+  "CIPU-100-24-0873": false,
   "CIPU-100-24-0721": true,
-  "CIPU-100-24-0876": true,
-  "CIPU-100-24-1076": true,
-  "CIPU-100-24-1745": true,
-  "CIPU-100-24-0755": true,
+  "CIPU-100-24-0876": false,
+  "CIPU-100-24-1076": false,
+  "CIPU-100-24-1745": false,
+  "CIPU-100-24-0755": false,
   "CIPU-100-24-0717": true,
-  "CIPU-100-24-1353": true,
-  "CIPU-100-24-0860": true,
+  "CIPU-100-24-1353": false,
+  "CIPU-100-24-0860": false,
   "CIPU-100-24-1184": true,
-  "CIPU-100-24-1072": true,
+  "CIPU-100-24-1072": false,
   "CIPU-100-24-0878": true,
-  "CIPU-100-24-0866": true,
-  "CIPU-100-24-0737": true,
-  "CIPU-100-24-1155": true,
+  "CIPU-100-24-0866": false,
+  "CIPU-100-24-0737": false,
+  "CIPU-100-24-1155": false,
   "CIPU-100-24-0882": true,
   "CIPU-100-24-0573": true,
-  "CIPU-100-24-0905": true,
+  "CIPU-100-24-0905": false,
   "CIPU-100-24-0709": false,
-  "CIPU-100-24-1789": true,
-  "CIPU-100-24-0728": true,
+  "CIPU-100-24-1789": false,
+  "CIPU-100-24-0728": false,
   "CIPU-100-24-1269": true,
-  "CIPU-100-24-0722": true,
-  "CIPU-100-24-1781": true,
+  "CIPU-100-24-0722": false,
+  "CIPU-100-24-1781": false,
   "CIPU-100-24-0865": true,
-  "CIPU-100-24-1756": true,
+  "CIPU-100-24-1756": false,
   "CIPU-100-24-0723": true,
   "CIPU-100-24-0874": true,
-  "CIPU-100-24-0740": true,
-  "CIPU-100-25-0353": true,
-  "CIPU-100-24-0872": true,
-  "CIPU-100-24-1577": true,
+  "CIPU-100-24-0740": false,
+  "CIPU-100-25-0353": false,
+  "CIPU-100-24-0872": false,
+  "CIPU-100-24-1577": false,
   "CIPU-100-24-0961": true,
-  "CIPU-100-24-0716": true,
+  "CIPU-100-24-0716": false,
   "CIPU-100-24-1355": true,
   "CIPU-100-24-0738": true,
-  "CIPU-100-24-1354": true,
+  "CIPU-100-24-1354": false,
   "CIPU-100-24-0756": true,
-  "CIPU-100-24-0733": true,
+  "CIPU-100-24-0733": false,
   "CIPU-100-24-1335": false,
   "CIPU-100-24-0720": false,
-  "CIPU-100-24-1448": true,
-  "CIPU-100-24-2167": true,
+  "CIPU-100-24-1448": false,
+  "CIPU-100-24-2167": false,
   "CIPU-100-24-0623": true,
-  "CIPU-100-24-1066": true,
+  "CIPU-100-24-1066": false,
   "mtnjsgza3y7fnl": false,
   "CIPU-100-24-0718": false
  },
@@ -6311,284 +6509,321 @@
  },
  "capP": {
   "CIPU-100-24-1704": {
-   "pct": 11,
-   "si": 2,
-   "tot": 18
+   "pct": null,
+   "si": 0,
+   "tot": 0,
+   "lock": "Inhabilitado por asistencia — 2026 Trim 1 0% · 31-03-2026"
   },
   "CIPU-100-24-0906": {
-   "pct": 56,
-   "si": 10,
-   "tot": 18
+   "pct": null,
+   "si": 0,
+   "tot": 0
   },
   "CIPU-100-24-0725": {
-   "pct": 44,
-   "si": 8,
-   "tot": 18
+   "pct": null,
+   "si": 0,
+   "tot": 0,
+   "lock": "Inhabilitado por asistencia — 2026 Trim 1 33% · 31-03-2026"
   },
   "CIPU-100-24-1445": {
-   "pct": 89,
-   "si": 16,
-   "tot": 18
+   "pct": null,
+   "si": 0,
+   "tot": 0,
+   "lock": "Inhabilitado por asistencia — 2026 Trim 2 67% · 30-06-2026"
   },
   "CIPU-100-24-0724": {
-   "pct": 72,
-   "si": 13,
-   "tot": 18
+   "pct": null,
+   "si": 0,
+   "tot": 0
   },
   "CIPU-100-24-1446": {
-   "pct": 89,
-   "si": 16,
-   "tot": 18
+   "pct": null,
+   "si": 0,
+   "tot": 0,
+   "lock": "Inhabilitado por asistencia — 2026 Trim 1 67% · 31-03-2026"
   },
   "CIPU-100-24-0871": {
-   "pct": 56,
-   "si": 10,
-   "tot": 18
+   "pct": null,
+   "si": 0,
+   "tot": 0,
+   "lock": "Inhabilitado por asistencia — 2026 Trim 2 67% · 30-06-2026"
   },
   "CIPU-100-24-1106": {
-   "pct": 53,
-   "si": 9,
-   "tot": 17
+   "pct": null,
+   "si": 0,
+   "tot": 0,
+   "lock": "Inhabilitado por asistencia — 2026 Trim 2 67% · 30-06-2026"
   },
   "CIPU-100-24-0710": {
-   "pct": 11,
-   "si": 2,
-   "tot": 18
+   "pct": null,
+   "si": 0,
+   "tot": 0,
+   "lock": "Inhabilitado por asistencia — 2026 Trim 1 0% · 31-03-2026"
   },
   "CIPU-100-24-1827": {
-   "pct": 22,
-   "si": 4,
-   "tot": 18
+   "pct": null,
+   "si": 0,
+   "tot": 0,
+   "lock": "Inhabilitado por asistencia — 2026 Trim 1 33% · 31-03-2026"
   },
   "CIPU-100-24-0873": {
-   "pct": 67,
-   "si": 12,
-   "tot": 18
+   "pct": null,
+   "si": 0,
+   "tot": 0,
+   "lock": "Inhabilitado por asistencia — 2026 Trim 2 67% · 30-06-2026"
   },
   "CIPU-100-24-0721": {
-   "pct": 89,
-   "si": 16,
-   "tot": 18
+   "pct": null,
+   "si": 0,
+   "tot": 0
   },
   "CIPU-100-24-0876": {
-   "pct": 72,
-   "si": 13,
-   "tot": 18
+   "pct": null,
+   "si": 0,
+   "tot": 0,
+   "lock": "Inhabilitado por asistencia — 2026 Trim 2 67% · 30-06-2026"
   },
   "CIPU-100-24-1076": {
-   "pct": 83,
-   "si": 15,
-   "tot": 18
+   "pct": null,
+   "si": 0,
+   "tot": 0,
+   "lock": "Inhabilitado por asistencia — 2026 Trim 1 67% · 31-03-2026"
   },
   "CIPU-100-24-1745": {
-   "pct": 33,
-   "si": 5,
-   "tot": 15
+   "pct": null,
+   "si": 0,
+   "tot": 0,
+   "lock": "Inhabilitado por asistencia — 2026 Trim 1 0% · 31-03-2026"
   },
   "CIPU-100-24-0755": {
-   "pct": 83,
-   "si": 15,
-   "tot": 18
+   "pct": null,
+   "si": 0,
+   "tot": 0,
+   "lock": "Inhabilitado por asistencia — 2026 Trim 1 67% · 31-03-2026"
   },
   "CIPU-100-24-0717": {
-   "pct": 89,
-   "si": 16,
-   "tot": 18
+   "pct": null,
+   "si": 0,
+   "tot": 0
   },
   "CIPU-100-24-1353": {
-   "pct": 56,
-   "si": 10,
-   "tot": 18
+   "pct": null,
+   "si": 0,
+   "tot": 0,
+   "lock": "Inhabilitado por asistencia — 2026 Trim 1 33% · 31-03-2026"
   },
   "CIPU-100-24-0860": {
-   "pct": 83,
-   "si": 15,
-   "tot": 18
+   "pct": null,
+   "si": 0,
+   "tot": 0,
+   "lock": "Inhabilitado por asistencia — 2026 Trim 1 33% · 31-03-2026"
   },
   "CIPU-100-24-1184": {
-   "pct": 83,
-   "si": 15,
-   "tot": 18
+   "pct": null,
+   "si": 0,
+   "tot": 0
   },
   "CIPU-100-24-1072": {
-   "pct": 72,
-   "si": 13,
-   "tot": 18
+   "pct": null,
+   "si": 0,
+   "tot": 0,
+   "lock": "Inhabilitado por asistencia — 2026 Trim 1 67% · 31-03-2026"
   },
   "CIPU-100-24-0878": {
-   "pct": 78,
-   "si": 14,
-   "tot": 18
+   "pct": null,
+   "si": 0,
+   "tot": 0
   },
   "CIPU-100-24-0866": {
-   "pct": 78,
-   "si": 14,
-   "tot": 18
+   "pct": null,
+   "si": 0,
+   "tot": 0,
+   "lock": "Inhabilitado por asistencia — 2026 Trim 1 67% · 31-03-2026"
   },
   "CIPU-100-24-0737": {
-   "pct": 61,
-   "si": 11,
-   "tot": 18
+   "pct": null,
+   "si": 0,
+   "tot": 0,
+   "lock": "Inhabilitado por asistencia — 2026 Trim 1 67% · 31-03-2026"
   },
   "CIPU-100-24-1155": {
-   "pct": 44,
-   "si": 8,
-   "tot": 18
+   "pct": null,
+   "si": 0,
+   "tot": 0,
+   "lock": "Inhabilitado por asistencia — 2026 Trim 1 67% · 31-03-2026"
   },
   "CIPU-100-24-0882": {
-   "pct": 67,
-   "si": 12,
-   "tot": 18
+   "pct": null,
+   "si": 0,
+   "tot": 0
   },
   "CIPU-100-24-0573": {
-   "pct": 100,
-   "si": 18,
-   "tot": 18
+   "pct": null,
+   "si": 0,
+   "tot": 0
   },
   "CIPU-100-24-0905": {
-   "pct": 78,
-   "si": 14,
-   "tot": 18
+   "pct": null,
+   "si": 0,
+   "tot": 0,
+   "lock": "Inhabilitado por asistencia — 2026 Trim 1 67% · 31-03-2026"
   },
   "CIPU-100-24-0709": {
-   "pct": 61,
-   "si": 11,
-   "tot": 18
+   "pct": null,
+   "si": 0,
+   "tot": 0,
+   "lock": "Inhabilitado por asistencia — 2026 Trim 2 67% · 30-06-2026"
   },
   "CIPU-100-24-1789": {
-   "pct": 28,
-   "si": 5,
-   "tot": 18
+   "pct": null,
+   "si": 0,
+   "tot": 0,
+   "lock": "Inhabilitado por asistencia — 2026 Trim 1 0% · 31-03-2026"
   },
   "CIPU-100-24-0728": {
-   "pct": 78,
-   "si": 14,
-   "tot": 18
+   "pct": null,
+   "si": 0,
+   "tot": 0,
+   "lock": "Inhabilitado por asistencia — 2026 Trim 2 67% · 30-06-2026"
   },
   "CIPU-100-24-1269": {
-   "pct": 94,
-   "si": 17,
-   "tot": 18
+   "pct": null,
+   "si": 0,
+   "tot": 0
   },
   "CIPU-100-24-0722": {
-   "pct": 56,
-   "si": 10,
-   "tot": 18
+   "pct": null,
+   "si": 0,
+   "tot": 0,
+   "lock": "Inhabilitado por asistencia — 2026 Trim 2 67% · 30-06-2026"
   },
   "CIPU-100-24-1781": {
-   "pct": 89,
-   "si": 16,
-   "tot": 18
+   "pct": null,
+   "si": 0,
+   "tot": 0,
+   "lock": "Inhabilitado por asistencia — 2026 Trim 1 67% · 31-03-2026"
   },
   "CIPU-100-24-0865": {
-   "pct": 94,
-   "si": 17,
-   "tot": 18
+   "pct": null,
+   "si": 0,
+   "tot": 0
   },
   "CIPU-100-24-1756": {
-   "pct": 61,
-   "si": 11,
-   "tot": 18
+   "pct": null,
+   "si": 0,
+   "tot": 0,
+   "lock": "Inhabilitado por asistencia — 2026 Trim 1 33% · 31-03-2026"
   },
   "CIPU-100-24-0723": {
-   "pct": 94,
-   "si": 17,
-   "tot": 18
+   "pct": null,
+   "si": 0,
+   "tot": 0
   },
   "CIPU-100-24-0874": {
-   "pct": 78,
-   "si": 14,
-   "tot": 18
+   "pct": null,
+   "si": 0,
+   "tot": 0
   },
   "CIPU-100-24-0740": {
-   "pct": 72,
-   "si": 13,
-   "tot": 18
+   "pct": null,
+   "si": 0,
+   "tot": 0,
+   "lock": "Inhabilitado por asistencia — 2026 Trim 1 67% · 31-03-2026"
   },
   "CIPU-100-25-0353": {
-   "pct": 72,
-   "si": 13,
-   "tot": 18
+   "pct": null,
+   "si": 0,
+   "tot": 0,
+   "lock": "Inhabilitado por asistencia — 2026 Trim 2 67% · 30-06-2026"
   },
   "CIPU-100-24-0872": {
-   "pct": 78,
-   "si": 14,
-   "tot": 18
+   "pct": null,
+   "si": 0,
+   "tot": 0,
+   "lock": "Inhabilitado por asistencia — 2026 Trim 1 67% · 31-03-2026"
   },
   "CIPU-100-24-1577": {
-   "pct": 56,
-   "si": 10,
-   "tot": 18
+   "pct": null,
+   "si": 0,
+   "tot": 0,
+   "lock": "Inhabilitado por asistencia — 2026 Trim 1 67% · 31-03-2026"
   },
   "CIPU-100-24-0961": {
-   "pct": 83,
-   "si": 15,
-   "tot": 18
+   "pct": null,
+   "si": 0,
+   "tot": 0
   },
   "CIPU-100-24-0716": {
-   "pct": 67,
-   "si": 12,
-   "tot": 18
+   "pct": null,
+   "si": 0,
+   "tot": 0,
+   "lock": "Inhabilitado por asistencia — 2026 Trim 1 67% · 31-03-2026"
   },
   "CIPU-100-24-1355": {
-   "pct": 61,
-   "si": 11,
-   "tot": 18
+   "pct": null,
+   "si": 0,
+   "tot": 0
   },
   "CIPU-100-24-0738": {
-   "pct": 94,
-   "si": 17,
-   "tot": 18
+   "pct": null,
+   "si": 0,
+   "tot": 0
   },
   "CIPU-100-24-1354": {
-   "pct": 39,
-   "si": 7,
-   "tot": 18
+   "pct": null,
+   "si": 0,
+   "tot": 0,
+   "lock": "Inhabilitado por asistencia — 2026 Trim 2 0% · 30-06-2026"
   },
   "CIPU-100-24-0756": {
-   "pct": 67,
-   "si": 12,
-   "tot": 18
+   "pct": null,
+   "si": 0,
+   "tot": 0
   },
   "CIPU-100-24-0733": {
-   "pct": 83,
-   "si": 15,
-   "tot": 18
+   "pct": null,
+   "si": 0,
+   "tot": 0,
+   "lock": "Inhabilitado por asistencia — 2026 Trim 1 67% · 31-03-2026"
   },
   "CIPU-100-24-1335": {
-   "pct": 61,
-   "si": 11,
-   "tot": 18
+   "pct": null,
+   "si": 0,
+   "tot": 0,
+   "lock": "Inhabilitado por asistencia — 2026 Trim 1 67% · 31-03-2026"
   },
   "CIPU-100-24-0720": {
-   "pct": 78,
-   "si": 14,
-   "tot": 18
+   "pct": null,
+   "si": 0,
+   "tot": 0
   },
   "CIPU-100-24-1448": {
-   "pct": 71,
-   "si": 12,
-   "tot": 17
+   "pct": null,
+   "si": 0,
+   "tot": 0,
+   "lock": "Inhabilitado por asistencia — 2026 Trim 1 67% · 31-03-2026"
   },
   "CIPU-100-24-2167": {
-   "pct": 75,
-   "si": 12,
-   "tot": 16
+   "pct": null,
+   "si": 0,
+   "tot": 0,
+   "lock": "Inhabilitado por asistencia — 2026 Trim 2 67% · 30-06-2026"
   },
   "CIPU-100-24-0623": {
-   "pct": 94,
-   "si": 17,
-   "tot": 18
+   "pct": null,
+   "si": 0,
+   "tot": 0
   },
   "CIPU-100-24-1066": {
-   "pct": 61,
-   "si": 11,
-   "tot": 18
+   "pct": null,
+   "si": 0,
+   "tot": 0,
+   "lock": "Inhabilitado por asistencia — 2026 Trim 1 67% · 31-03-2026"
   },
   "mtnjsgza3y7fnl": {
-   "pct": 83,
-   "si": 15,
-   "tot": 18
+   "pct": null,
+   "si": 0,
+   "tot": 0
   },
   "CIPU-100-24-0718": {
    "pct": null,
@@ -6598,73 +6833,131 @@
  },
  "inh": {
   "CIPU-100-24-1704": [
-   "Certificado médico vencido (25-05-2026)"
+   "Certificado médico vencido (25-05-2026)",
+   "Inhabilitado por asistencia — 2026 Trim 1 0% · 31-03-2026"
   ],
   "CIPU-100-24-0725": [
-   "Certificado médico vencido (25-05-2026)"
+   "Certificado médico vencido (25-05-2026)",
+   "Inhabilitado por asistencia — 2026 Trim 1 33% · 31-03-2026"
+  ],
+  "CIPU-100-24-1445": [
+   "Inhabilitado por asistencia — 2026 Trim 2 67% · 30-06-2026"
   ],
   "CIPU-100-24-0724": [
    "Inhabilitado por la jefatura de pilotos (02-09-2026)"
   ],
+  "CIPU-100-24-1446": [
+   "Inhabilitado por asistencia — 2026 Trim 1 67% · 31-03-2026"
+  ],
   "CIPU-100-24-0871": [
-   "Certificado médico vencido (25-05-2026)"
+   "Certificado médico vencido (25-05-2026)",
+   "Inhabilitado por asistencia — 2026 Trim 2 67% · 30-06-2026"
   ],
   "CIPU-100-24-1106": [
-   "Certificado médico vencido (25-05-2026)"
+   "Certificado médico vencido (25-05-2026)",
+   "Inhabilitado por asistencia — 2026 Trim 2 67% · 30-06-2026"
   ],
   "CIPU-100-24-0710": [
-   "Certificado médico vencido (25-05-2026)"
+   "Certificado médico vencido (25-05-2026)",
+   "Inhabilitado por asistencia — 2026 Trim 1 0% · 31-03-2026"
   ],
   "CIPU-100-24-1827": [
-   "Certificado médico vencido (25-05-2026)"
+   "Certificado médico vencido (25-05-2026)",
+   "Inhabilitado por asistencia — 2026 Trim 1 33% · 31-03-2026"
+  ],
+  "CIPU-100-24-0873": [
+   "Inhabilitado por asistencia — 2026 Trim 2 67% · 30-06-2026"
   ],
   "CIPU-100-24-0876": [
-   "Certificado médico vencido (25-05-2026)"
+   "Certificado médico vencido (25-05-2026)",
+   "Inhabilitado por asistencia — 2026 Trim 2 67% · 30-06-2026"
+  ],
+  "CIPU-100-24-1076": [
+   "Inhabilitado por asistencia — 2026 Trim 1 67% · 31-03-2026"
+  ],
+  "CIPU-100-24-1745": [
+   "Inhabilitado por asistencia — 2026 Trim 1 0% · 31-03-2026"
+  ],
+  "CIPU-100-24-0755": [
+   "Inhabilitado por asistencia — 2026 Trim 1 67% · 31-03-2026"
   ],
   "CIPU-100-24-0717": [
    "Certificado médico vencido (25-05-2026)"
   ],
   "CIPU-100-24-1353": [
-   "Certificado médico vencido (25-05-2026)"
+   "Certificado médico vencido (25-05-2026)",
+   "Inhabilitado por asistencia — 2026 Trim 1 33% · 31-03-2026"
+  ],
+  "CIPU-100-24-0860": [
+   "Inhabilitado por asistencia — 2026 Trim 1 33% · 31-03-2026"
   ],
   "CIPU-100-24-1184": [
    "Certificado médico vencido (25-05-2026)"
   ],
   "CIPU-100-24-1072": [
-   "Certificado médico vencido (25-05-2026)"
+   "Certificado médico vencido (25-05-2026)",
+   "Inhabilitado por asistencia — 2026 Trim 1 67% · 31-03-2026"
+  ],
+  "CIPU-100-24-0866": [
+   "Inhabilitado por asistencia — 2026 Trim 1 67% · 31-03-2026"
   ],
   "CIPU-100-24-0737": [
-   "Certificado médico vencido (25-05-2026)"
+   "Certificado médico vencido (25-05-2026)",
+   "Inhabilitado por asistencia — 2026 Trim 1 67% · 31-03-2026"
   ],
   "CIPU-100-24-1155": [
-   "Certificado médico vencido (25-05-2026)"
+   "Certificado médico vencido (25-05-2026)",
+   "Inhabilitado por asistencia — 2026 Trim 1 67% · 31-03-2026"
   ],
   "CIPU-100-24-0882": [
    "Certificado médico vencido (25-05-2026)"
   ],
+  "CIPU-100-24-0905": [
+   "Inhabilitado por asistencia — 2026 Trim 1 67% · 31-03-2026"
+  ],
   "CIPU-100-24-0709": [
-   "Inhabilitado por la jefatura de pilotos (02-09-2026)"
+   "Inhabilitado por asistencia — 2026 Trim 2 67% · 30-06-2026"
   ],
   "CIPU-100-24-1789": [
-   "Certificado médico vencido (25-05-2026)"
+   "Certificado médico vencido (25-05-2026)",
+   "Inhabilitado por asistencia — 2026 Trim 1 0% · 31-03-2026"
   ],
   "CIPU-100-24-0728": [
-   "Certificado médico vencido (25-05-2026)"
+   "Certificado médico vencido (25-05-2026)",
+   "Inhabilitado por asistencia — 2026 Trim 2 67% · 30-06-2026"
   ],
   "CIPU-100-24-1269": [
    "Certificado médico vencido (25-05-2026)"
   ],
+  "CIPU-100-24-0722": [
+   "Inhabilitado por asistencia — 2026 Trim 2 67% · 30-06-2026"
+  ],
   "CIPU-100-24-1781": [
-   "Certificado médico vencido (25-05-2026)"
+   "Certificado médico vencido (25-05-2026)",
+   "Inhabilitado por asistencia — 2026 Trim 1 67% · 31-03-2026"
+  ],
+  "CIPU-100-24-1756": [
+   "Inhabilitado por asistencia — 2026 Trim 1 33% · 31-03-2026"
+  ],
+  "CIPU-100-24-0740": [
+   "Inhabilitado por asistencia — 2026 Trim 1 67% · 31-03-2026"
+  ],
+  "CIPU-100-25-0353": [
+   "Inhabilitado por asistencia — 2026 Trim 2 67% · 30-06-2026"
+  ],
+  "CIPU-100-24-0872": [
+   "Inhabilitado por asistencia — 2026 Trim 1 67% · 31-03-2026"
   ],
   "CIPU-100-24-1577": [
-   "Certificado médico vencido (25-05-2026)"
+   "Certificado médico vencido (25-05-2026)",
+   "Inhabilitado por asistencia — 2026 Trim 1 67% · 31-03-2026"
   ],
   "CIPU-100-24-0961": [
    "Certificado médico vencido (25-05-2026)"
   ],
   "CIPU-100-24-0716": [
-   "Certificado médico vencido (25-05-2026)"
+   "Certificado médico vencido (25-05-2026)",
+   "Inhabilitado por asistencia — 2026 Trim 1 67% · 31-03-2026"
   ],
   "CIPU-100-24-1355": [
    "Certificado médico vencido (25-05-2026)"
@@ -6673,22 +6966,29 @@
    "Certificado médico vencido (25-05-2026)"
   ],
   "CIPU-100-24-1354": [
-   "Certificado médico vencido (25-05-2026)"
+   "Certificado médico vencido (25-05-2026)",
+   "Inhabilitado por asistencia — 2026 Trim 2 0% · 30-06-2026"
   ],
   "CIPU-100-24-0733": [
-   "Certificado médico vencido (25-05-2026)"
+   "Certificado médico vencido (25-05-2026)",
+   "Inhabilitado por asistencia — 2026 Trim 1 67% · 31-03-2026"
   ],
   "CIPU-100-24-1335": [
-   "Inhabilitado por la jefatura de pilotos (02-09-2026)"
+   "Inhabilitado por asistencia — 2026 Trim 1 67% · 31-03-2026"
   ],
   "CIPU-100-24-0720": [
    "Inhabilitado por la jefatura de pilotos (02-09-2026)"
   ],
   "CIPU-100-24-1448": [
-   "Certificado médico vencido (25-05-2026)"
+   "Certificado médico vencido (25-05-2026)",
+   "Inhabilitado por asistencia — 2026 Trim 1 67% · 31-03-2026"
+  ],
+  "CIPU-100-24-2167": [
+   "Inhabilitado por asistencia — 2026 Trim 2 67% · 30-06-2026"
   ],
   "CIPU-100-24-1066": [
-   "Certificado médico vencido (25-05-2026)"
+   "Certificado médico vencido (25-05-2026)",
+   "Inhabilitado por asistencia — 2026 Trim 1 67% · 31-03-2026"
   ],
   "mtnjsgza3y7fnl": [
    "Inhabilitado por la jefatura de pilotos (02-09-2026)"
@@ -6703,6 +7003,10 @@
    {
     "fecha": "2026-09-02",
     "estado": "hab"
+   },
+   {
+    "fecha": "2026-10-06",
+    "estado": "inh"
    }
   ],
   "CIPU-100-24-0906": [
@@ -6723,12 +7027,20 @@
    {
     "fecha": "2026-09-02",
     "estado": "hab"
+   },
+   {
+    "fecha": "2026-10-06",
+    "estado": "inh"
    }
   ],
   "CIPU-100-24-1445": [
    {
     "fecha": "2026-09-02",
     "estado": "hab"
+   },
+   {
+    "fecha": "2026-10-06",
+    "estado": "inh"
    }
   ],
   "CIPU-100-24-0724": [
@@ -6741,36 +7053,60 @@
    {
     "fecha": "2026-09-02",
     "estado": "hab"
+   },
+   {
+    "fecha": "2026-10-06",
+    "estado": "inh"
    }
   ],
   "CIPU-100-24-0871": [
    {
     "fecha": "2026-09-02",
     "estado": "hab"
+   },
+   {
+    "fecha": "2026-10-06",
+    "estado": "inh"
    }
   ],
   "CIPU-100-24-1106": [
    {
     "fecha": "2026-09-02",
     "estado": "hab"
+   },
+   {
+    "fecha": "2026-10-06",
+    "estado": "inh"
    }
   ],
   "CIPU-100-24-0710": [
    {
     "fecha": "2026-09-02",
     "estado": "hab"
+   },
+   {
+    "fecha": "2026-10-06",
+    "estado": "inh"
    }
   ],
   "CIPU-100-24-1827": [
    {
     "fecha": "2026-09-02",
     "estado": "hab"
+   },
+   {
+    "fecha": "2026-10-06",
+    "estado": "inh"
    }
   ],
   "CIPU-100-24-0873": [
    {
     "fecha": "2026-09-02",
     "estado": "hab"
+   },
+   {
+    "fecha": "2026-10-06",
+    "estado": "inh"
    }
   ],
   "CIPU-100-24-0721": [
@@ -6783,24 +7119,40 @@
    {
     "fecha": "2026-09-02",
     "estado": "hab"
+   },
+   {
+    "fecha": "2026-10-06",
+    "estado": "inh"
    }
   ],
   "CIPU-100-24-1076": [
    {
     "fecha": "2026-09-02",
     "estado": "hab"
+   },
+   {
+    "fecha": "2026-10-06",
+    "estado": "inh"
    }
   ],
   "CIPU-100-24-1745": [
    {
     "fecha": "2026-09-02",
     "estado": "hab"
+   },
+   {
+    "fecha": "2026-10-06",
+    "estado": "inh"
    }
   ],
   "CIPU-100-24-0755": [
    {
     "fecha": "2026-09-02",
     "estado": "hab"
+   },
+   {
+    "fecha": "2026-10-06",
+    "estado": "inh"
    }
   ],
   "CIPU-100-24-0717": [
@@ -6813,12 +7165,20 @@
    {
     "fecha": "2026-09-02",
     "estado": "hab"
+   },
+   {
+    "fecha": "2026-10-06",
+    "estado": "inh"
    }
   ],
   "CIPU-100-24-0860": [
    {
     "fecha": "2026-09-02",
     "estado": "hab"
+   },
+   {
+    "fecha": "2026-10-06",
+    "estado": "inh"
    }
   ],
   "CIPU-100-24-1184": [
@@ -6831,6 +7191,10 @@
    {
     "fecha": "2026-09-02",
     "estado": "hab"
+   },
+   {
+    "fecha": "2026-10-06",
+    "estado": "inh"
    }
   ],
   "CIPU-100-24-0878": [
@@ -6843,18 +7207,30 @@
    {
     "fecha": "2026-09-02",
     "estado": "hab"
+   },
+   {
+    "fecha": "2026-10-06",
+    "estado": "inh"
    }
   ],
   "CIPU-100-24-0737": [
    {
     "fecha": "2026-09-02",
     "estado": "hab"
+   },
+   {
+    "fecha": "2026-10-06",
+    "estado": "inh"
    }
   ],
   "CIPU-100-24-1155": [
    {
     "fecha": "2026-09-02",
     "estado": "hab"
+   },
+   {
+    "fecha": "2026-10-06",
+    "estado": "inh"
    }
   ],
   "CIPU-100-24-0882": [
@@ -6873,6 +7249,10 @@
    {
     "fecha": "2026-09-02",
     "estado": "hab"
+   },
+   {
+    "fecha": "2026-10-06",
+    "estado": "inh"
    }
   ],
   "CIPU-100-24-0709": [
@@ -6885,12 +7265,20 @@
    {
     "fecha": "2026-09-02",
     "estado": "hab"
+   },
+   {
+    "fecha": "2026-10-06",
+    "estado": "inh"
    }
   ],
   "CIPU-100-24-0728": [
    {
     "fecha": "2026-09-02",
     "estado": "hab"
+   },
+   {
+    "fecha": "2026-10-06",
+    "estado": "inh"
    }
   ],
   "CIPU-100-24-1269": [
@@ -6903,12 +7291,20 @@
    {
     "fecha": "2026-09-02",
     "estado": "hab"
+   },
+   {
+    "fecha": "2026-10-06",
+    "estado": "inh"
    }
   ],
   "CIPU-100-24-1781": [
    {
     "fecha": "2026-09-02",
     "estado": "hab"
+   },
+   {
+    "fecha": "2026-10-06",
+    "estado": "inh"
    }
   ],
   "CIPU-100-24-0865": [
@@ -6921,6 +7317,10 @@
    {
     "fecha": "2026-09-02",
     "estado": "hab"
+   },
+   {
+    "fecha": "2026-10-06",
+    "estado": "inh"
    }
   ],
   "CIPU-100-24-0723": [
@@ -6939,24 +7339,40 @@
    {
     "fecha": "2026-09-02",
     "estado": "hab"
+   },
+   {
+    "fecha": "2026-10-06",
+    "estado": "inh"
    }
   ],
   "CIPU-100-25-0353": [
    {
     "fecha": "2026-09-02",
     "estado": "hab"
+   },
+   {
+    "fecha": "2026-10-06",
+    "estado": "inh"
    }
   ],
   "CIPU-100-24-0872": [
    {
     "fecha": "2026-09-02",
     "estado": "hab"
+   },
+   {
+    "fecha": "2026-10-06",
+    "estado": "inh"
    }
   ],
   "CIPU-100-24-1577": [
    {
     "fecha": "2026-09-02",
     "estado": "hab"
+   },
+   {
+    "fecha": "2026-10-06",
+    "estado": "inh"
    }
   ],
   "CIPU-100-24-0961": [
@@ -6969,6 +7385,10 @@
    {
     "fecha": "2026-09-02",
     "estado": "hab"
+   },
+   {
+    "fecha": "2026-10-06",
+    "estado": "inh"
    }
   ],
   "CIPU-100-24-1355": [
@@ -6987,6 +7407,10 @@
    {
     "fecha": "2026-09-02",
     "estado": "hab"
+   },
+   {
+    "fecha": "2026-10-06",
+    "estado": "inh"
    }
   ],
   "CIPU-100-24-0756": [
@@ -6999,6 +7423,10 @@
    {
     "fecha": "2026-09-02",
     "estado": "hab"
+   },
+   {
+    "fecha": "2026-10-06",
+    "estado": "inh"
    }
   ],
   "CIPU-100-24-1335": [
@@ -7017,12 +7445,20 @@
    {
     "fecha": "2026-09-02",
     "estado": "hab"
+   },
+   {
+    "fecha": "2026-10-06",
+    "estado": "inh"
    }
   ],
   "CIPU-100-24-2167": [
    {
     "fecha": "2026-09-02",
     "estado": "hab"
+   },
+   {
+    "fecha": "2026-10-06",
+    "estado": "inh"
    }
   ],
   "CIPU-100-24-0623": [
@@ -7035,6 +7471,10 @@
    {
     "fecha": "2026-09-02",
     "estado": "hab"
+   },
+   {
+    "fecha": "2026-10-06",
+    "estado": "inh"
    }
   ],
   "mtnjsgza3y7fnl": [
@@ -7051,7 +7491,12 @@
   ]
  },
  "capInfo": {
-  "per": null,
+  "per": {
+   "nombre": "2026 Trim 4",
+   "desde": "2026-10-01",
+   "hasta": "2026-12-31",
+   "min": 80
+  },
   "prox": null,
   "proxTema": null,
   "min": 80
