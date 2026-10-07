@@ -1,5 +1,5 @@
 {
- "seedVersion": 45,
+ "seedVersion": 46,
  "actualizado": "2026-10-07",
  "catalogoActualizado": "2026-09-03",
  "autorizaciones": [
@@ -5139,20 +5139,28 @@
   {
    "id": "drn-DR27",
    "dr": "DR27",
-   "maximo": "DR27",
    "modelo": "DJI MAVIC 4 PRO",
    "serial": "1581F986C258U0023N3J",
    "ruas": "RUAS-100-26-GASH",
+   "maximo": "DR27",
    "poliza": "900001522414",
-   "polizaVence": "2026-09-26",
-   "mant": "2026-09-28",
-   "habBVLOS": true,
+   "polizaVence": "2027-09-25",
+   "mant": "2027-06-30",
+   "mantUlt": "",
+   "mantIntHoras": "",
    "habNocturno": true,
-   "gerencia": "EPM Generacion Ituango",
-   "area": "SUBG DESARROLLO PROY ITUANGO",
-   "responsable": "ANDRES FELIPE JARAMILLO CORREA",
+   "habBVLOS": true,
+   "activo": true,
    "responsableId": "plt-CIPU-100-24-0724",
-   "_u": 1791285144791,
+   "responsable": "ANDRES FELIPE JARAMILLO CORREA",
+   "histAct": [
+    {
+     "fecha": "2026-09-02",
+     "estado": "act",
+     "motivo": "inicial"
+    }
+   ],
+   "_u": 1791414109514,
    "_by": "jefe_pilotos"
   },
   {
@@ -5163,8 +5171,8 @@
    "ruas": "RUAS-100-26-H7WN",
    "maximo": "DR28",
    "poliza": "900001536734",
-   "polizaVence": "2027-09-25",
-   "mant": "2027-06-30",
+   "polizaVence": "2026-09-25",
+   "mant": "2026-09-28",
    "mantUlt": "",
    "mantIntHoras": "",
    "habNocturno": true,
@@ -5178,7 +5186,9 @@
      "estado": "act",
      "motivo": "inicial"
     }
-   ]
+   ],
+   "_u": 1791414109514,
+   "_by": "jefe_pilotos"
   },
   {
    "id": "drn-DR29",
