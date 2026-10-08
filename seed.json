@@ -1,6 +1,6 @@
 {
- "seedVersion": 46,
- "actualizado": "2026-10-07",
+ "seedVersion": 47,
+ "actualizado": "2026-10-08",
  "catalogoActualizado": "2026-09-03",
  "autorizaciones": [
   {
@@ -238,6 +238,7 @@
     ]
    ],
    "dronesAut": [
+    "1581F7FVC253N00DPD1X",
     "1581F7FVC252A00CSK2T"
    ],
    "pilotosAut": [
@@ -254,7 +255,8 @@
    "nocturno": false,
    "especiales": "No Registra",
    "_u": 1791285144791,
-   "_by": "jefe_pilotos"
+   "_by": "jefe_pilotos",
+   "solicitud": ""
   },
   {
    "id": "mtkhs431hf8zrk",
@@ -2652,6 +2654,7 @@
    "ini": "2026-04-06",
    "fin": "2026-04-30",
    "dronesAut": [
+    "1581F7FVC253N00DPD1X",
     "1581F7FVC252A00CSK2T"
    ],
    "pilotosAut": [
@@ -2681,7 +2684,9 @@
     "name": "Autorizacion_GS1R.pdf"
    },
    "_u": 1791285144791,
-   "_by": "jefe_pilotos"
+   "_by": "jefe_pilotos",
+   "pdf": null,
+   "poly": null
   },
   {
    "id": "aut-2026151070046867",
@@ -5159,9 +5164,7 @@
      "estado": "act",
      "motivo": "inicial"
     }
-   ],
-   "_u": 1791414109514,
-   "_by": "jefe_pilotos"
+   ]
   },
   {
    "id": "drn-DR28",
@@ -5187,7 +5190,7 @@
      "motivo": "inicial"
     }
    ],
-   "_u": 1791414109514,
+   "_u": 1791414002886,
    "_by": "jefe_pilotos"
   },
   {
