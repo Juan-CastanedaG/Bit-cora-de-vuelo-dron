@@ -1,5 +1,5 @@
 {
- "seedVersion": 44,
+ "seedVersion": 45,
  "actualizado": "2026-10-16",
  "catalogoActualizado": "2026-09-03",
  "autorizaciones": [
@@ -5857,7 +5857,9 @@
   "CIPU-100-24-0623": true,
   "CIPU-100-24-1066": true,
   "mtnjsgza3y7fnl": false,
-  "CIPU-100-24-0718": false
+  "CIPU-100-24-0718": false,
+  "mvbd1vv476zhbt": true,
+  "mvbd36oslafaz1": true
  },
  "med": {
   "CIPU-100-24-1704": "2026-05-25",
@@ -5916,7 +5918,9 @@
   "CIPU-100-24-0623": "2027-06-01",
   "CIPU-100-24-1066": "2026-05-25",
   "mtnjsgza3y7fnl": "2027-05-07",
-  "CIPU-100-24-0718": "2026-05-07"
+  "CIPU-100-24-0718": "2026-05-07",
+  "mvbd1vv476zhbt": "2027-01-26",
+  "mvbd36oslafaz1": "2027-01-06"
  },
  "certs": {
   "CIPU-100-24-1704": [
@@ -6335,6 +6339,18 @@
    {
     "tipo": "Piloto"
    }
+  ],
+  "mvbd1vv476zhbt": [
+   {
+    "num": "CIPU-100-26-E7KI",
+    "tipo": "Piloto"
+   }
+  ],
+  "mvbd36oslafaz1": [
+   {
+    "num": "CIPU-100-26-E7LL",
+    "tipo": "Piloto"
+   }
   ]
  },
  "ger": {
@@ -6394,7 +6410,9 @@
   "CIPU-100-24-0623": "PROYECTO ITUANGO",
   "CIPU-100-24-1066": "ACUEDUCTO Y ALCANTARILLADO",
   "mtnjsgza3y7fnl": "ACUEDUCTO Y ALCANTARILLADO",
-  "CIPU-100-24-0718": "TYD ENERGÍA"
+  "CIPU-100-24-0718": "TYD ENERGÍA",
+  "mvbd1vv476zhbt": "PLANEACION EMPRESARIAL",
+  "mvbd36oslafaz1": "PLANEACION EMPRESARIAL"
  },
  "area": {
   "CIPU-100-24-1704": "AMBIENTAL Y SOCIAL TRANSMISION Y DISTRIBUCION ENERGIA",
@@ -6453,7 +6471,9 @@
   "CIPU-100-24-0623": "AMBIENTAL Y SOCIAL PROYECTO ITUANGO",
   "CIPU-100-24-1066": "MANTENIMIENTO SISTEMA MATRIZ ACUEDUCTO",
   "mtnjsgza3y7fnl": "MANTENIMIENTO REDES ALCANTARILLADO",
-  "CIPU-100-24-0718": "PLANEACIÓN Y FORMULACIÓN PROYECTOS TYD"
+  "CIPU-100-24-0718": "PLANEACIÓN Y FORMULACIÓN PROYECTOS TYD",
+  "mvbd1vv476zhbt": "SEGURIDAD",
+  "mvbd36oslafaz1": "SEGURIDAD"
  },
  "stats": {
   "CIPU-100-24-1704": {
@@ -7152,6 +7172,20 @@
    "min": 0,
    "ult": "",
    "f": []
+  },
+  "mvbd1vv476zhbt": {
+   "ops": 0,
+   "vuelos": 0,
+   "min": 0,
+   "ult": "",
+   "f": []
+  },
+  "mvbd36oslafaz1": {
+   "ops": 0,
+   "vuelos": 0,
+   "min": 0,
+   "ult": "",
+   "f": []
   }
  },
  "capP": {
@@ -7436,6 +7470,16 @@
    "tot": 0
   },
   "CIPU-100-24-0718": {
+   "pct": null,
+   "si": 0,
+   "tot": 0
+  },
+  "mvbd1vv476zhbt": {
+   "pct": null,
+   "si": 0,
+   "tot": 0
+  },
+  "mvbd36oslafaz1": {
    "pct": null,
    "si": 0,
    "tot": 0
@@ -8171,6 +8215,18 @@
    {
     "fecha": "2026-09-02",
     "estado": "inh"
+   }
+  ],
+  "mvbd1vv476zhbt": [
+   {
+    "fecha": "2026-09-02",
+    "estado": "hab"
+   }
+  ],
+  "mvbd36oslafaz1": [
+   {
+    "fecha": "2026-09-02",
+    "estado": "hab"
    }
   ]
  },
