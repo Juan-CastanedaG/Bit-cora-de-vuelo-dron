@@ -1,5 +1,5 @@
 {
- "seedVersion": 43,
+ "seedVersion": 44,
  "actualizado": "2026-10-16",
  "catalogoActualizado": "2026-09-03",
  "autorizaciones": [
@@ -5829,7 +5829,7 @@
   "CIPU-100-24-0882": true,
   "CIPU-100-24-0573": true,
   "CIPU-100-24-0905": true,
-  "CIPU-100-24-0709": false,
+  "CIPU-100-24-0709": true,
   "CIPU-100-24-1789": true,
   "CIPU-100-24-0728": true,
   "CIPU-100-24-1269": true,
@@ -7487,9 +7487,6 @@
   "CIPU-100-24-0882": [
    "Certificado médico vencido (25-05-2026)"
   ],
-  "CIPU-100-24-0709": [
-   "Inhabilitado por la jefatura de pilotos (02-09-2026)"
-  ],
   "CIPU-100-24-1789": [
    "Certificado médico vencido (25-05-2026)"
   ],
@@ -7878,6 +7875,10 @@
    {
     "fecha": "2026-09-02",
     "estado": "inh"
+   },
+   {
+    "fecha": "2026-10-16",
+    "estado": "hab"
    }
   ],
   "CIPU-100-24-1789": [
