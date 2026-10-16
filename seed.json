@@ -1,5 +1,5 @@
 {
- "seedVersion": 42,
+ "seedVersion": 43,
  "actualizado": "2026-10-16",
  "catalogoActualizado": "2026-09-03",
  "autorizaciones": [
@@ -5565,7 +5565,7 @@
    "mantIntHoras": "",
    "habNocturno": true,
    "habBVLOS": true,
-   "activo": false,
+   "activo": true,
    "responsableId": "plt-CIPU-100-24-1704",
    "responsable": "ALEJANDRO MARIN ORTEGA",
    "drAnt": [],
@@ -5574,9 +5574,14 @@
      "fecha": "2026-09-02",
      "estado": "ina",
      "motivo": "inicial"
+    },
+    {
+     "fecha": "2026-10-16",
+     "estado": "act",
+     "motivo": "manual"
     }
    ],
-   "_u": 1792166183114,
+   "_u": 1792177694901,
    "_by": "jefe_pilotos"
   },
   {
