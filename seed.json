@@ -1,5 +1,5 @@
 {
- "seedVersion": 41,
+ "seedVersion": 42,
  "actualizado": "2026-10-16",
  "catalogoActualizado": "2026-09-03",
  "autorizaciones": [
@@ -5225,25 +5225,34 @@
   {
    "id": "drn-DR3",
    "dr": "DR3",
-   "maximo": "DR3",
    "modelo": "DJI MAVIC 3 ENTERPRISE",
    "serial": "1581F5FHD233T00D2S0M",
    "ruas": "RUAS-100-24-0028",
+   "maximo": "DR3",
    "poliza": "900001438027",
    "polizaVence": "2027-09-25",
-   "mant": "2026-09-28",
-   "habBVLOS": true,
-   "habNocturno": true,
-   "gerencia": "EPM Distribucion de Energia",
-   "area": "PROFESIONAL B GESTIÓN PROYECTO",
-   "responsable": "JUAN PABLO CASTANEDA GUTIERREZ",
-   "responsableId": "plt-CIPU-100-24-0865",
-   "_u": 1792090398328,
-   "_by": "jefe_pilotos",
    "polizaPdf": {
     "id": "pol_mv17fbh7uivspo",
     "name": "SLIP_CARATULA DRON SERIAL 1581F5FHD233T00D2S0M.pdf"
-   }
+   },
+   "mant": "2027-03-28",
+   "mantUlt": "2026-09-28",
+   "mantIntHoras": "",
+   "habNocturno": true,
+   "habBVLOS": true,
+   "activo": true,
+   "responsableId": "plt-CIPU-100-24-0865",
+   "responsable": "JUAN PABLO CASTANEDA GUTIERREZ",
+   "drAnt": [],
+   "histAct": [
+    {
+     "fecha": "2026-09-02",
+     "estado": "act",
+     "motivo": "inicial"
+    }
+   ],
+   "_u": 1792166183114,
+   "_by": "jefe_pilotos"
   },
   {
    "id": "drn-DR4",
@@ -5294,20 +5303,30 @@
   {
    "id": "drn-DR9",
    "dr": "DR9",
-   "maximo": "DR9",
    "modelo": "DJI MAVIC 2 ENTERPRISE ADVANCE",
    "serial": "4GCCJ5UR0A0CKQ",
    "ruas": "RUAS-100-24-0121",
+   "maximo": "DR9",
    "poliza": "900001433276",
    "polizaVence": "2026-09-26",
-   "mant": "2026-09-28",
-   "habBVLOS": true,
+   "polizaPdf": null,
+   "mant": "2027-06-28",
+   "mantUlt": "2026-09-28",
+   "mantIntHoras": "",
    "habNocturno": true,
-   "gerencia": "EPM Distribucion de Energia",
-   "area": "ÁREA SUBESTACIONES Y LÍNEAS",
-   "responsable": "ANDRES FELIPE RAMIREZ AMAYA",
+   "habBVLOS": true,
+   "activo": true,
    "responsableId": "plt-CIPU-100-24-1446",
-   "_u": 1791285144791,
+   "responsable": "ANDRES FELIPE RAMIREZ AMAYA",
+   "drAnt": [],
+   "histAct": [
+    {
+     "fecha": "2026-09-02",
+     "estado": "act",
+     "motivo": "inicial"
+    }
+   ],
+   "_u": 1792166183114,
    "_by": "jefe_pilotos"
   },
   {
@@ -5356,25 +5375,34 @@
   {
    "id": "drn-DR12",
    "dr": "DR12",
-   "maximo": "DR12",
    "modelo": "DJI MATRICE 300 RTK",
    "serial": "1ZNBKA400C008F",
    "ruas": "RUAS-100-24-0474",
+   "maximo": "DR12",
    "poliza": "900001438015",
    "polizaVence": "2027-09-25",
-   "mant": "2026-09-28",
-   "habBVLOS": true,
-   "habNocturno": false,
-   "gerencia": "EPM Generacion de Energia",
-   "area": "PROFESIONAL A AMBIENTAL Y SOCI",
-   "responsable": "MENDELSSOHN MARTINEZ CASTANO",
-   "responsableId": "plt-CIPU-100-25-0353",
-   "_u": 1792090398328,
-   "_by": "jefe_pilotos",
    "polizaPdf": {
     "id": "pol_mv17fbgutnqw06",
     "name": "SLIP_CARATULA DRON SERIAL 1ZNBKA400C008F.pdf"
-   }
+   },
+   "mant": "2027-03-28",
+   "mantUlt": "2026-09-28",
+   "mantIntHoras": "",
+   "habNocturno": false,
+   "habBVLOS": true,
+   "activo": true,
+   "responsableId": "plt-CIPU-100-25-0353",
+   "responsable": "MENDELSSOHN MARTINEZ CASTANO",
+   "drAnt": [],
+   "histAct": [
+    {
+     "fecha": "2026-09-02",
+     "estado": "act",
+     "motivo": "inicial"
+    }
+   ],
+   "_u": 1792166183114,
+   "_by": "jefe_pilotos"
   },
   {
    "id": "drn-DR14",
@@ -5490,48 +5518,66 @@
   {
    "id": "drn-DR21",
    "dr": "DR21",
-   "maximo": "DR21",
    "modelo": "DJI MAVIC 2 ENTERPRISE ADVANCE",
    "serial": "4GCCJ9DR0A0QRP",
    "ruas": "RUAS-100-24-2150",
+   "maximo": "DR21",
    "poliza": "900001438011",
    "polizaVence": "2027-09-25",
-   "mant": "2026-09-28",
-   "habBVLOS": true,
-   "habNocturno": true,
-   "gerencia": "EPM Acueducto",
-   "area": "TÉCNICO-TÉCNICA DE LA OPERACIÓ",
-   "responsable": "MAYCOL DARIO BEDOYA ESCOBAR",
-   "responsableId": "plt-CIPU-100-24-0740",
-   "_u": 1792090398328,
-   "_by": "jefe_pilotos",
    "polizaPdf": {
     "id": "pol_mv17fbhugg7rk8",
     "name": "SLIP_CARATULA-DRON SERIAL 4GCCJ9DR0A0QRP.pdf"
-   }
+   },
+   "mant": "2027-06-28",
+   "mantUlt": "2026-09-28",
+   "mantIntHoras": "",
+   "habNocturno": true,
+   "habBVLOS": true,
+   "activo": false,
+   "responsableId": "plt-CIPU-100-24-0740",
+   "responsable": "MAYCOL DARIO BEDOYA ESCOBAR",
+   "drAnt": [],
+   "histAct": [
+    {
+     "fecha": "2026-09-02",
+     "estado": "ina",
+     "motivo": "inicial"
+    }
+   ],
+   "_u": 1792166183114,
+   "_by": "jefe_pilotos"
   },
   {
    "id": "drn-DR22",
    "dr": "DR22",
-   "maximo": "DR22",
    "modelo": "DJI MAVIC 3 ENTERPRISE",
    "serial": "1581F5FHD23BJ00DXN7V",
    "ruas": "RUAS-100-25-0719",
+   "maximo": "DR22",
    "poliza": "900001438029",
    "polizaVence": "2027-09-25",
-   "mant": "2026-09-28",
-   "habBVLOS": true,
-   "habNocturno": true,
-   "gerencia": "EPM Distribucion de Energia",
-   "area": "AR AMBIENTAL Y SOCIAL TYD ENG",
-   "responsable": "ALEJANDRO MARIN ORTEGA",
-   "responsableId": "plt-CIPU-100-24-1704",
-   "_u": 1792090398328,
-   "_by": "jefe_pilotos",
    "polizaPdf": {
     "id": "pol_mv17fbh41fthta",
     "name": "SLIP_CARATULA DRON SERIAL 1581F5FHD23BJ00DXN7V.pdf"
-   }
+   },
+   "mant": "2027-03-28",
+   "mantUlt": "2026-09-28",
+   "mantIntHoras": "",
+   "habNocturno": true,
+   "habBVLOS": true,
+   "activo": false,
+   "responsableId": "plt-CIPU-100-24-1704",
+   "responsable": "ALEJANDRO MARIN ORTEGA",
+   "drAnt": [],
+   "histAct": [
+    {
+     "fecha": "2026-09-02",
+     "estado": "ina",
+     "motivo": "inicial"
+    }
+   ],
+   "_u": 1792166183114,
+   "_by": "jefe_pilotos"
   },
   {
    "id": "drn-DR24",
@@ -5695,15 +5741,24 @@
    "maximo": "DR23",
    "poliza": "900001438021",
    "polizaVence": "2026-09-26",
-   "mant": "2026-09-28",
+   "polizaPdf": null,
+   "mant": "2027-03-28",
+   "mantUlt": "2026-09-28",
+   "mantIntHoras": "",
    "habNocturno": false,
    "habBVLOS": true,
    "activo": false,
-   "gerencia": "EPM Generacion Ituango",
-   "area": "SUBG DESARROLLO PROY ITUANGO",
-   "responsable": "ANDRES FELIPE JARAMILLO CORREA",
    "responsableId": "plt-CIPU-100-24-0724",
-   "_u": 1791285144791,
+   "responsable": "ANDRES FELIPE JARAMILLO CORREA",
+   "drAnt": [],
+   "histAct": [
+    {
+     "fecha": "2026-09-02",
+     "estado": "ina",
+     "motivo": "inicial"
+    }
+   ],
+   "_u": 1792166183114,
    "_by": "jefe_pilotos"
   },
   {
