@@ -227,6 +227,8 @@ input:focus,select:focus,textarea:focus{border-color:var(--grn)!important;box-sh
 nav{border-radius:22px 22px 0 0;box-shadow:0 -8px 24px rgba(0,0,0,.15)}
 nav button svg{display:none}
 nav button::before{content:"";display:block;width:24px;height:24px;margin:0 auto 5px;background:currentColor;-webkit-mask:var(--m) center/contain no-repeat;mask:var(--m) center/contain no-repeat}
+nav button[data-view="estad"]::before{--m:url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20stroke%3D%22black%22%20stroke-width%3D%222.3%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpath%20d%3D%22M3%2021h18%22/%3E%3Crect%20x%3D%224.5%22%20y%3D%2212%22%20width%3D%223.5%22%20height%3D%227%22%20rx%3D%220.8%22/%3E%3Crect%20x%3D%2210.25%22%20y%3D%226%22%20width%3D%223.5%22%20height%3D%2213%22%20rx%3D%220.8%22/%3E%3Crect%20x%3D%2216%22%20y%3D%229%22%20width%3D%223.5%22%20height%3D%2210%22%20rx%3D%220.8%22/%3E%3C/svg%3E")}nav button[data-view="planif"]::before{--m:url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20stroke%3D%22black%22%20stroke-width%3D%222.3%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpath%20d%3D%22M9%204%203.5%206v14L9%2018l6%202%205.5-2V4L15%206%209%204z%22/%3E%3Cpath%20d%3D%22M9%204v14M15%206v14%22/%3E%3Ccircle%20cx%3D%2212%22%20cy%3D%2211%22%20r%3D%221.6%22%20fill%3D%22black%22/%3E%3C/svg%3E")}
+
 nav button{color:var(--grn-dk);font-weight:700}
 nav button.active{background:var(--grn-dk)!important;color:#fff!important;border-radius:14px}
 .ic2{display:inline-block;width:20px;height:20px;background:currentColor;flex:0 0 auto;-webkit-mask:var(--m) center/contain no-repeat;mask:var(--m) center/contain no-repeat}
@@ -1863,7 +1865,7 @@ function modoPiloto(){return localStorage.getItem('bvd_modoPiloto')==='1';}
 function applyModo(){const on=modoPiloto();['fleetForm','pilotForm'].forEach(id=>{const el=$(id);if(el)el.style.display=on?'none':'';});const c=$('modoPilotoChk');if(c)c.checked=on;}
 function setModoPiloto(on){localStorage.setItem('bvd_modoPiloto',on?'1':'');applyModo();renderFleet();renderPilots();toast(on?'Modo piloto activado (solo consulta)':'Modo maestro (edición habilitada)');}
 function mergeCatalog(local,incoming,key){if(!incoming)return 0;let n=0;incoming.forEach(item=>{let i=local.findIndex(x=>x.id===item.id);if(i<0&&key&&item[key])i=local.findIndex(x=>String(x[key]||'').trim()===String(item[key]||'').trim());if(i<0){local.push(item);n++;}else local[i]=item;});return n;}
-const APP_VER='v145';
+const APP_VER='v146';
 function renderSyncInfo(){const t=Number(localStorage.getItem('bvd_lastSync')||0);const v=localStorage.getItem('bvd_seedVerShown')||localStorage.getItem('bvd_seedVersion')||'';const cf=localStorage.getItem('bvd_catalogoFecha')||'';const p=n=>String(n).padStart(2,'0');
   let ts='',short='';if(t){const d=new Date(t);ts=p(d.getDate())+'-'+p(d.getMonth()+1)+'-'+d.getFullYear()+' '+p(d.getHours())+':'+p(d.getMinutes());short=p(d.getDate())+'-'+p(d.getMonth()+1)+' '+p(d.getHours())+':'+p(d.getMinutes());}
   const hv=$('hdrVer');if(hv)hv.innerHTML='App '+APP_VER+(short?'<br>'+short:'');
