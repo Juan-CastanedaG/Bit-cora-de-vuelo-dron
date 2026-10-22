@@ -551,6 +551,7 @@ body.hc nav button{color:#000}body.hc nav button.active{background:#000!importan
   <button class="active" data-view="oper" onclick="nav('oper')"><svg width="20" height="20" viewBox="0 0 24 24"><path d="M4 5h16M4 12h16M4 19h10"/></svg>Operaciones</button>
   <button data-view="vuelos" onclick="nav('vuelos')"><svg width="20" height="20" viewBox="0 0 24 24"><path d="M2 12l20-8-7.5 20-3-8.5L2 12z"/></svg>Vuelos</button>
   <button data-view="mapa" onclick="nav('mapa')"><svg width="20" height="20" viewBox="0 0 24 24"><path d="M9 3 3 6v15l6-3 6 3 6-3V3l-6 3-6-3z"/><path d="M9 3v15M15 6v15"/></svg>Mapa</button>
+  <button data-view="planif" onclick="location.href='./planificador.html'"><svg width="20" height="20" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M12 2v4M12 18v4M2 12h4M18 12h4"/></svg>Planificador</button>
   <button data-view="meteo" onclick="nav('meteo')"><svg width="20" height="20" viewBox="0 0 24 24"><path d="M17.5 19a4.5 4.5 0 0 0 0-9 6 6 0 0 0-11.6 1.5A3.5 3.5 0 0 0 6.5 19z"/></svg>Meteo</button>
   <button data-view="bitacora" onclick="nav('bitacora')"><svg width="20" height="20" viewBox="0 0 24 24"><path d="M5 20V10M12 20V4M19 20v-7"/></svg>Bitácora</button>
   <button data-view="libro" onclick="nav('libro')"><svg width="20" height="20" viewBox="0 0 24 24"><path d="M4 5a2 2 0 0 1 2-2h13v16H6a2 2 0 0 0-2 2z"/><path d="M9 3v14"/></svg>Libro de vuelo</button>
@@ -1832,7 +1833,7 @@ function modoPiloto(){return localStorage.getItem('bvd_modoPiloto')==='1';}
 function applyModo(){const on=modoPiloto();['fleetForm','pilotForm'].forEach(id=>{const el=$(id);if(el)el.style.display=on?'none':'';});const c=$('modoPilotoChk');if(c)c.checked=on;}
 function setModoPiloto(on){localStorage.setItem('bvd_modoPiloto',on?'1':'');applyModo();renderFleet();renderPilots();toast(on?'Modo piloto activado (solo consulta)':'Modo maestro (edición habilitada)');}
 function mergeCatalog(local,incoming,key){if(!incoming)return 0;let n=0;incoming.forEach(item=>{let i=local.findIndex(x=>x.id===item.id);if(i<0&&key&&item[key])i=local.findIndex(x=>String(x[key]||'').trim()===String(item[key]||'').trim());if(i<0){local.push(item);n++;}else local[i]=item;});return n;}
-const APP_VER='v133';
+const APP_VER='v135';
 function renderSyncInfo(){const t=Number(localStorage.getItem('bvd_lastSync')||0);const v=localStorage.getItem('bvd_seedVerShown')||localStorage.getItem('bvd_seedVersion')||'';const cf=localStorage.getItem('bvd_catalogoFecha')||'';const p=n=>String(n).padStart(2,'0');
   let ts='',short='';if(t){const d=new Date(t);ts=p(d.getDate())+'-'+p(d.getMonth()+1)+'-'+d.getFullYear()+' '+p(d.getHours())+':'+p(d.getMinutes());short=p(d.getDate())+'-'+p(d.getMonth()+1)+' '+p(d.getHours())+':'+p(d.getMinutes());}
   const hv=$('hdrVer');if(hv)hv.innerHTML='App '+APP_VER+(short?'<br>'+short:'');
