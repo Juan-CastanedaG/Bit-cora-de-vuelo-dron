@@ -199,6 +199,27 @@ details.step[open]>summary h2{color:#007934}
   .pp.open .ppMore{display:block;max-height:38vh;overflow:auto}
   .ppTog{display:block;margin:6px 0 2px;font:700 12.5px "Nunito",sans-serif;color:#007934;cursor:pointer;text-decoration:underline}
 }
+
+#edgeTabs,#infoDrawer,#infoTab{display:none}
+.plItem{display:flex;gap:6px;align-items:center;border:1px solid var(--rule);border-radius:10px;padding:8px;margin-top:6px}
+.plItem button{padding:4px 10px;font-size:12.5px}
+@media (max-width:760px){
+ .mapsel,.legend{position:fixed!important;right:0!important;top:22vh!important;margin:0!important;max-width:78vw!important;width:250px;border-radius:12px 0 0 12px!important;transform:translateX(105%);transition:transform .22s ease;z-index:1004;box-shadow:-4px 0 18px rgba(0,0,0,.25)!important}
+ body.dr-sel .mapsel{transform:none}
+ body.dr-leg .legend{transform:none}
+ .legend .ends{display:flex;justify-content:space-between}
+ .mapsel.mini button{display:block!important}.mapsel .n2::after,.legend.mini>:first-child::after{content:''!important}
+ .legend.mini>:not(:first-child){display:block!important}
+ #edgeTabs{display:flex;flex-direction:column;gap:8px;position:fixed;right:0;top:calc(22vh - 4px);z-index:1005;transform:translateX(0);transition:transform .22s}
+ body.dr-sel #edgeTabs,body.dr-leg #edgeTabs{transform:translateX(-250px)}
+ #edgeTabs button{width:40px;height:44px;border-radius:12px 0 0 12px!important;border:0!important;background:#007934!important;color:#fff!important;font-size:18px!important;padding:0!important;box-shadow:-2px 2px 10px rgba(0,0,0,.3)}
+ #infoDrawer{display:block;position:fixed;left:0;top:calc(10px + env(safe-area-inset-top));bottom:calc(var(--sheetH) + 10px);width:86vw;max-width:360px;background:var(--panel);border-radius:0 14px 14px 0;box-shadow:4px 0 22px rgba(0,0,0,.3);z-index:1006;transform:translateX(-105%);transition:transform .22s ease;overflow:auto;padding:0 12px 12px}
+ body.dr-info #infoDrawer{transform:none}
+ .idHd{display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;background:#007934;color:#fff;margin:0 -12px 8px;padding:10px 12px;font-family:"Nunito",sans-serif}
+ .idHd button{background:transparent!important;border:1px solid #fff!important;color:#fff!important;padding:2px 9px!important}
+ #infoTab{display:none;position:fixed;left:0;top:40vh;z-index:1005;width:40px;height:44px;border-radius:0 12px 12px 0!important;border:0!important;background:#007934!important;color:#fff!important;font-size:20px!important;padding:0!important;box-shadow:2px 2px 10px rgba(0,0,0,.3)}
+ body.has-info:not(.dr-info) #infoTab{display:block}
+}
 </style>
 </head>
 <body>
@@ -2129,6 +2150,143 @@ S.embReady = (async () => {
 })();
 
 applyCam(); modeUI(); geomUI();
+
+/* ===================== EPM: flota, planes guardados, mapas offline, exportar, cajones ===================== */
+Object.assign(CAMS, {
+  epm_m3e: { n: 'EPM · DJI Mavic 3 Enterprise (gran angular)', sw: 17.3, sh: 13.0, px: 5280, f: 12.29, mi: 0.7, v: 15, bat: 40 },
+  epm_m3t: { n: 'EPM · DJI Mavic 3 Thermal (gran angular 48 MP)', sw: 6.4, sh: 4.8, px: 8000, f: 4.4, mi: 0.7, v: 15, bat: 40 },
+  epm_m3p: { n: 'EPM · DJI Mavic 3 Pro (Hasselblad 4/3)', sw: 17.3, sh: 13.0, px: 5280, f: 12.29, mi: 2, v: 15, bat: 38 },
+  epm_m4e: { n: 'EPM · DJI Matrice 4E (gran angular)', sw: 17.3, sh: 13.0, px: 5280, f: 12.29, mi: 0.5, v: 21, bat: 45 },
+  epm_m4t: { n: 'EPM · DJI Matrice 4T (gran angular 48 MP)', sw: 9.6, sh: 7.2, px: 8064, f: 6.72, mi: 0.5, v: 21, bat: 45 },
+  epm_m300h20: { n: 'EPM · DJI Matrice 300 RTK + Zenmuse H20T (gran angular)', sw: 6.17, sh: 4.55, px: 4056, f: 4.5, mi: 2, v: 15, bat: 40 },
+  epm_m300p1: { n: 'EPM · DJI Matrice 300 RTK + Zenmuse P1 35 mm', sw: 35.9, sh: 24.0, px: 8192, f: 35, mi: 0.7, v: 15, bat: 38 },
+  epm_m350h20: { n: 'EPM · DJI Matrice 350 RTK + Zenmuse H20T (gran angular)', sw: 6.17, sh: 4.55, px: 4056, f: 4.5, mi: 2, v: 15, bat: 42 },
+  epm_m350p1: { n: 'EPM · DJI Matrice 350 RTK + Zenmuse P1 35 mm', sw: 35.9, sh: 24.0, px: 8192, f: 35, mi: 0.7, v: 15, bat: 40 },
+  epm_m2ea: { n: 'EPM · DJI Mavic 2 Enterprise Advance (visual 48 MP)', sw: 6.4, sh: 4.8, px: 8000, f: 4.5, mi: 2, v: 12, bat: 28 },
+  epm_m2z: { n: 'EPM · DJI Mavic 2 Zoom (12 MP, 24 mm)', sw: 6.17, sh: 4.55, px: 4000, f: 4.3, mi: 2, v: 12, bat: 27 },
+  epm_air2s: { n: 'EPM · DJI Air 2S (1", 20 MP)', sw: 13.2, sh: 8.8, px: 5472, f: 8.4, mi: 2, v: 12, bat: 28 },
+  epm_m4p: { n: 'EPM · DJI Mavic 4 Pro (Hasselblad 100 MP)', sw: 17.3, sh: 13.0, px: 12288, f: 14.0, mi: 2, v: 15, bat: 45 },
+  epm_evo2: { n: 'EPM · Autel EVO II Pro V3 (1", 20 MP)', sw: 13.2, sh: 8.8, px: 5472, f: 10.57, mi: 2, v: 15, bat: 35 },
+});
+(function () { const sel = $('#cam'); const cur = sel.value; sel.innerHTML = ''; const g1 = document.createElement('optgroup'); g1.label = 'Flota EPM'; const g2 = document.createElement('optgroup'); g2.label = 'Otros equipos';
+  for (const [k, c] of Object.entries(CAMS)) { const o = new Option(c.n.replace(/^EPM · /, ''), k); (k.startsWith('epm_') ? g1 : g2).appendChild(o); }
+  sel.appendChild(g1); sel.appendChild(g2); sel.value = CAMS['epm_' + cur] ? 'epm_' + cur : (cur === 'm3e' ? 'epm_m3e' : cur === 'm4e' ? 'epm_m4e' : cur); })();
+
+/* ---------- planes guardados (IndexedDB) ---------- */
+const PDB = { db: null };
+function pdb() { return PDB.db ? Promise.resolve(PDB.db) : new Promise((res, rej) => { const r = indexedDB.open('planificadorUAS', 1); r.onupgradeneeded = () => { const d = r.result; if (!d.objectStoreNames.contains('plans')) d.createObjectStore('plans', { keyPath: 'id' }); }; r.onsuccess = () => { PDB.db = r.result; res(PDB.db); }; r.onerror = () => rej(r.error); }); }
+async function pAll() { const d = await pdb(); return new Promise((res) => { const q = d.transaction('plans').objectStore('plans').getAll(); q.onsuccess = () => res(q.result || []); q.onerror = () => res([]); }); }
+async function pPut(o) { const d = await pdb(); return new Promise((res, rej) => { const t = d.transaction('plans', 'readwrite'); t.objectStore('plans').put(o); t.oncomplete = () => res(); t.onerror = () => rej(t.error); }); }
+async function pDel(id) { const d = await pdb(); return new Promise((res) => { const t = d.transaction('plans', 'readwrite'); t.objectStore('plans').delete(id); t.oncomplete = () => res(); }); }
+function formState() { const o = {}; document.querySelectorAll('#panel input[id], #panel select[id]').forEach((el) => { if (el.type === 'file') return; o[el.id] = el.type === 'checkbox' ? el.checked : el.value; }); return o; }
+function setForm(o) { for (const [id, v] of Object.entries(o || {})) { const el = document.getElementById(id); if (!el || el.type === 'file') continue; if (el.type === 'checkbox') el.checked = !!v; else el.value = v; } }
+const clean = (x) => JSON.parse(JSON.stringify(x));
+async function planSave() {
+  if (!S.geom) { log('Primero dibuja o importa la misión.', true); return; }
+  const prev = S.planName || ''; const name = prompt('Nombre del plan de vuelo:', prev || ('Plan ' + new Date().toLocaleDateString('es-CO'))); if (!name) return;
+  const A = S.an; const T = S.terrain;
+  const rec = { id: S.planId && name === prev ? S.planId : 'p' + Date.now().toString(36), name, fecha: new Date().toISOString(), form: formState(), geom: clean(S.geom),
+    terrain: T ? { src: T.src, ext: T.ext, label: T.label, grid: { minX: T.grid.minX, maxY: T.grid.maxY, cs: T.grid.cs, w: T.grid.w, h: T.grid.h, z: T.grid.z } } : null,
+    roads: S.roads.filter((r) => r.src === 'file' || r.src === 'osm').length ? S.roads.filter((r) => r.src === 'file' || r.src === 'osm') : null,
+    sel: A && A.segSel ? [...A.segSel] : [], pick: A && A.sel ? A.sel.ll : null, analizado: !!A,
+    resumen: A ? planResumen() : null, view: { c: map.getCenter(), z: map.getZoom() } };
+  try { await pPut(rec); S.planId = rec.id; S.planName = name; log('Plan “' + name + '” guardado en este dispositivo' + (rec.terrain ? ' (con terreno)' : '') + '.'); planList(); }
+  catch (e) { log('No se pudo guardar el plan: ' + e.message, true); }
+}
+function planResumen() { const A = S.an; if (!A) return null; const segs = selList(); const out = { tramos: segs.map((si) => S.mission.segs[si].name), despegues: [] };
+  try { if (A.combo && A.combo.plan) out.despegues = A.combo.plan.map((c, k) => ({ k: String.fromCharCode(65 + k), ll: c.ll })); } catch (e) {} return out; }
+async function planLoad(id) {
+  const L0 = await pAll(); const p = L0.find((x) => x.id === id); if (!p) return;
+  setForm(p.form); try { modeUI(); geomUI(); } catch (e) {}
+  S.an = null; S.geom = p.geom; if (S.geom.type === 'poly') syncPoly(); drawGeom(); recompute();
+  if (p.terrain && S.frame) { const g = p.terrain.grid; const z = g.z instanceof Float32Array ? g.z : new Float32Array(Object.values(g.z)); const grid = { minX: g.minX, maxY: g.maxY, cs: g.cs, w: g.w, h: g.h, z };
+    let zmin = Infinity, zmax = -Infinity; for (const v of z) if (v === v) { zmin = Math.min(zmin, v); zmax = Math.max(zmax, v); }
+    S.terrain = { src: p.terrain.src, W: S.frame.W, ext: p.terrain.ext, grid, label: p.terrain.label + ' (guardado)', zAt: (x, y) => bilinear(z, g.w, g.h, (x - g.minX) / g.cs - 0.5, (g.maxY - y) / g.cs - 0.5), zmin, zmax };
+    try { S.terrain.hs = hillshade(grid); drawRelief(); } catch (e) {}
+    setStatus('#stTerrain', 'Terreno del plan guardado: cotas de ' + fmt(zmin) + ' a ' + fmt(zmax) + ' m.', 'ok'); }
+  if (p.roads) { S.roads = S.roads.filter((r) => r.src !== 'file' && r.src !== 'osm').concat(p.roads); try { drawRoads(); } catch (e) {} }
+  S.planId = p.id; S.planName = p.name; log('Plan “' + p.name + '” cargado.');
+  if (p.view) map.setView(p.view.c, p.view.z);
+  if (p.analizado && S.mission) { await runAnalysis(); if (S.an && p.sel && p.sel.length) { setSelection(p.sel.filter((k) => k < S.an.nSeg)); }
+    if (S.an && p.pick) { let best = null, bd = 1e18; for (const c of S.an.cands) { const d = (c.ll[0] - p.pick[0]) ** 2 + (c.ll[1] - p.pick[1]) ** 2; if (d < bd) { bd = d; best = c; } } if (best) try { selectPoint(best, selList()[0] ?? null, false); } catch (e) {} } }
+  planDrawer(false);
+}
+async function planList() { const host = document.getElementById('planList'); if (!host) return; const L0 = (await pAll()).sort((a, b) => String(b.fecha).localeCompare(String(a.fecha)));
+  host.innerHTML = L0.length ? L0.map((p) => `<div class="plItem"><div style="flex:1;min-width:0"><b>${p.name.replace(/</g, '&lt;')}</b><div class="hint" style="margin:0">${new Date(p.fecha).toLocaleString('es-CO', { dateStyle: 'short', timeStyle: 'short' })} · ${p.geom.type === 'poly' ? 'área' : 'corredor'}${p.terrain ? ' · terreno' : ''}${p.analizado ? ' · analizado' : ''}${p.resumen && p.resumen.tramos.length ? ' · ' + p.resumen.tramos.length + ' tramo(s)' : ''}</div></div><button type="button" data-ld="${p.id}">Abrir</button><button type="button" data-dl="${p.id}" title="Eliminar">✕</button></div>`).join('') : '<div class="hint">No hay planes guardados en este dispositivo.</div>';
+  host.querySelectorAll('[data-ld]').forEach((b) => b.onclick = () => planLoad(b.dataset.ld));
+  host.querySelectorAll('[data-dl]').forEach((b) => b.onclick = async () => { if (confirm('¿Eliminar este plan?')) { await pDel(b.dataset.dl); planList(); } }); }
+
+/* ---------- mapa offline (precarga de teselas satelitales) ---------- */
+async function offlineMap() {
+  const b = S.geom ? L.latLngBounds(S.geom.ll || S.geom.polys.flat()).pad(0.25) : map.getBounds();
+  const zs = [12, 13, 14, 15, 16]; const tiles = [];
+  const t = (lat, lon, z) => { const n = 2 ** z; const x = Math.floor((lon + 180) / 360 * n); const r = lat * Math.PI / 180; const y = Math.floor((1 - Math.log(Math.tan(r) + 1 / Math.cos(r)) / Math.PI) / 2 * n); return [x, y]; };
+  for (const z of zs) { const [x0, y0] = t(b.getNorth(), b.getWest(), z), [x1, y1] = t(b.getSouth(), b.getEast(), z); for (let x = x0; x <= x1; x++) for (let y = y0; y <= y1; y++) tiles.push([z, x, y]); }
+  if (tiles.length > 4000 && !confirm('Son ' + tiles.length + ' teselas (puede tardar y ocupar espacio). ¿Continuar?')) return;
+  let ok = 0, bad = 0; const st = document.getElementById('offSt');
+  const url = ([z, x, y]) => `https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/${z}/${y}/${x}`;
+  let i = 0; const worker = async () => { while (i < tiles.length) { const k = tiles[i++]; try { await fetch(url(k), { mode: 'no-cors' }); ok++; } catch (e) { bad++; } if (st && (ok + bad) % 20 === 0) st.textContent = 'Descargando mapa: ' + (ok + bad) + ' de ' + tiles.length + '…'; } };
+  await Promise.all([1, 2, 3, 4, 5, 6].map(worker));
+  if (st) st.textContent = 'Mapa satelital guardado para uso sin señal: ' + ok + ' teselas (zoom 12 a 16)' + (bad ? ', ' + bad + ' fallaron' : '') + '.';
+}
+
+/* ---------- exportar plan de vuelo ---------- */
+function xmlEsc(s) { return String(s).replace(/[<&>"]/g, (c) => ({ '<': '&lt;', '&': '&amp;', '>': '&gt;', '"': '&quot;' }[c])); }
+function planKML() {
+  const A = S.an, M = S.mission; if (!M) { log('No hay misión.', true); return; }
+  const segs = selList().length ? selList() : M.segs.map((_, k) => k);
+  const co = (ll) => ll.map((p) => `${p[1].toFixed(7)},${p[0].toFixed(7)},0`).join(' ');
+  let pm = '';
+  for (const si of segs) { const sg = M.segs[si]; const rt = sg.route.map(toLL); pm += `<Placemark><name>${xmlEsc(sg.name || ('Tramo ' + (si + 1)))} · ruta</name><styleUrl>#ruta</styleUrl><LineString><tessellate>1</tessellate><coordinates>${co(rt)}</coordinates></LineString></Placemark>`;
+    if (sg.axis) pm += `<Placemark><name>${xmlEsc(sg.name || ('Tramo ' + (si + 1)))} · eje</name><styleUrl>#eje</styleUrl><LineString><tessellate>1</tessellate><coordinates>${co(sg.axis.map(toLL))}</coordinates></LineString></Placemark>`; }
+  if (A && A.combo && A.combo.plan) A.combo.plan.forEach((c, k) => { pm += `<Placemark><name>Despegue ${String.fromCharCode(65 + k)}</name><styleUrl>#dsp</styleUrl><description>${xmlEsc((c.ll[0]).toFixed(6) + ', ' + (c.ll[1]).toFixed(6))}</description><Point><coordinates>${c.ll[1].toFixed(7)},${c.ll[0].toFixed(7)},0</coordinates></Point></Placemark>`; });
+  else if (A && A.sel) pm += `<Placemark><name>Despegue</name><styleUrl>#dsp</styleUrl><Point><coordinates>${A.sel.ll[1].toFixed(7)},${A.sel.ll[0].toFixed(7)},0</coordinates></Point></Placemark>`;
+  const kml = `<?xml version="1.0" encoding="UTF-8"?><kml xmlns="http://www.opengis.net/kml/2.2"><Document><name>${xmlEsc(S.planName || 'Plan UAS EPM')}</name><Style id="ruta"><LineStyle><color>ffe6b822</color><width>2</width></LineStyle></Style><Style id="eje"><LineStyle><color>ff347900</color><width>4</width></LineStyle></Style><Style id="dsp"><IconStyle><scale>1.2</scale><Icon><href>http://maps.google.com/mapfiles/kml/paddle/grn-circle.png</href></Icon></IconStyle></Style>${pm}</Document></kml>`;
+  const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([kml], { type: 'application/vnd.google-earth.kml+xml' })); a.download = (S.planName || 'plan_UAS').replace(/[^\w\-]+/g, '_') + '.kml'; a.click(); setTimeout(() => URL.revokeObjectURL(a.href), 5000);
+  log('KML del plan exportado: ' + segs.length + ' tramo(s)' + (A && A.combo ? ' y ' + A.combo.plan.length + ' despegue(s)' : '') + '. Se puede abrir en DJI Pilot 2, Google Earth o QGIS.');
+}
+function planHoja() {
+  const A = S.an, M = S.mission; if (!A || !M) { log('Primero analiza los despegues y selecciona tramos y un punto.', true); return; }
+  const P = A.P; const segs = selList(); const c = A.sel; if (!segs.length || !c) { log('Selecciona en el mapa los tramos y toca el punto de despegue que vas a usar.', true); return; }
+  const t = pointSelTimes(c, segs);
+  const rows = t.rows.map((r) => `<tr><td>${xmlEsc(r.sg.name)}</td><td>${fmt(c.segPct[r.si] * 100)} %</td><td>${minSec(r.t)}</td><td>${r.flights}</td><td>${c.segSafe[r.si] ? 'Sí' : '<b style="color:#b91c1c">No (ALT)</b>'}</td></tr>`).join('');
+  const sum = selPopupHTML(c, segs).replace(/<button[\s\S]*?<\/button>/g, '');
+  const html = `<!doctype html><html><head><meta charset="utf-8"><title>${xmlEsc(S.planName || 'Plan de vuelo UAS')}</title><style>body{font-family:Arial,sans-serif;margin:22px;color:#1d1d1b}h1{color:#007934;font-size:20px;margin:0}.s{color:#555;font-size:12px;margin:4px 0 12px}table{border-collapse:collapse;width:100%;font-size:12px;margin-top:8px}th{background:#007934;color:#fff;text-align:left;padding:6px}td{padding:5px 6px;border-bottom:1px solid #ddd}.box{border:1px solid #cfe3d6;border-radius:8px;padding:10px;font-size:12.5px;margin-top:10px}a{color:#007934}</style></head><body>
+    <h1>Plan de vuelo UAS · ${xmlEsc(S.planName || 'sin nombre')}</h1><div class="s">EPM · Planificador UAS · ${new Date().toLocaleString('es-CO')}</div>
+    <div class="box"><b>Despegue:</b> ${c.ll[0].toFixed(6)}, ${c.ll[1].toFixed(6)} · <a href="https://www.google.com/maps/dir/?api=1&destination=${c.ll[0]},${c.ll[1]}">Cómo llegar (Google Maps)</a><br><b>Cota del despegue:</b> ${fmt(c.zc)} m · <b>Modo de altura:</b> ${xmlEsc($('#hMode').selectedOptions[0].text)} · <b>Altura:</b> ${fmt(P.H)} m · <b>Equipo:</b> ${xmlEsc($('#cam').selectedOptions[0].text)}</div>
+    <div class="box">${sum}</div>
+    <table><thead><tr><th>Tramo</th><th>Ruta visible</th><th>Tiempo</th><th>Vuelos</th><th>Seguro en ALT</th></tr></thead><tbody>${rows}</tbody></table>
+    <p style="font-size:11px;color:#777;margin-top:16px">Cargá el KML del plan en DJI Pilot 2 para crear la misión de cada tramo. Verificá autorización vigente, NOTAM y meteorología antes de volar.</p><script>setTimeout(function(){window.print();},500);<\/script></body></html>`;
+  const w = window.open('', '_blank'); if (!w) { log('Permití ventanas emergentes para ver la hoja del plan.', true); return; } w.document.open(); w.document.write(html); w.document.close();
+}
+
+/* ---------- panel “Planes” en la hoja ---------- */
+(function () {
+  const sec = document.createElement('details'); sec.className = 'step'; sec.id = 'stepPlanes';
+  sec.innerHTML = '<summary><span class="n">★</span><h2>Mis planes de vuelo</h2></summary><div class="body"><div class="row" style="margin-top:0"><button id="plSave" class="primary">Guardar plan</button><button id="plKml">Exportar KML</button><button id="plHoja">Hoja del plan</button></div><p class="hint" style="margin-top:8px">Se guarda en este dispositivo: misión, parámetros, terreno descargado, vías, tramos seleccionados y punto de despegue. Al abrirlo se recalcula el análisis sin necesidad de internet.</p><div class="row"><button id="plOff">Guardar mapa satelital para uso sin señal</button></div><div class="status" id="offSt"></div><div id="planList" style="margin-top:10px"></div></div>';
+  const first = document.querySelector('#panel details.step'); first.parentNode.insertBefore(sec, first);
+  document.getElementById('plSave').onclick = planSave; document.getElementById('plKml').onclick = planKML; document.getElementById('plHoja').onclick = planHoja; document.getElementById('plOff').onclick = offlineMap;
+  planList();
+})();
+window.planDrawer = () => {};
+
+/* ---------- cajones laterales (celular) ---------- */
+(function () {
+  const mq = window.matchMedia('(max-width:760px)');
+  const tabs = document.createElement('div'); tabs.id = 'edgeTabs';
+  tabs.innerHTML = '<button type="button" id="tabSel" title="Tramos seleccionados">☰</button><button type="button" id="tabLeg" title="Leyenda">🏷</button>';
+  document.body.appendChild(tabs);
+  const info = document.createElement('div'); info.id = 'infoDrawer'; info.innerHTML = '<div class="idHd"><b>Información del punto</b><button type="button" id="idClose">✕</button></div><div id="idBody"></div>'; document.body.appendChild(info);
+  const itab = document.createElement('button'); itab.type = 'button'; itab.id = 'infoTab'; itab.title = 'Información'; itab.textContent = 'ⓘ'; document.body.appendChild(itab);
+  const tog = (cls) => { const on = !document.body.classList.contains(cls); document.body.classList.remove('dr-sel', 'dr-leg'); if (on) document.body.classList.add(cls); };
+  document.getElementById('tabSel').onclick = () => tog('dr-sel'); document.getElementById('tabLeg').onclick = () => tog('dr-leg');
+  document.getElementById('idClose').onclick = () => document.body.classList.remove('dr-info');
+  itab.onclick = () => document.body.classList.toggle('dr-info');
+  map.on('click', () => document.body.classList.remove('dr-sel', 'dr-leg'));
+  map.on('popupopen', (e) => { if (!mq.matches) return; const el = e.popup.getElement(); const pp = el && el.querySelector('.pp'); if (!pp) return;
+    const body = document.getElementById('idBody'); body.innerHTML = ''; body.appendChild(pp); document.body.classList.add('has-info', 'dr-info'); document.body.classList.remove('dr-sel', 'dr-leg'); setTimeout(() => map.closePopup(e.popup), 0); });
+})();
+
 })();
 </script>
 <script id="mobSheetJs">
@@ -2164,11 +2322,6 @@ applyCam(); modeUI(); geomUI();
   /* el botón Ocultar del escritorio sigue funcionando; en celular minimiza */
   var hide=document.getElementById('hide');if(hide)hide.addEventListener('click',function(e){if(mq.matches){e.stopImmediatePropagation();document.getElementById('panel').classList.remove('hidden');document.body.classList.remove('collapsed');setSt('min');}},true);
   window.addEventListener('resize',function(){if(mq.matches)setSt(st);});
-  function ppProcess(pp){if(!mq.matches||!pp||pp.dataset.mob)return;pp.dataset.mob='1';var kids=[].slice.call(pp.childNodes);var more=document.createElement('div');more.className='ppMore';var tog=document.createElement('div');tog.className='ppTog';tog.textContent='Ver detalle \u25be';var first=true;
-    kids.forEach(function(n){if(n.nodeType===1&&(n.tagName==='STRONG'||(first&&n.tagName!=='DIV'))){first=false;return;}if(n.nodeType===1&&n.classList.contains('b'))return;if(n.nodeType===3&&!n.textContent.trim())return;more.appendChild(n);});
-    if(!more.childNodes.length)return;var bdiv=pp.querySelector(':scope > .b');if(bdiv)pp.insertBefore(tog,bdiv);else pp.appendChild(tog);pp.insertBefore(more,tog.nextSibling);
-    tog.addEventListener('click',function(e){e.stopPropagation();pp.classList.toggle('open');tog.textContent=pp.classList.contains('open')?'Ocultar detalle \u25b4':'Ver detalle \u25be';});}
-  new MutationObserver(function(ms){ms.forEach(function(m){m.addedNodes.forEach(function(n){if(n.nodeType!==1)return;if(n.classList&&n.classList.contains('pp'))ppProcess(n);else if(n.querySelectorAll)n.querySelectorAll('.pp').forEach(ppProcess);});});}).observe(document.getElementById('map'),{childList:true,subtree:true});
   setTimeout(function(){var ms=document.getElementById('mapSel');if(ms){if(mq.matches)ms.classList.add('mini');var n2=document.getElementById('mapSelN');if(n2)n2.addEventListener('click',function(){ms.classList.toggle('mini');});['mapSelAll','mapSelNone'].forEach(function(id){var b=document.getElementById(id);if(b)b.addEventListener('click',function(){if(mq.matches)setTimeout(function(){ms.classList.add('mini');},150);});});}},800);
   setTimeout(function(){var lg=document.querySelector('.legend');if(!lg)return;if(mq.matches)lg.classList.add('mini');L.DomEvent&&L.DomEvent.disableClickPropagation(lg);lg.addEventListener('click',function(){if(mq.matches)lg.classList.toggle('mini');});},800);
 })();
