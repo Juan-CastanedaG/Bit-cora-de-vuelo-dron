@@ -187,6 +187,17 @@ details.step[open]>summary h2{color:#007934}
   .legend{font-size:11.5px;max-width:190px;cursor:pointer}
   .legend.mini>:not(:first-child){display:none}
   .legend.mini>:first-child::after{content:' \25B8';color:var(--muted)}
+  .mapsel{max-width:175px;padding:6px 8px!important;font-size:12px}
+  .mapsel .n2{font:700 12px "Nunito",sans-serif!important;cursor:pointer;color:var(--ink)}
+  .mapsel .n2::after{content:' \25BE';color:var(--muted)}
+  .mapsel button{font-size:11.5px!important;padding:4px 8px!important;margin:4px 0 0!important;width:100%}
+  .mapsel.mini{padding:5px 8px!important}
+  .mapsel.mini button{display:none!important}
+  .mapsel.mini .n2::after{content:' \25B8'}
+  .leaflet-popup-content{margin:10px 12px!important;font-size:13px}
+  .ppMore{display:none}
+  .pp.open .ppMore{display:block;max-height:38vh;overflow:auto}
+  .ppTog{display:block;margin:6px 0 2px;font:700 12.5px "Nunito",sans-serif;color:#007934;cursor:pointer;text-decoration:underline}
 }
 </style>
 </head>
@@ -2153,6 +2164,12 @@ applyCam(); modeUI(); geomUI();
   /* el botón Ocultar del escritorio sigue funcionando; en celular minimiza */
   var hide=document.getElementById('hide');if(hide)hide.addEventListener('click',function(e){if(mq.matches){e.stopImmediatePropagation();document.getElementById('panel').classList.remove('hidden');document.body.classList.remove('collapsed');setSt('min');}},true);
   window.addEventListener('resize',function(){if(mq.matches)setSt(st);});
+  function ppProcess(pp){if(!mq.matches||!pp||pp.dataset.mob)return;pp.dataset.mob='1';var kids=[].slice.call(pp.childNodes);var more=document.createElement('div');more.className='ppMore';var tog=document.createElement('div');tog.className='ppTog';tog.textContent='Ver detalle \u25be';var first=true;
+    kids.forEach(function(n){if(n.nodeType===1&&(n.tagName==='STRONG'||(first&&n.tagName!=='DIV'))){first=false;return;}if(n.nodeType===1&&n.classList.contains('b'))return;if(n.nodeType===3&&!n.textContent.trim())return;more.appendChild(n);});
+    if(!more.childNodes.length)return;var bdiv=pp.querySelector(':scope > .b');if(bdiv)pp.insertBefore(tog,bdiv);else pp.appendChild(tog);pp.insertBefore(more,tog.nextSibling);
+    tog.addEventListener('click',function(e){e.stopPropagation();pp.classList.toggle('open');tog.textContent=pp.classList.contains('open')?'Ocultar detalle \u25b4':'Ver detalle \u25be';});}
+  new MutationObserver(function(ms){ms.forEach(function(m){m.addedNodes.forEach(function(n){if(n.nodeType!==1)return;if(n.classList&&n.classList.contains('pp'))ppProcess(n);else if(n.querySelectorAll)n.querySelectorAll('.pp').forEach(ppProcess);});});}).observe(document.getElementById('map'),{childList:true,subtree:true});
+  setTimeout(function(){var ms=document.getElementById('mapSel');if(ms){if(mq.matches)ms.classList.add('mini');var n2=document.getElementById('mapSelN');if(n2)n2.addEventListener('click',function(){ms.classList.toggle('mini');});['mapSelAll','mapSelNone'].forEach(function(id){var b=document.getElementById(id);if(b)b.addEventListener('click',function(){if(mq.matches)setTimeout(function(){ms.classList.add('mini');},150);});});}},800);
   setTimeout(function(){var lg=document.querySelector('.legend');if(!lg)return;if(mq.matches)lg.classList.add('mini');L.DomEvent&&L.DomEvent.disableClickPropagation(lg);lg.addEventListener('click',function(){if(mq.matches)lg.classList.toggle('mini');});},800);
 })();
 </script>
