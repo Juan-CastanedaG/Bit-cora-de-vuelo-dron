@@ -201,6 +201,16 @@ details.step[open]>summary h2{color:#007934}
 }
 
 #edgeTabs,#infoDrawer,#infoTab{display:none}
+.geoBtn a{font-size:18px;line-height:30px}
+body:not(.geo-on) #geoOff{display:none}
+body.geo-on #geoBtn{color:#1F6FB2;font-weight:800}
+.asigPin{width:30px;height:30px;border-radius:50%;color:#fff;font:800 14px/26px "Nunito",sans-serif;text-align:center;border:2px solid #fff;box-shadow:0 2px 6px rgba(0,0,0,.4)}
+.tabBadge{position:absolute;top:-6px;left:-6px;background:#E8710A;color:#fff;border-radius:999px;font:800 11px/18px "Nunito",sans-serif;min-width:18px;padding:0 4px;text-align:center}
+.tabBadge:empty{display:none}
+#edgeTabs button{position:relative}
+#asigBtnInfo{display:none}
+@media (max-width:760px){ body.dr-info #asigBtnInfo{display:block;position:sticky;bottom:0;width:100%;margin-top:10px} }
+
 .plItem{display:flex;gap:6px;align-items:center;border:1px solid var(--rule);border-radius:10px;padding:8px;margin-top:6px}
 .plItem button{padding:4px 10px;font-size:12.5px}
 @media (max-width:760px){
@@ -2283,9 +2293,103 @@ window.planDrawer = () => {};
   document.getElementById('idClose').onclick = () => document.body.classList.remove('dr-info');
   itab.onclick = () => document.body.classList.toggle('dr-info');
   map.on('click', () => document.body.classList.remove('dr-sel', 'dr-leg'));
-  map.on('popupopen', (e) => { if (!mq.matches) return; const el = e.popup.getElement(); const pp = el && el.querySelector('.pp'); if (!pp) return;
-    const body = document.getElementById('idBody'); body.innerHTML = ''; body.appendChild(pp); document.body.classList.add('has-info', 'dr-info'); document.body.classList.remove('dr-sel', 'dr-leg'); setTimeout(() => map.closePopup(e.popup), 0); });
+  map.on('popupopen', (e) => { if (!mq.matches) return; setTimeout(() => { const el = e.popup.getElement(); const pp = el && el.querySelector('.pp'); if (!pp) return;
+    const body = document.getElementById('idBody'); body.innerHTML = ''; body.appendChild(pp); document.body.classList.add('has-info', 'dr-info'); document.body.classList.remove('dr-sel', 'dr-leg');
+    const vs = pp.querySelector('[data-act=vs]'); if (vs) vs.addEventListener('click', () => { document.body.classList.remove('dr-info'); if (window.sheetSet) window.sheetSet('min'); setTimeout(() => { try { const ls = LY.visible.getLayers(); if (ls.length) { const b = L.featureGroup(ls).getBounds(); if (b.isValid()) map.fitBounds(b.pad(0.1)); } } catch (er) {} }, 400); });
+    map.closePopup(e.popup); }, 0); });
 })();
+
+
+/* ===================== ubicación en tiempo real ===================== */
+const GEO = { id: null, mk: null, acc: null, first: true, last: null };
+function geoStart() {
+  if (!navigator.geolocation) { log('Este navegador no permite ubicación.', true); return; }
+  if (GEO.id != null) { if (GEO.last) map.setView(GEO.last, Math.max(map.getZoom(), 15)); return; }
+  GEO.first = true; document.body.classList.add('geo-on');
+  GEO.id = navigator.geolocation.watchPosition((p) => {
+    const ll = [p.coords.latitude, p.coords.longitude]; GEO.last = ll;
+    if (!GEO.mk) { GEO.acc = L.circle(ll, { radius: p.coords.accuracy, color: '#1F6FB2', weight: 1, fillOpacity: .12, interactive: false }).addTo(map); GEO.mk = L.circleMarker(ll, { radius: 8, color: '#fff', weight: 3, fillColor: '#1F6FB2', fillOpacity: 1 }).addTo(map).bindTooltip('Mi ubicación'); }
+    else { GEO.mk.setLatLng(ll); GEO.acc.setLatLng(ll).setRadius(p.coords.accuracy); }
+    const st = document.getElementById('geoSt'); if (st) st.textContent = 'Ubicación en vivo: ' + ll[0].toFixed(6) + ', ' + ll[1].toFixed(6) + ' (± ' + Math.round(p.coords.accuracy) + ' m) · ' + new Date().toLocaleTimeString('es-CO');
+    if (GEO.first) { GEO.first = false; map.setView(ll, Math.max(map.getZoom(), 15)); }
+  }, (e) => { if (e.code === 1) { log('No pude obtener la ubicación: permiso denegado (activá la ubicación para el navegador).', true); geoStop(); return; } const st = document.getElementById('geoSt'); if (st) st.textContent = 'Buscando señal GPS… (' + (e.message || 'sin señal') + ')'; }, { enableHighAccuracy: true, maximumAge: 2000, timeout: 30000 });
+}
+function geoStop() { if (GEO.id != null) navigator.geolocation.clearWatch(GEO.id); GEO.id = null; if (GEO.mk) { map.removeLayer(GEO.mk); map.removeLayer(GEO.acc); } GEO.mk = GEO.acc = null; document.body.classList.remove('geo-on'); const st = document.getElementById('geoSt'); if (st) st.textContent = 'Ubicación apagada.'; }
+const geoCtl = L.control({ position: 'topright' });
+geoCtl.onAdd = () => { const d = L.DomUtil.create('div', 'leaflet-bar geoBtn'); d.innerHTML = '<a href="#" id="geoBtn" title="Mi ubicación (en vivo)">◎</a><a href="#" id="geoOff" title="Apagar ubicación">✕</a>'; L.DomEvent.disableClickPropagation(d);
+  d.querySelector('#geoBtn').onclick = (e) => { e.preventDefault(); geoStart(); }; d.querySelector('#geoOff').onclick = (e) => { e.preventDefault(); geoStop(); }; return d; };
+geoCtl.addTo(map);
+
+/* ===================== asignación de tramos a despegues ===================== */
+S.asig = [];
+const ASIG_COL = ['#007934', '#E8710A', '#1F6FB2', '#B5179E', '#7AD400', '#C2352C', '#00A3E0', '#8B5E34', '#5B21B6', '#0F766E'];
+LY.asig = L.layerGroup().addTo(map);
+function asigNext() { let n = 1; while (S.asig.some((a) => a.nombre === 'Vuelo ' + n)) n++; return 'Vuelo ' + n; }
+function asigOf(si) { return S.asig.find((a) => a.segs.includes(si)); }
+function asignar() {
+  const A = S.an; if (!A) { log('Primero analizá los despegues.', true); return; }
+  const segs = selList(); const c = A.sel;
+  if (!segs.length) { log('Seleccioná en el mapa los tramos de este vuelo (tocándolos).', true); return; }
+  if (!c) { log('Tocá en el mapa el punto de despegue para estos tramos.', true); return; }
+  const dup = segs.filter((si) => asigOf(si)); if (dup.length && !confirm(dup.length + ' tramo(s) ya estaban asignados a otro vuelo. ¿Moverlos a este?')) return;
+  S.asig.forEach((a) => { a.segs = a.segs.filter((si) => !segs.includes(si)); }); S.asig = S.asig.filter((a) => a.segs.length);
+  let t = null; try { t = pointSelTimes(c, segs); } catch (e) {}
+  const nombre = prompt('Nombre de este vuelo / grupo:', asigNext()) || asigNext();
+  S.asig.push({ id: 'a' + Date.now().toString(36), nombre, segs: segs.slice(), segNames: segs.map((si) => S.mission.segs[si].name || ('Tramo ' + (si + 1))), ll: c.ll, zc: c.zc,
+    chain: t ? { flights: t.chain.flights, t: t.chain.t, bats: t.chain.bats, elapsed: t.chain.elapsed } : null, pct: segs.map((si) => c.segPct[si]) });
+  try { setSelection([]); } catch (e) {}
+  asigDraw(); asigList(); log('“' + nombre + '” asignado: ' + segs.length + ' tramo(s) desde ' + c.ll[0].toFixed(5) + ', ' + c.ll[1].toFixed(5) + '. Guardá el plan para conservarlo.');
+}
+function asigDraw() {
+  LY.asig.clearLayers(); const M = S.mission; if (!M) return;
+  S.asig.forEach((a, k) => { const col = ASIG_COL[k % ASIG_COL.length];
+    for (const si of a.segs) { const sg = M.segs[si]; if (!sg) continue; L.polyline(sg.route.map(toLL), { color: col, weight: 4, opacity: .85, interactive: false }).addTo(LY.asig); }
+    L.marker(a.ll, { icon: L.divIcon({ className: '', html: `<div class="asigPin" style="background:${col}">${(a.nombre.match(/\d+/) || [k + 1])[0]}</div>`, iconSize: [30, 30], iconAnchor: [15, 15] }) })
+      .bindTooltip(a.nombre + ' · ' + a.segs.length + ' tramo(s)').addTo(LY.asig).on('click', () => asigVer(a.id)); });
+}
+function asigFaltan() { const M = S.mission; if (!M) return []; const n = M.segs.length; const out = []; for (let i = 0; i < n; i++) if (!asigOf(i)) out.push(i); return out; }
+function asigList() {
+  const host = document.getElementById('asigList'); if (!host) return; const M = S.mission; const tot = M ? M.segs.length : 0; const f = asigFaltan();
+  const st = document.getElementById('asigSt');
+  if (st) { st.className = 'status ' + (tot && !f.length ? 'ok' : (S.asig.length ? 'bad' : '')); st.innerHTML = !tot ? 'Sin misión.' : (!f.length ? '✔ Todos los ' + tot + ' tramos están asignados.' : `Asignados ${tot - f.length} de ${tot} tramos. <b>Faltan ${f.length}</b>: ${f.slice(0, 25).map((si) => (M.segs[si].name || 'Tramo ' + (si + 1))).join(', ')}${f.length > 25 ? '…' : ''}`); }
+  const badge = document.getElementById('tabAsigN'); if (badge) badge.textContent = tot ? (f.length ? f.length : '✔') : '';
+  host.innerHTML = S.asig.map((a, k) => { const col = ASIG_COL[k % ASIG_COL.length]; return `<div class="plItem" style="border-left:5px solid ${col}"><div style="flex:1;min-width:0"><b>${a.nombre.replace(/</g, '&lt;')}</b><div class="hint" style="margin:0">${a.segNames.join(', ')}${a.chain ? ' · ' + a.chain.flights + ' vuelo(s), ' + minSec(a.chain.t) + ', ' + a.chain.bats + ' batería(s)' : ''}</div><div class="hint" style="margin:0">Despegue ${a.ll[0].toFixed(5)}, ${a.ll[1].toFixed(5)} · <a href="https://www.google.com/maps/dir/?api=1&destination=${a.ll[0]},${a.ll[1]}" target="_blank">cómo llegar</a></div></div><button type="button" data-av="${a.id}">Ver</button><button type="button" data-ad="${a.id}" title="Quitar">✕</button></div>`; }).join('');
+  host.querySelectorAll('[data-av]').forEach((b) => b.onclick = () => asigVer(b.dataset.av));
+  host.querySelectorAll('[data-ad]').forEach((b) => b.onclick = () => { if (!confirm('¿Quitar esta asignación?')) return; S.asig = S.asig.filter((a) => a.id !== b.dataset.ad); asigDraw(); asigList(); });
+}
+function asigVer(id) { const a = S.asig.find((x) => x.id === id); if (!a) return; if (S.an) { try { setSelection(a.segs.filter((k) => k < S.an.nSeg)); let best = null, bd = 1e18; for (const c of S.an.cands) { const d = (c.ll[0] - a.ll[0]) ** 2 + (c.ll[1] - a.ll[1]) ** 2; if (d < bd) { bd = d; best = c; } } if (best) selectPoint(best, a.segs[0], false); } catch (e) {} }
+  else map.setView(a.ll, 15); if (window.sheetSet && window.matchMedia('(max-width:760px)').matches) window.sheetSet('min'); }
+(function () {
+  const box = document.createElement('div'); box.innerHTML = '<div style="margin-top:12px;border-top:1px solid var(--rule);padding-top:10px"><div class="t" style="font-weight:700">Asignación de tramos a despegues</div><p class="hint" style="margin:2px 0 6px">1) Seleccioná en el mapa los tramos de un vuelo. 2) Tocá el punto de despegue. 3) <b>Asignar</b>. Repetí hasta que no falten tramos. Se guarda con el plan.</p><div class="row" style="margin-top:0"><button id="asigBtn" class="primary">Asignar selección al despegue elegido</button></div><div class="status" id="asigSt"></div><div id="asigList"></div></div><div style="margin-top:12px;border-top:1px solid var(--rule);padding-top:10px"><div class="t" style="font-weight:700">Mi ubicación</div><div class="row" style="margin-top:4px"><button id="geoOn2">Mostrar mi ubicación en vivo</button><button id="geoOff2">Apagar</button></div><div class="status" id="geoSt">Ubicación apagada.</div></div>';
+  const body = document.querySelector('#stepPlanes .body'); body.insertBefore(box, document.getElementById('planList'));
+  document.getElementById('asigBtn').onclick = asignar; document.getElementById('geoOn2').onclick = geoStart; document.getElementById('geoOff2').onclick = geoStop;
+  /* botón en el cajón de información y en el de tramos */
+  const ib = document.createElement('button'); ib.type = 'button'; ib.id = 'asigBtnInfo'; ib.className = 'primary'; ib.textContent = '📌 Asignar tramos seleccionados a este despegue'; ib.onclick = () => { asignar(); document.body.classList.remove('dr-info'); };
+  const idr = document.getElementById('infoDrawer'); if (idr) idr.appendChild(ib);
+  const ms = document.getElementById('mapSel'); if (ms) { const b2 = document.createElement('div'); b2.id = 'asigMini'; b2.className = 'hint'; b2.style.marginTop = '6px'; ms.appendChild(b2); }
+  const tabs = document.getElementById('edgeTabs'); if (tabs) { const t = document.getElementById('tabSel'); if (t) t.innerHTML = '☰<span id="tabAsigN" class="tabBadge"></span>'; }
+})();
+/* recalcular avisos cuando cambia la misión o la selección */
+const _recompute0 = recompute; recompute = function () { const r = _recompute0.apply(this, arguments); try { asigDraw(); asigList(); } catch (e) {} return r; };
+const _upd0 = updateSelection; updateSelection = function () { const r = _upd0.apply(this, arguments); try { const m = document.getElementById('asigMini'); const f = asigFaltan(); if (m) m.textContent = S.mission ? (f.length ? 'Faltan ' + f.length + ' tramo(s) por asignar' : '✔ Todos asignados') : ''; } catch (e) {} return r; };
+/* guardar / cargar con el plan */
+const _save0 = planSave; planSave = async function () { S._asigSave = clean(S.asig); return _save0.apply(this, arguments); };
+const _pPut0 = pPut; pPut = function (o) { if (o && S._asigSave) { o.asig = S._asigSave; delete S._asigSave; } return _pPut0(o); };
+const _load0 = planLoad; planLoad = async function (id) { const all = await pAll(); const p = all.find((x) => x.id === id); S.asig = []; asigDraw(); const r = await _load0.apply(this, arguments); S.asig = (p && p.asig) || []; asigDraw(); asigList(); return r; };
+/* KML y hoja: incluir el plan completo de asignaciones */
+const _kml0 = planKML; planKML = function () { if (!S.asig.length) return _kml0(); const M = S.mission; if (!M) return;
+  const co = (ll) => ll.map((p) => `${p[1].toFixed(7)},${p[0].toFixed(7)},0`).join(' '); let fol = '';
+  S.asig.forEach((a, k) => { let pm = `<Placemark><name>${xmlEsc(a.nombre)} · despegue</name><Point><coordinates>${a.ll[1].toFixed(7)},${a.ll[0].toFixed(7)},0</coordinates></Point></Placemark>`;
+    for (const si of a.segs) { const sg = M.segs[si]; if (sg) pm += `<Placemark><name>${xmlEsc(sg.name || 'Tramo ' + (si + 1))}</name><LineString><tessellate>1</tessellate><coordinates>${co(sg.route.map(toLL))}</coordinates></LineString></Placemark>`; }
+    fol += `<Folder><name>${xmlEsc(a.nombre)}</name>${pm}</Folder>`; });
+  const kml = `<?xml version="1.0" encoding="UTF-8"?><kml xmlns="http://www.opengis.net/kml/2.2"><Document><name>${xmlEsc(S.planName || 'Plan UAS EPM')}</name>${fol}</Document></kml>`;
+  const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([kml], { type: 'application/vnd.google-earth.kml+xml' })); a.download = (S.planName || 'plan_UAS').replace(/[^\w\-]+/g, '_') + '.kml'; a.click(); setTimeout(() => URL.revokeObjectURL(a.href), 5000);
+  const f = asigFaltan(); log('KML exportado con ' + S.asig.length + ' vuelo(s).' + (f.length ? ' Atención: faltan ' + f.length + ' tramo(s) por asignar.' : '')); };
+const _hoja0 = planHoja; planHoja = function () { if (!S.asig.length) return _hoja0(); const M = S.mission; const f = asigFaltan();
+  const rows = S.asig.map((a, k) => `<tr><td><b>${xmlEsc(a.nombre)}</b></td><td>${xmlEsc(a.segNames.join(', '))}</td><td>${a.ll[0].toFixed(6)}, ${a.ll[1].toFixed(6)}<br><a href="https://www.google.com/maps/dir/?api=1&destination=${a.ll[0]},${a.ll[1]}">cómo llegar</a></td><td>${fmt(a.zc || 0)} m</td><td>${a.chain ? a.chain.flights + ' vuelo(s) · ' + minSec(a.chain.t) + ' · ' + a.chain.bats + ' bat.' : ''}</td></tr>`).join('');
+  const html = `<!doctype html><html><head><meta charset="utf-8"><title>${xmlEsc(S.planName || 'Plan de vuelo UAS')}</title><style>body{font-family:Arial,sans-serif;margin:22px;color:#1d1d1b}h1{color:#007934;font-size:20px;margin:0}.s{color:#555;font-size:12px;margin:4px 0 12px}table{border-collapse:collapse;width:100%;font-size:12px;margin-top:8px}th{background:#007934;color:#fff;text-align:left;padding:6px}td{padding:6px;border-bottom:1px solid #ddd;vertical-align:top}.w{background:#fff7ed;border:1px solid #fdba74;padding:8px;border-radius:8px;font-size:12.5px;margin-top:10px}a{color:#007934}</style></head><body><h1>Plan de vuelo UAS · ${xmlEsc(S.planName || 'sin nombre')}</h1><div class="s">EPM · ${M ? M.segs.length : 0} tramos · ${S.asig.length} vuelo(s) · Equipo: ${xmlEsc($('#cam').selectedOptions[0].text)} · Altura ${fmt(readP().H)} m · ${new Date().toLocaleString('es-CO')}</div>${f.length ? `<div class="w"><b>Faltan ${f.length} tramo(s) por asignar:</b> ${xmlEsc(f.map((si) => M.segs[si].name || 'Tramo ' + (si + 1)).join(', '))}</div>` : '<div class="s" style="color:#007934"><b>✔ Todos los tramos asignados.</b></div>'}<table><thead><tr><th>Vuelo</th><th>Tramos</th><th>Despegue</th><th>Cota</th><th>Estimado</th></tr></thead><tbody>${rows}</tbody></table><script>setTimeout(function(){window.print();},500);<\/script></body></html>`;
+  const w = window.open('', '_blank'); if (!w) { log('Permití ventanas emergentes.', true); return; } w.document.open(); w.document.write(html); w.document.close(); };
+document.getElementById('plSave').onclick = () => planSave(); document.getElementById('plKml').onclick = () => planKML(); document.getElementById('plHoja').onclick = () => planHoja();
 
 })();
 </script>
