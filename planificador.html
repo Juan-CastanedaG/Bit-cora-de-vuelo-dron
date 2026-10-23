@@ -2435,6 +2435,8 @@ function kmlDialog() {
   <label class="${A && A.combo ? '' : 'dis'}"><input type="radio" name="kD" value="plan" ${!hasAsig && A && A.combo ? 'checked' : ''} ${A && A.combo ? '' : 'disabled'}> Plan sugerido (A, B, C…)</label>
   <label class="${A ? '' : 'dis'}"><input type="radio" name="kD" value="top" ${!hasAsig && A && !A.combo ? 'checked' : ''} ${A ? '' : 'disabled'}> Los mejores <input type="number" id="kTopN" value="1" min="1" max="10" style="width:52px;display:inline-block"> por tramo</label>
   <div class="kmlSec">Presentación</div>
+  <label><input type="checkbox" id="kNum" checked> Número de cada tramo sobre el mapa</label>
+  <label class="${hasAsig ? '' : 'dis'}"><input type="checkbox" id="kVue" ${hasAsig ? 'checked' : ''} ${hasAsig ? '' : 'disabled'}> Cada vuelo con su color: polígono transparente y despegue del mismo color</label>
   <label><input type="checkbox" id="kLbl"> Mostrar nombres sobre el mapa (si no, solo aparecen en la lista)</label>
   <label class="${hasAsig ? '' : 'dis'}"><input type="checkbox" id="kGrp" ${hasAsig ? 'checked' : ''} ${hasAsig ? '' : 'disabled'}> Agrupar en carpetas por vuelo asignado</label>
   <div class="row" style="margin-top:12px"><button type="button" class="primary" data-go>Descargar KML</button><button type="button" data-x>Cancelar</button></div></div>`;
@@ -2442,7 +2444,7 @@ function kmlDialog() {
   ov.querySelectorAll('[data-x]').forEach((b) => b.onclick = () => ov.remove());
   ov.querySelector('[data-go]').onclick = () => {
     const v = (n) => (ov.querySelector(`input[name=${n}]:checked`) || {}).value;
-    const o = { scope: v('kA') || 'todos', eje: ov.querySelector('#kEje').checked, area: ov.querySelector('#kArea').checked, ruta: ov.querySelector('#kRuta').checked, desp: v('kD') || 'none', topN: Math.max(1, Math.min(10, +ov.querySelector('#kTopN').value || 1)), lbl: ov.querySelector('#kLbl').checked, grp: ov.querySelector('#kGrp').checked };
+    const o = { scope: v('kA') || 'todos', eje: ov.querySelector('#kEje').checked, area: ov.querySelector('#kArea').checked, ruta: ov.querySelector('#kRuta').checked, desp: v('kD') || 'none', topN: Math.max(1, Math.min(10, +ov.querySelector('#kTopN').value || 1)), lbl: ov.querySelector('#kLbl').checked, grp: ov.querySelector('#kGrp').checked, num: ov.querySelector('#kNum').checked, vue: ov.querySelector('#kVue').checked };
     ov.remove(); kmlBuild(o);
   };
 }
@@ -2458,20 +2460,29 @@ function kmlBuild(o) {
     const off = (d) => g.map((p, i) => { const a = g[Math.max(0, i - 1)], b = g[Math.min(g.length - 1, i + 1)]; let dx = b[0] - a[0], dy = b[1] - a[1]; const L0 = Math.hypot(dx, dy) || 1; return [p[0] - dy / L0 * d, p[1] + dx / L0 * d]; });
     const r = off(P.left).concat(off(-P.right).reverse()); return r.concat([r[0]]).map(cc).join(' '); };
   const pt = (ll, name, desc) => `<Placemark><name>${esc(name)}</name><styleUrl>${ptStyle}</styleUrl>${desc ? `<description>${esc(desc)}</description>` : ''}<Point><coordinates>${ll[1].toFixed(7)},${ll[0].toFixed(7)},0</coordinates></Point></Placemark>`;
-  const segKml = (si) => { const sg = M.segs[si]; let s = '';
+  const VCOL = ['#007934', '#E8710A', '#1F6FB2', '#B5179E', '#7AD400', '#C2352C', '#00A3E0', '#8B5E34', '#5B21B6', '#0F766E', '#D4A017', '#E11D74'];
+  const kc = (hex, a) => { const x = hex.replace('#', ''); return a + x.slice(4, 6) + x.slice(2, 4) + x.slice(0, 2); };
+  let vStyles = '';
+  const midOf = (si) => { const sg = M.segs[si]; if (corr && sg.axis && sg.axis.length) { const g = sg.axis; let tot = 0; for (let i = 1; i < g.length; i++) tot += Math.hypot(g[i][0] - g[i - 1][0], g[i][1] - g[i - 1][1]); let acc = 0; for (let i = 1; i < g.length; i++) { const l = Math.hypot(g[i][0] - g[i - 1][0], g[i][1] - g[i - 1][1]); if (acc + l >= tot / 2) { const t = (tot / 2 - acc) / (l || 1); return cc([g[i - 1][0] + (g[i][0] - g[i - 1][0]) * t, g[i - 1][1] + (g[i][1] - g[i - 1][1]) * t]); } acc += l; } return cc(g[0]); }
+    const pl = S.geom.polys && S.geom.polys[si]; if (pl) { const la = pl.reduce((a, p) => a + p[0], 0) / pl.length, lo = pl.reduce((a, p) => a + p[1], 0) / pl.length; return `${lo.toFixed(7)},${la.toFixed(7)},0`; } return null; };
+  const numKml = (si) => { const m = midOf(si); const sg = M.segs[si]; const nm = sg.tag || String(si + 1); return m ? `<Placemark><name>${esc(nm)}</name><styleUrl>#num</styleUrl><Point><coordinates>${m}</coordinates></Point></Placemark>` : ''; };
+  const segKml = (si, vk) => { const sg = M.segs[si]; let s = '';
+    if (vk != null) { const r = ring(si); if (r) s += `<Placemark><name>${esc(sg.name)}</name><styleUrl>#v${vk}a</styleUrl><Polygon><outerBoundaryIs><LinearRing><coordinates>${r}</coordinates></LinearRing></outerBoundaryIs></Polygon></Placemark>`; }
+    if (o.num) s += numKml(si);
     if (o.eje && corr && sg.axis) s += `<Placemark><name>${esc(sg.name)}: eje</name><styleUrl>${lnStyle('#eje')}</styleUrl><LineString><tessellate>1</tessellate><coordinates>${sg.axis.map(cc).join(' ')}</coordinates></LineString></Placemark>`;
-    if (o.area) { const r = ring(si); if (r) s += `<Placemark><name>${esc(sg.name)}: área</name><styleUrl>${lnStyle('#area')}</styleUrl><Polygon><outerBoundaryIs><LinearRing><coordinates>${r}</coordinates></LinearRing></outerBoundaryIs></Polygon></Placemark>`; }
+    if (o.area && vk == null) { const r = ring(si); if (r) s += `<Placemark><name>${esc(sg.name)}: área</name><styleUrl>${lnStyle('#area')}</styleUrl><Polygon><outerBoundaryIs><LinearRing><coordinates>${r}</coordinates></LinearRing></outerBoundaryIs></Polygon></Placemark>`; }
     if (o.ruta) s += `<Placemark><name>${esc(sg.name)}: ruta</name><styleUrl>${lnStyle('#ruta')}</styleUrl><LineString><tessellate>1</tessellate><coordinates>${sg.route.map(cc).join(' ')}</coordinates></LineString></Placemark>`;
     if (o.desp === 'top' && A) segTop(si).slice(0, o.topN).forEach((c, k) => { s += pt(c.ll, `${sg.name}: despegue ${k + 1}`, `Cota ${fmt(c.zc)} m`); });
     return s; };
   let body = '', nPts = 0;
-  if (o.grp && S.asig && S.asig.length) {
-    S.asig.forEach((a) => { const ss = a.segs.filter((si) => segs.includes(si)); if (!ss.length) return; let f = '';
-      if (o.desp === 'asig') { f += pt(a.ll, `${a.nombre}: despegue`, `${a.segNames.join(', ')}${a.chain ? ' · ' + a.chain.bats + ' batería(s)' : ''}`); nPts++; }
-      f += ss.map(segKml).join(''); body += `<Folder><name>${esc(a.nombre)}</name>${f}</Folder>`; });
-    const rest = segs.filter((si) => !S.asig.some((a) => a.segs.includes(si))); if (rest.length) body += `<Folder><name>Sin asignar</name>${rest.map(segKml).join('')}</Folder>`;
+  if ((o.grp || o.vue) && S.asig && S.asig.length) {
+    S.asig.forEach((a, k) => { const ss = a.segs.filter((si) => segs.includes(si)); if (!ss.length) return; let f = ''; const col = VCOL[k % VCOL.length]; const vk = o.vue ? k : null;
+      if (o.vue) vStyles += `<Style id="v${k}a"><LineStyle><color>${kc(col, 'ff')}</color><width>2</width></LineStyle><PolyStyle><color>${kc(col, '66')}</color></PolyStyle><LabelStyle><scale>0</scale></LabelStyle></Style><Style id="v${k}p"><IconStyle><color>${kc(col, 'ff')}</color><scale>1.3</scale><Icon><href>http://maps.google.com/mapfiles/kml/paddle/wht-circle.png</href></Icon></IconStyle><LabelStyle><color>${kc(col, 'ff')}</color><scale>1</scale></LabelStyle></Style>`;
+      if (o.desp === 'asig' || o.vue) { f += `<Placemark><name>${esc(a.nombre)}</name><styleUrl>${o.vue ? '#v' + k + 'p' : ptStyle}</styleUrl><description>${esc('Despegue · tramos ' + a.segNames.join(', ') + (a.chain ? ' · ' + a.chain.bats + ' batería(s)' : ''))}</description><Point><coordinates>${a.ll[1].toFixed(7)},${a.ll[0].toFixed(7)},0</coordinates></Point></Placemark>`; nPts++; }
+      f += ss.map((si) => segKml(si, vk)).join(''); body += `<Folder><name>${esc(a.nombre)}</name>${f}</Folder>`; });
+    const rest = segs.filter((si) => !S.asig.some((a) => a.segs.includes(si))); if (rest.length) body += `<Folder><name>Sin asignar</name>${rest.map((si) => segKml(si)).join('')}</Folder>`;
   } else {
-    body += `<Folder><name>Tramos</name>${segs.map(segKml).join('')}</Folder>`;
+    body += `<Folder><name>Tramos</name>${segs.map((si) => segKml(si)).join('')}</Folder>`;
     if (o.desp === 'asig' && S.asig) { body += `<Folder><name>Despegues de los vuelos</name>${S.asig.map((a) => pt(a.ll, `${a.nombre}`, a.segNames.join(', '))).join('')}</Folder>`; nPts += S.asig.length; }
   }
   if (o.desp === 'plan' && A && A.combo) { body += `<Folder><name>Plan sugerido</name>${A.combo.plan.map((c, k) => { const mine = A.combo.assign.filter((x) => x.k === k).map((x) => M.segs[x.si].name); return pt(c.ll, `Despegue ${String.fromCharCode(65 + k)}`, mine.join(', ')); }).join('')}</Folder>`; nPts += A.combo.plan.length; }
@@ -2482,6 +2493,8 @@ function kmlBuild(o) {
 <Style id="area"><LineStyle><color>ffffffff</color><width>2</width></LineStyle><PolyStyle><color>3300d47a</color></PolyStyle></Style><Style id="areaN"><LineStyle><color>ffffffff</color><width>2</width></LineStyle><PolyStyle><color>3300d47a</color></PolyStyle>${lbl0}</Style>
 <Style id="ruta"><LineStyle><color>ffe6b822</color><width>2</width></LineStyle></Style><Style id="rutaN"><LineStyle><color>ffe6b822</color><width>2</width></LineStyle>${lbl0}</Style>
 <Style id="pt"><IconStyle><scale>1.1</scale><Icon><href>http://maps.google.com/mapfiles/kml/paddle/grn-circle.png</href></Icon></IconStyle></Style><Style id="ptN"><IconStyle><scale>1.1</scale><Icon><href>http://maps.google.com/mapfiles/kml/paddle/grn-circle.png</href></Icon></IconStyle>${lbl0}</Style>
+<Style id="num"><IconStyle><scale>0</scale></IconStyle><LabelStyle><color>ffffffff</color><scale>0.9</scale></LabelStyle></Style>
+${vStyles}
 ${body}</Document></kml>`;
   download((S.planName || 'mision_UAS').replace(/[^\w\-]+/g, '_') + '.kml', kml, 'application/vnd.google-earth.kml+xml');
   log(`KML exportado: ${segs.length} tramo(s)${o.eje && corr ? ', ejes' : ''}${o.area ? ', áreas' : ''}${o.ruta ? ', rutas' : ''}${nPts ? ', ' + nPts + ' despegue(s)' : ''}${o.lbl ? '' : ' (nombres ocultos en el mapa)'}.`);
