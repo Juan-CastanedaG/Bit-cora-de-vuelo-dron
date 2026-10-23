@@ -284,6 +284,7 @@ body.geo-on #geoBtn{color:#1F6FB2;font-weight:800}
       <label for="pLeft" id="lLeft" hidden>Extensión a la izquierda (m)</label><input type="number" id="pLeft" value="50" min="0" step="5" hidden>
       <label for="pRight" id="lRight" hidden>Extensión a la derecha (m)</label><input type="number" id="pRight" value="50" min="0" step="5" hidden>
       <label for="pCut" id="lCut" hidden>Distancia de corte (m, vacío = sin cortar)</label><input type="number" id="pCut" min="100" step="100" placeholder="sin cortar" hidden>
+<label for="pCutV" id="lCutV" hidden>Cortar solo en los vértices (como DJI Pilot 2)</label><input type="checkbox" id="pCutV" checked hidden>
       <button id="btnCutBat" class="wide" hidden type="button">Ajustar el corte para que cada tramo quepa en una batería</button>
       <label for="pDir" id="lDir" hidden>Dirección de las franjas</label><select id="pDir" hidden><option value="par">Paralela al eje</option><option value="perp">Perpendicular al eje</option></select>
       <label for="pCenter" id="lCenter" hidden>Incluir línea central</label><input type="checkbox" id="pCenter" checked hidden>
@@ -813,7 +814,7 @@ $('#pHgt').addEventListener('change', () => { syncGsd('h'); recompute(); });
 for (const id of ['#cSw', '#cSh', '#cPx', '#cF']) $(id).addEventListener('change', () => { syncGsd('h'); recompute(); });
 $('#hMode').addEventListener('change', () => { modeUI(); recompute(); });
 const P_ANALYSIS = ['#pRange', '#pObs', '#pFreq', '#pFres', '#pMinAgl', '#pCan', '#pRS', '#pTarget'];
-for (const id of ['#pRes', '#pSwap', '#pEdge', '#pAsl', '#pSafe', '#pFront', '#pSide', '#pAng', '#pForm', '#pEq', '#pLeft', '#pRight', '#pCut', '#pDir', '#pCenter', '#pBound', '#pMargin', '#pElev', '#pPhoto', '#pSpeed', '#pTkSpeed', '#pClimb', '#pBat', '#pRtf', '#cMi', '#cV', ...P_ANALYSIS])
+for (const id of ['#pRes', '#pSwap', '#pEdge', '#pAsl', '#pSafe', '#pFront', '#pSide', '#pAng', '#pForm', '#pEq', '#pLeft', '#pRight', '#pCut', '#pCutV', '#pDir', '#pCenter', '#pBound', '#pMargin', '#pElev', '#pPhoto', '#pSpeed', '#pTkSpeed', '#pClimb', '#pBat', '#pRtf', '#cMi', '#cV', ...P_ANALYSIS])
   $(id).addEventListener('change', () => { if (id === '#pTarget' || id === '#pMinAgl') reapplyQuick(); else if (P_ANALYSIS.includes(id)) markStale(); else recompute(); });
 function modeUI() {
   const m = $('#hMode').value;
@@ -826,7 +827,7 @@ function geomUI() {
   const show = (ids, v) => ids.forEach((id) => { $('#' + id).hidden = !v; });
   show(['pForm', 'lForm', 'pEq', 'lEq', 'pLeft', 'lLeft'], corr);
   show(['pRight', 'lRight'], corr && !eq);
-  show(['pCut', 'lCut', 'btnCutBat'], corr);
+  show(['pCut', 'lCut', 'btnCutBat', 'pCutV', 'lCutV'], corr);
   show(['pDir', 'lDir', 'pCenter', 'lCenter', 'pBound', 'lBound'], corr && !single);
   show(['pEdge', 'lEdge'], !(corr && single));
   show(['pAng', 'lAng'], !corr);
@@ -839,7 +840,7 @@ function readP() {
     cam: camNow(), mode: $('#hMode').value, rtf: $('#pRtf').checked, H: num('#pHgt', 100), asl: isFinite(asl) ? asl : null, safe: num('#pSafe', 20),
     front: num('#pFront', 80), side: num('#pSide', 70), ang: isFinite(ang) ? ang : null,
     form: $('#pForm').value, eq: $('#pEq').checked, left: num('#pLeft', 50), right: $('#pEq').checked ? num('#pLeft', 50) : num('#pRight', 50),
-    cut: isFinite(cut) && cut >= 50 ? cut : null, edge: $('#pEdge').checked, dir: $('#pDir').value, center: $('#pCenter').checked, bound: $('#pBound').checked,
+    cut: isFinite(cut) && cut >= 50 ? cut : null, cutV: !!($('#pCutV') && $('#pCutV').checked), edge: $('#pEdge').checked, dir: $('#pDir').value, center: $('#pCenter').checked, bound: $('#pBound').checked,
     margin: num('#pMargin', 0), elev: $('#pElev').checked, photo: $('#pPhoto').value, speed: num('#pSpeed', 12), tk: num('#pTkSpeed', 10),
     climb: $('#pClimb').value, bat: num('#pBat', 40), reserve: Math.min(80, Math.max(0, num('#pRes', 25))), swap: num('#pSwap', 3), batU: num('#pBat', 40) * (1 - Math.min(80, Math.max(0, num('#pRes', 25))) / 100), lost: $('#pLost').value,
     range: num('#pRange', 1500), hObs: num('#pObs', 1.8), freq: num('#pFreq', 2.4), fres: num('#pFres', 60), canopy: num('#pCan', 0),
@@ -848,6 +849,18 @@ function readP() {
 }
 
 /* ================= Misión (como Pilot 2) ================= */
+/* Pilot 2 corta la ruta lineal solo en los vértices de la línea, acumulando vanos hasta la distancia de corte */
+function splitAtVertices(p, cut) {
+  const out = []; let cur = [p[0].slice()], acc = 0, from = 0, pos = 0;
+  for (let i = 1; i < p.length; i++) {
+    let a = p[i - 1].slice(); const b = p[i]; let l = Math.hypot(b[0] - a[0], b[1] - a[1]);
+    if (acc > 0 && acc + l > cut) { out.push({ pts: cur, from, to: pos }); cur = [a.slice()]; from = pos; acc = 0; }
+    while (acc === 0 && l > cut) { const t = cut / l; const q = [a[0] + (b[0] - a[0]) * t, a[1] + (b[1] - a[1]) * t]; cur.push(q); pos += cut; out.push({ pts: cur, from, to: pos }); cur = [q.slice()]; from = pos; a = q; l -= cut; }
+    cur.push(b.slice()); acc += l; pos += l;
+  }
+  if (cur.length > 1) out.push({ pts: cur, from, to: pos });
+  return out;
+}
 function splitPolyline(p, n) {
   const cum = [0]; for (let i = 1; i < p.length; i++) cum.push(cum[i - 1] + Math.hypot(p[i][0] - p[i - 1][0], p[i][1] - p[i - 1][1]));
   const L0 = cum[cum.length - 1], step = L0 / n;
@@ -905,8 +918,9 @@ function finishSeg(lines, P, M, mid) {
   const len = plen(route);
   const photos = lines.reduce((a, l) => a + Math.floor(plen(l) / M.pi) + 1, 0);
   const vz = Math.max(1, Math.min(P.tk, 6));
-  const tMission = len / M.v + (route.length - 1) * 4 + (P.elev ? 60 : 0) + 2 * P.H / vz;
-  return { lines, route, len, photos, tMission, mid };
+  const tRoute = len / M.v + lines.length * 6.5 + (P.elev ? 60 : 0);
+  const tMission = tRoute + 2 * P.H / vz;
+  return { lines, route, len, photos, tMission, tRoute, mid };
 }
 function buildMission(P) {
   if (!S.geom) return null;
@@ -933,8 +947,8 @@ function buildMission(P) {
   } else {
     if (g.length < 2) return null;
     const total = plen(g); M.axisLen = total; M.area = total * (P.left + P.right);
-    const n = !P.cut || total <= P.cut ? 1 : Math.ceil(total / P.cut);
-    const pieces = n === 1 ? [{ pts: g, from: 0, to: total }] : splitPolyline(g, n);
+    let n = !P.cut || total <= P.cut ? 1 : Math.ceil(total / P.cut);
+    const pieces = n === 1 ? [{ pts: g, from: 0, to: total }] : (P.cutV ? splitAtVertices(g, P.cut) : splitPolyline(g, n)); n = pieces.length;
     pieces.forEach((pc, k) => {
       const lines = corridorLines(pc.pts, P, footW, sp);
       const ss = sampleLine(pc.pts, Math.max(1, (pc.to - pc.from) / 2)), mid = ss[Math.min(1, ss.length - 1)];
@@ -945,7 +959,7 @@ function buildMission(P) {
   M.route = M.segs.flatMap((s) => s.route);
   M.len = M.segs.reduce((a, s) => a + s.len, 0);
   M.photos = M.segs.reduce((a, s) => a + s.photos, 0);
-  M.tMission = M.segs.reduce((a, s) => a + s.tMission, 0);
+  M.tMission = M.segs.reduce((a, s) => a + s.tMission, 0); M.tRoute = M.segs.reduce((a, s) => a + (s.tRoute || s.tMission), 0);
   M.bats = M.segs.reduce((a, s) => a + Math.max(1, Math.ceil(s.tMission / 60 / P.batU)), 0);
   M.allPts = M.route.concat(...M.bands);
   return M;
@@ -1007,9 +1021,9 @@ function renderStats(P) {
     corr ? ['Pasadas por tramo', String(M.segs[0].lines.length)] : ['Ángulo de la ruta', M.segs.length > 1 && P.ang == null ? 'automático por área' : fmt(M.angle) + '°'],
   ];
   if (!corr && M.segs.length > 1) rows.push(['Áreas', String(M.segs.length)]);
-  if (corr && M.segs.length > 1) rows.push(['Tramos', `${M.segs.length} de ${km(M.axisLen / M.segs.length)}`]);
+  if (corr && M.segs.length > 1) rows.push(['Tramos', P.cutV ? `${M.segs.length} (hasta ${km(P.cut)}, cortados en vértices)` : `${M.segs.length} de ${km(M.axisLen / M.segs.length)}`]);
   rows.push(['Área', M.area >= 1e4 ? fmt(M.area / 1e4, 1) + ' ha' : fmt(M.area) + ' m²'], ['Longitud de vuelo', km(M.len)], ['Fotos', fmt(M.photos)],
-    ['Tiempo de misión', minSec(M.tMission)], ['Baterías', String(M.bats)]);
+    ['Tiempo de ruta (como Pilot 2)', minSec(M.tRoute)], ['Tiempo con ascenso y descenso', minSec(M.tMission)], ['Baterías', String(M.bats)]);
   if (M.segs.length > 1) rows.push(['Tramo más largo', minSec(Math.max(...M.segs.map((s) => s.tMission)))]);
   if (S.terrain && S.an && S.an.sel) {
     const c = S.an.sel; rows.push(['Altura sobre el terreno', `${fmt(c.minAgl)} a ${fmt(c.maxAgl)} m`]);
@@ -2163,7 +2177,7 @@ applyCam(); modeUI(); geomUI();
 
 /* ===================== EPM: flota, planes guardados, mapas offline, exportar, cajones ===================== */
 Object.assign(CAMS, {
-  epm_m3e: { n: 'EPM · DJI Mavic 3 Enterprise (gran angular)', sw: 17.3, sh: 13.0, px: 5280, f: 12.29, mi: 0.7, v: 15, bat: 40 },
+  epm_m3e: { n: 'EPM · DJI Mavic 3 Enterprise (gran angular)', sw: 17.3, sh: 13.0, px: 5280, f: 12.21, mi: 0.7, v: 15, bat: 40 },
   epm_m3t: { n: 'EPM · DJI Mavic 3 Thermal (gran angular 48 MP)', sw: 6.4, sh: 4.8, px: 8000, f: 4.4, mi: 0.7, v: 15, bat: 40 },
   epm_m3p: { n: 'EPM · DJI Mavic 3 Pro (Hasselblad 4/3)', sw: 17.3, sh: 13.0, px: 5280, f: 12.29, mi: 2, v: 15, bat: 38 },
   epm_m4e: { n: 'EPM · DJI Matrice 4E (gran angular)', sw: 17.3, sh: 13.0, px: 5280, f: 12.29, mi: 0.5, v: 21, bat: 45 },
