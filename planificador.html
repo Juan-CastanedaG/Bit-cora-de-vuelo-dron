@@ -2502,6 +2502,39 @@ ${body}</Document></kml>`;
 exportKML = kmlDialog; planKML = kmlDialog;
 document.getElementById('plKml').onclick = () => kmlDialog();
 
+
+/* ===================== compartir planes entre pilotos ===================== */
+function f32ToB64(a) { const u = new Uint8Array(a.buffer, a.byteOffset, a.byteLength); let s = ''; for (let i = 0; i < u.length; i += 0x8000) s += String.fromCharCode.apply(null, u.subarray(i, i + 0x8000)); return btoa(s); }
+function b64ToF32(b) { const s = atob(b); const u = new Uint8Array(s.length); for (let i = 0; i < s.length; i++) u[i] = s.charCodeAt(i); return new Float32Array(u.buffer); }
+async function planShare(id) {
+  const p = (await pAll()).find((x) => x.id === id); if (!p) return;
+  const o = JSON.parse(JSON.stringify(Object.assign({}, p, { terrain: null })));
+  if (p.terrain && p.terrain.grid) { const g = p.terrain.grid; const z = g.z instanceof Float32Array ? g.z : new Float32Array(Object.values(g.z)); o.terrain = Object.assign({}, p.terrain, { grid: { minX: g.minX, maxY: g.maxY, cs: g.cs, w: g.w, h: g.h, zb64: f32ToB64(z) } }); }
+  const txt = JSON.stringify({ tipo: 'planUAS-EPM', v: 1, compartido: new Date().toISOString(), plan: o });
+  const name = (p.name || 'plan').replace(/[^\w\-]+/g, '_') + '.planuas.json';
+  const file = new File([txt], name, { type: 'application/json' });
+  try { if (navigator.canShare && navigator.canShare({ files: [file] })) { await navigator.share({ files: [file], title: 'Plan de vuelo: ' + p.name, text: 'Plan de vuelo UAS “' + p.name + '”. Abrilo en Planificador › Mis planes › Importar plan.' }); return; } } catch (e) { if (e && e.name === 'AbortError') return; }
+  download(name, txt, 'application/json'); log('Plan “' + p.name + '” descargado (' + (txt.length / 1048576).toFixed(1) + ' MB). Envialo por WhatsApp, correo o Teams; el otro piloto lo carga con “Importar plan”.');
+}
+async function planImport(ev) {
+  const f = ev.target.files && ev.target.files[0]; ev.target.value = ''; if (!f) return;
+  try { const J = JSON.parse(await f.text()); const p = J && J.tipo === 'planUAS-EPM' ? J.plan : null; if (!p || !p.geom) { log('Ese archivo no es un plan del Planificador UAS.', true); return; }
+    if (p.terrain && p.terrain.grid && p.terrain.grid.zb64) { p.terrain.grid.z = b64ToF32(p.terrain.grid.zb64); delete p.terrain.grid.zb64; }
+    const all = await pAll(); if (all.some((x) => x.id === p.id)) { if (!confirm('Ya tenés un plan “' + p.name + '”. ¿Reemplazarlo? (Cancelar = guardarlo como copia)')) { p.id = 'p' + Date.now().toString(36); p.name = p.name + ' (copia)'; } }
+    p.importado = new Date().toISOString(); await pPut(p); planList(); log('Plan “' + p.name + '” importado' + (p.terrain ? ' con su terreno' : '') + (p.asig && p.asig.length ? ' y ' + p.asig.length + ' vuelo(s) asignado(s)' : '') + '. Tocá “Abrir” para verlo.'); }
+  catch (e) { log('No pude leer el plan: ' + e.message, true); }
+}
+(function () {
+  const host = document.getElementById('planList'); if (!host) return;
+  const bar = document.createElement('div'); bar.className = 'row'; bar.innerHTML = '<button type="button" id="plImp">📥 Importar plan compartido</button><input type="file" id="plImpIn" accept=".json,application/json" style="display:none">';
+  host.parentNode.insertBefore(bar, host);
+  document.getElementById('plImp').onclick = () => document.getElementById('plImpIn').click();
+  document.getElementById('plImpIn').onchange = planImport;
+})();
+const _planList0 = planList; planList = async function () { await _planList0.apply(this, arguments); const host = document.getElementById('planList'); if (!host) return;
+  host.querySelectorAll('[data-ld]').forEach((b) => { if (b.parentNode.querySelector('[data-sh]')) return; const s = document.createElement('button'); s.type = 'button'; s.dataset.sh = b.dataset.ld; s.title = 'Compartir'; s.textContent = '📤'; s.onclick = () => planShare(b.dataset.ld); b.parentNode.insertBefore(s, b.nextSibling); }); };
+planList();
+
 })();
 </script>
 <script id="mobSheetJs">
