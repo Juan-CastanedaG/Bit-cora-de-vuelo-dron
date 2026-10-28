@@ -389,7 +389,11 @@ body.geo-on #geoBtn{color:#1F6FB2;font-weight:800}
   <div id="log" aria-live="polite"></div>
 </aside>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
+<script id="errBanner">
+(function(){function show(msg){try{var d=document.getElementById('errBan');if(!d){d=document.createElement('div');d.id='errBan';d.style.cssText='position:fixed;left:8px;right:8px;top:calc(8px + env(safe-area-inset-top));z-index:5000;background:#b91c1c;color:#fff;padding:10px 12px;border-radius:12px;font:600 13px system-ui,sans-serif;box-shadow:0 6px 20px rgba(0,0,0,.35)';d.onclick=function(){d.remove();};document.body.appendChild(d);}d.textContent='\u26a0\ufe0f Error del planificador (mand\u00e1 un pantallazo): '+msg+' \u00b7 tocar para cerrar';}catch(e){}}
+window.addEventListener('error',function(e){show((e.message||'error')+(e.lineno?' [l\u00ednea '+e.lineno+']':''));});
+window.addEventListener('unhandledrejection',function(e){var r=e.reason;show(r&&r.message?r.message:String(r));});})();
+</script><script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/proj4js/2.11.0/proj4.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/geotiff@2.1.3/dist-browser/geotiff.js"></script>
