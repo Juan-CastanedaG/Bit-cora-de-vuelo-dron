@@ -561,7 +561,6 @@ body.hc nav button{color:#000}body.hc nav button.active{background:#000!importan
 <nav id="navGrid" class="collapsed">
   <button data-view="tablero" onclick="nav('tablero')">Mi tablero</button>
   <button class="active" data-view="oper" onclick="nav('oper')"><svg width="20" height="20" viewBox="0 0 24 24"><path d="M4 5h16M4 12h16M4 19h10"/></svg>Operaciones</button>
-  <button data-view="vuelos" onclick="nav('vuelos')"><svg width="20" height="20" viewBox="0 0 24 24"><path d="M2 12l20-8-7.5 20-3-8.5L2 12z"/></svg>Vuelos</button>
   <button data-view="mapa" onclick="nav('mapa')"><svg width="20" height="20" viewBox="0 0 24 24"><path d="M9 3 3 6v15l6-3 6 3 6-3V3l-6 3-6-3z"/><path d="M9 3v15M15 6v15"/></svg>Mapa</button>
   <button data-view="pre" onclick="nav('pre')"><svg width="20" height="20" viewBox="0 0 24 24"><path d="M12 3 2.5 20h19L12 3z"/></svg>PRE</button>
   <button data-view="estad" onclick="nav('estad')"><svg width="20" height="20" viewBox="0 0 24 24"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg>Estadísticas</button>
@@ -982,7 +981,7 @@ var PRE_EV=[
 var PRE_POST=['Dar aviso a la Mesa de Drones y al jefe inmediato y/o jefe de pilotos (usá “Enviar aviso”). Todo reporte a la Aerocivil se canaliza por la Mesa de Drones.','El jefe de pilotos avisa al Gerente SMS y al Ejecutivo Responsable.','Recoger el UAS atendiendo lo que indique la autoridad sobre su custodia.','El Gerente SMS reporta a la Aerocivil (notificación secundaria) dentro de las 48 horas.','Investigación: entrevista al piloto, análisis de causas en RIC Mesa de Drones / SAG, informe F-EPM-09 y entrega a la autoridad por el Ejecutivo Responsable.'];
 var PRE_UI={tab:'dir',q:'',ev:'',dep:'',mun:''};
 function preSel(k,v){PRE_UI[k]=v;if(k==='dep')PRE_UI.mun='';renderPRE();}
-function preData(){var d=null;try{d=JSON.parse(localStorage.getItem('bvd_pre')||'null');}catch(e){}d=d&&d.bom?d:PRE_DEF;d.aero=[];if(Array.isArray(d.epm)&&!d.epm.some(function(c){return /mesa de drones/i.test(c.n||'');}))d.epm=[{n:'Mesa de Drones',t:'',d:'Canal \u00fanico para reportar y coordinar'}].concat(d.epm);return d;}
+function preData(){var d=null;try{d=JSON.parse(localStorage.getItem('bvd_pre')||'null');}catch(e){}d=d&&d.bom?d:PRE_DEF;d.aero=[];return d;}
 function _tel(t){return String(t||'').replace(/[^\d+]/g,'');}
 function _fmtTel(t){t=_tel(t);if(/^60\d{8}$/.test(t))return '('+t.slice(0,3)+') '+t.slice(3,6)+' '+t.slice(6);if(/^3\d{9}$/.test(t))return t.slice(0,3)+' '+t.slice(3,6)+' '+t.slice(6);return t;}
 function _callBtn(t,lbl){t=_tel(t);if(!t)return '<span class="hint" style="margin:0">sin número</span>';return '<a class="btn sm preCall" href="tel:'+t+'">\ud83d\udcde '+esc(lbl||_fmtTel(t))+'</a>';}
@@ -991,7 +990,7 @@ function _preNorm(s){return String(s||'').normalize('NFD').replace(/[\u0300-\u03
 function preMunisSug(){var out=[];try{var au=(typeof autById==='function'&&$('g_autId'))?autById($('g_autId').value):null;var tx=_preNorm((au&&au.desc)||'');if(!tx)return out;preData().bom.forEach(function(b){if(tx.indexOf(_preNorm(b[0]))>=0)out.push(b[0]);});}catch(e){}return out;}
 function preTab(t){PRE_UI.tab=t;renderPRE();}
 function preEv(id){PRE_UI.ev=PRE_UI.ev===id?'':id;renderPRE();}
-function preCallFor(k){var D=preData();if(k==='123')return {n:'Emergencias',t:'123'};if(k==='119')return {n:'Bomberos',t:'119'};if(k==='CGA'||k==='MESA')return (D.epm||[]).find(function(c){return /mesa de drones/i.test(c.n);})||{n:'Mesa de Drones',t:''};if(k==='ARL')return (D.epm||[]).find(function(c){return /arl/i.test(c.n);})||{n:'ARL',t:''};if(k==='AMB')return null;return null;}
+function preCallFor(k){var D=preData();if(k==='123')return {n:'Emergencias',t:'123'};if(k==='119')return {n:'Bomberos',t:'119'};if(k==='CGA'||k==='MESA')return (D.epm||[]).find(function(c){return /mesa/i.test(c.n)&&c.t;})||null;if(k==='ARL')return (D.epm||[]).find(function(c){return /arl/i.test(c.n);})||{n:'ARL',t:''};if(k==='AMB')return null;return null;}
 function renderPRE(){var host=$('preBody');if(!host)return;var D=preData();
   var tabs='<div class="btnrow" style="margin-bottom:10px"><button class="btn sm'+(PRE_UI.tab==='dir'?'':' sec')+'" style="width:auto" onclick="preTab(\'dir\')">\ud83d\udcde Directorio</button><button class="btn sm'+(PRE_UI.tab==='emg'?'':' sec')+'" style="width:auto" onclick="preTab(\'emg\')">\ud83d\udea8 Qu\u00e9 hacer</button><button class="btn sm sec" style="width:auto" onclick="preAviso()">\ud83d\udce8 Enviar aviso</button></div>';
   var html='<div class="card preHead"><h2 style="margin:0 0 4px">PRE \u00b7 Plan de Respuesta a Emergencias</h2><div class="hint" style="margin:0">Primero la vida. Interrump\u00ed la operaci\u00f3n, asegur\u00e1 la aeronave y llam\u00e1.</div><div class="btnrow" style="margin-top:8px">'+_callBtn('123','123 Emergencias')+_callBtn('119','119 Bomberos')+'</div></div>'+tabs;
@@ -1009,7 +1008,7 @@ function renderPRE(){var host=$('preBody');if(!host)return;var D=preData();
     html+='<div class="card"><h2>EPM \u00b7 programa UAS</h2>'+D.epm.map(_preRow).join('')+'</div>';
     html+='<div class="card"><h2>Autoridades ambientales (fauna)</h2>'+D.amb.map(_preRow).join('')+'</div>';
   }else{
-    html+=PRE_EV.map(function(e){var open=PRE_UI.ev===e.id;var calls=(e.call||[]).concat((e.call||[]).indexOf('MESA')<0?['MESA']:[]).map(preCallFor).filter(Boolean).map(function(c){return c.t?_callBtn(c.t,c.n):'<span class="hint" style="margin:0">'+esc(c.n)+': sin n\u00famero</span>';}).join('');
+    html+=PRE_EV.map(function(e){var open=PRE_UI.ev===e.id;var calls=(e.call||[]).concat((e.call||[]).indexOf('MESA')<0?['MESA']:[]).map(preCallFor).filter(Boolean).map(function(c){return c.t?_callBtn(c.t,c.n):'';}).join('');
       if((e.call||[]).indexOf('AMB')>=0)calls+='<button class="btn sm sec" style="width:auto" onclick="preTab(\'dir\')">\ud83c\udf3f Autoridades ambientales</button>';
       return '<div class="card preEv'+(open?' open':'')+'"><div class="preEvH" onclick="preEv(\''+e.id+'\')"><span style="font-size:22px">'+e.ic+'</span><b style="flex:1">'+esc(e.t)+'</b><span>'+(open?'\u25b4':'\u25be')+'</span></div>'
         +(open?'<div class="btnrow" style="margin:8px 0">'+calls+'</div><ol class="preSteps">'+e.s.map(function(x,i){return '<li><label><input type="checkbox"> '+esc(x)+'</label></li>';}).join('')+'</ol><div class="hint">Al terminar: ver \u201cDespu\u00e9s de la emergencia\u201d.</div>':'')+'</div>';}).join('');
@@ -1667,11 +1666,11 @@ async function verOpDetalle(id){var o=operaciones.find(function(x){return x.id==
   var piloto=o.piloto||((typeof pilotName==='function'&&o.pilotoId)?pilotName(o.pilotoId):'');
   var dron=(o.dronModelo||'')+(o.dronDR?' -'+o.dronDR:'');
   var proy=(typeof projName==='function')?projName(o):'';
-  var dg='<table class="auttbl">'+kv('Código',o.codigo)+kv('Proyecto',proy)+kv('Inicio',fmtDT(o.inicioOp))+kv('Fin',fmtDT(o.finOp))+kv('Estado',o.verdict)+kv('Piloto principal',piloto)+kv('Dron',dron)+kv('Tipo',tipos)+kv('Ubicación',(o.municipio||'')+(o.departamento?', '+o.departamento:''))+kv('Coordenadas',(o.lat&&o.lon)?(o.lat+', '+o.lon):'')+kv('Autorización',(o.aut&&o.aut.radicado)?o.aut.radicado:'')+'</table>';
+  var dg='<table class="auttbl">'+kv('Código',o.codigo)+kv('Inicio',fmtDT(o.inicioOp))+kv('Fin',fmtDT(o.finOp))+kv('Estado',o.verdict)+kv('Piloto principal',piloto)+kv('Dron',dron)+kv('Tipo',tipos)+kv('Ubicación',(o.municipio||'')+(o.departamento?', '+o.departamento:''))+kv('Coordenadas',(o.lat&&o.lon)?(o.lat+', '+o.lon):'')+kv('Autorización',(o.aut&&o.aut.radicado)?o.aut.radicado:'')+'</table>';
   var vuelos=(o.sorties||[]).length?('<table class="auttbl"><thead><tr><th>#</th><th>Piloto</th><th>Observador</th><th>Batería</th><th>Dur.</th></tr></thead><tbody>'+(o.sorties||[]).map(function(s,i){return '<tr><td>'+(i+1)+'</td><td>'+esc(s.piloto||'')+'</td><td>'+esc(s.observador||'')+'</td><td>'+esc((s.batDesp||'')+((s.batDesp||s.batAter)?'→':'')+(s.batAter||''))+'</td><td>'+esc((s.dur!==''&&s.dur!=null)?(s.dur+' min'):'')+'</td></tr>';}).join('')+'</tbody></table>'):'<div class="hint">Sin vuelos registrados.</div>';
   var back='<button class="btn sec sm" style="margin-bottom:10px" onclick="renderOper()">← Volver</button>';
   cont.innerHTML=back+'<div class="item"><div style="width:100%"><div class="name" style="font-weight:700;font-size:16px">'+esc(o.codigo||'Operación')+'</div><h4 class="auth4">Datos generales</h4>'+dg+opFullSections(o,'<h4 class="auth4">Vuelos ('+((o.sorties||[]).length)+')</h4>'+vuelos)+'<div class="btnrow" style="margin-top:12px;flex-wrap:wrap"><button class="btn sec sm" onclick="renderOper()">← Volver</button> <button class="btn sec sm" onclick="editOp(\''+o.id+'\')">✎ Editar</button> <button class="btn sec sm" onclick="viewOp(\''+o.id+'\')">🖨 PDF</button></div></div></div>';}
-function viewOp(id){const o=operaciones.find(x=>x.id===id);if(o)printReport([o],projName(o));}
+function viewOp(id){const o=operaciones.find(x=>x.id===id);if(o)printReport([o],o.codigo||'Operaci\u00f3n');}
 function updateDash(){$('dTot').textContent=operaciones.length;$('dGo').textContent=operaciones.filter(o=>o.verdict==='GO').length;
   $('dNogo').textContent=operaciones.filter(o=>o.verdict==='NO-GO').length;
   const mins=operaciones.reduce((s,o)=>s+totalMins(o.sorties),0);$('dHrs').textContent=(mins/60).toFixed(1);var _vt=$('dVuelos');if(_vt)_vt.textContent=operaciones.reduce((s,o)=>s+((o.sorties||[]).length),0);}
@@ -1762,7 +1761,7 @@ function pickOpForPdf(){
   var panel=document.createElement('div');panel.style.cssText='background:#fff;width:100%;max-height:82vh;border-radius:16px 16px 0 0;overflow:auto';
   var hd=document.createElement('div');hd.textContent='Eleg\u00ed la operaci\u00f3n para el PDF';hd.style.cssText='padding:14px;font-weight:800;border-bottom:1px solid #eee;position:sticky;top:0;background:#fff';panel.appendChild(hd);
   var todas=document.createElement('div');todas.textContent='\U0001f4c4 Todas las operaciones';todas.style.cssText='padding:14px;border-bottom:1px solid #eee;color:#007934;font-weight:700';todas.onclick=function(){ov.remove();exportPDF();};panel.appendChild(todas);
-  ops.forEach(function(o){var it=document.createElement('div');it.style.cssText='padding:14px;border-bottom:1px solid #eee';it.innerHTML='<div style="font-weight:700">'+esc(o.codigo||'Operaci\u00f3n')+'</div><div style="font-size:12px;color:#64748b">'+esc(fmtDT(o.inicioOp))+' \u00b7 '+esc(projName(o))+'</div>';it.onclick=function(){ov.remove();viewOp(o.id);};panel.appendChild(it);});
+  ops.forEach(function(o){var it=document.createElement('div');it.style.cssText='padding:14px;border-bottom:1px solid #eee';it.innerHTML='<div style="font-weight:700">'+esc(o.codigo||'Operaci\u00f3n')+'</div><div style="font-size:12px;color:#64748b">'+esc(fmtDT(o.inicioOp))+(o.municipio?' \u00b7 '+esc(o.municipio):'')+'</div>';it.onclick=function(){ov.remove();viewOp(o.id);};panel.appendChild(it);});
   var cancel=document.createElement('div');cancel.textContent='Cancelar';cancel.style.cssText='padding:14px;text-align:center;color:#64748b';cancel.onclick=function(){ov.remove();};panel.appendChild(cancel);
   ov.appendChild(panel);ov.onclick=function(e){if(e.target===ov)ov.remove();};document.body.appendChild(ov);
 }
@@ -1931,7 +1930,7 @@ function modoPiloto(){return localStorage.getItem('bvd_modoPiloto')==='1';}
 function applyModo(){const on=modoPiloto();['fleetForm','pilotForm'].forEach(id=>{const el=$(id);if(el)el.style.display=on?'none':'';});const c=$('modoPilotoChk');if(c)c.checked=on;}
 function setModoPiloto(on){localStorage.setItem('bvd_modoPiloto',on?'1':'');applyModo();renderFleet();renderPilots();toast(on?'Modo piloto activado (solo consulta)':'Modo maestro (edición habilitada)');}
 function mergeCatalog(local,incoming,key){if(!incoming)return 0;let n=0;incoming.forEach(item=>{let i=local.findIndex(x=>x.id===item.id);if(i<0&&key&&item[key])i=local.findIndex(x=>String(x[key]||'').trim()===String(item[key]||'').trim());if(i<0){local.push(item);n++;}else local[i]=item;});return n;}
-const APP_VER='v158';
+const APP_VER='v159';
 function renderSyncInfo(){const t=Number(localStorage.getItem('bvd_lastSync')||0);const v=localStorage.getItem('bvd_seedVerShown')||localStorage.getItem('bvd_seedVersion')||'';const cf=localStorage.getItem('bvd_catalogoFecha')||'';const p=n=>String(n).padStart(2,'0');
   let ts='',short='';if(t){const d=new Date(t);ts=p(d.getDate())+'-'+p(d.getMonth()+1)+'-'+d.getFullYear()+' '+p(d.getHours())+':'+p(d.getMinutes());short=p(d.getDate())+'-'+p(d.getMonth()+1)+' '+p(d.getHours())+':'+p(d.getMinutes());}
   const hv=$('hdrVer');if(hv)hv.innerHTML='App '+APP_VER+(short?'<br>'+short:'');
