@@ -999,14 +999,14 @@ function renderPRE(){var host=$('preBody');if(!host)return;var D=preData();
     var muns=dep?Array.from(new Set(D.bom.filter(function(b){return (b[3]||'Sin departamento')===dep;}).map(function(b){return b[0];}))).sort(function(a,b){return a.localeCompare(b,'es');}):[];
     var bom=D.bom.filter(function(b){return (!dep||(b[3]||'Sin departamento')===dep)&&(!mun||b[0]===mun)&&(!q||_preNorm(b[0]+' '+(b[3]||'')).indexOf(q)>=0);});if(dep||mun)q=q||' ';
     var bRow=function(b,hl){return '<div class="preRow'+(hl?' preHl':'')+'"><div style="flex:1;min-width:0"><b>Bomberos '+esc(b[0])+'</b>'+(b[3]&&_preNorm(b[3])!=='antioquia'?' <span class="hint" style="margin:0">\u00b7 '+esc(b[3])+'</span>':'')+(hl?'<div class="hint" style="margin:0;color:#007934">Municipio de la autorizaci\u00f3n en curso</div>':'')+'</div><div class="preCalls">'+_callBtn(b[1])+(b[2]?_callBtn(b[2]):'')+'</div></div>';};
+    html+='<div class="card"><h2>EPM \u00b7 programa UAS</h2>'+D.epm.map(_preRow).join('')+'</div>';
+    html+='<div class="card"><h2>L\u00edneas nacionales</h2>'+D.nac.map(_preRow).join('')+'</div>';
+    html+='<div class="card"><h2>Autoridades ambientales (fauna)</h2>'+D.amb.map(_preRow).join('')+'</div>';
     html+='<div class="card"><h2>Bomberos por municipio</h2><div class="row2" style="gap:8px;margin-bottom:8px"><div class="field" style="margin:0"><label>Departamento</label><select onchange="preSel(\'dep\',this.value)"><option value="">Todos ('+deps.length+')</option>'+deps.map(function(x){return '<option'+(x===dep?' selected':'')+'>'+esc(x)+'</option>';}).join('')+'</select></div><div class="field" style="margin:0"><label>Municipio</label><select onchange="preSel(\'mun\',this.value)" '+(dep?'':'disabled')+'><option value="">'+(dep?'Todos ('+muns.length+')':'Eleg\u00ed un departamento')+'</option>'+muns.map(function(x){return '<option'+(x===mun?' selected':'')+'>'+esc(x)+'</option>';}).join('')+'</select></div></div><div class="hint" style="margin:0 0 6px">'+D.bom.length+' cuerpos de bomberos en el directorio, de '+deps.length+' departamento(s).</div><input id="preQ" placeholder="Buscar municipio\u2026" value="'+esc(PRE_UI.q)+'" oninput="PRE_UI.q=this.value;renderPRE();var e=$(\'preQ\');e.focus();e.setSelectionRange(e.value.length,e.value.length);">'
       +(sug.length&&!q?D.bom.filter(function(b){return sug.indexOf(b[0])>=0;}).map(function(b){return bRow(b,true);}).join(''):'')
       +(function(){var L=bom.filter(function(b){return q||sug.indexOf(b[0])<0;});if(!q)L=L.filter(function(b){return !b[3]||_preNorm(b[3])==='antioquia';});var tot=L.length;return L.slice(0,q?120:60).map(function(b){return bRow(b,false);}).join('')+(tot>(q?120:60)?'<div class="hint">Mostrando '+(q?120:60)+' de '+tot+'. Escrib\u00ed el municipio para buscar'+(q?' m\u00e1s preciso':'')+'.</div>':'')+(!q&&D.bom.length>tot?'<div class="hint">Hay '+D.bom.length+' cuerpos de bomberos de todo el pa\u00eds: buscalos por municipio o departamento.</div>':'');})()
       +(q&&!bom.length?'<div class="hint">No est\u00e1 en el directorio: llam\u00e1 al <b>123</b> o al <b>119</b>, que enrutan a los bomberos del municipio.</div>':'')
       +'<div class="hint" style="margin-top:8px">'+esc(D.fuente||'')+'</div></div>';
-    html+='<div class="card"><h2>L\u00edneas nacionales</h2>'+D.nac.map(_preRow).join('')+'</div>';
-    html+='<div class="card"><h2>EPM \u00b7 programa UAS</h2>'+D.epm.map(_preRow).join('')+'</div>';
-    html+='<div class="card"><h2>Autoridades ambientales (fauna)</h2>'+D.amb.map(_preRow).join('')+'</div>';
   }else{
     html+=PRE_EV.map(function(e){var open=PRE_UI.ev===e.id;var calls=(e.call||[]).concat((e.call||[]).indexOf('MESA')<0?['MESA']:[]).map(preCallFor).filter(Boolean).map(function(c){return c.t?_callBtn(c.t,c.n):'';}).join('');
       if((e.call||[]).indexOf('AMB')>=0)calls+='<button class="btn sm sec" style="width:auto" onclick="preTab(\'dir\')">\ud83c\udf3f Autoridades ambientales</button>';
@@ -1164,7 +1164,7 @@ function openAutDetail(id){const a=autById(id);if(!a)return;const cont=$('autLis
   if(a.pdf)btns.push('<button class="btn sec sm noprint" onclick="openPdf(\''+a.pdf.id+'\')">📄 Documento</button>');
   if(a.pdfInfo)btns.push('<button class="btn sec sm noprint" onclick="openPdf(\''+a.pdfInfo.id+'\')">📄 Información</button>');
   if(a.poly&&a.poly.length&&!venc)btns.push('<button class="btn sec sm noprint" onclick="verZonaAut(\''+a.id+'\')">🗺️ Ver zona en mapa</button>');
-  const pil=(a.pilotosAut||[]).map(cod=>{const p=pilotos.find(x=>(x.codigo||x.id)===cod);return '<tr><td>'+esc(p&&p.nombre?p.nombre:'—')+'</td><td>'+esc(cod)+'</td></tr>';}).join('');
+  const _nzA=s=>String(s||'').toUpperCase().replace(/[^A-Z0-9]/g,'').replace(/^PLT/,'');const _seenA={};const pil=(a.pilotosAut||[]).filter(cod=>{const q=_nzA(cod);if(!q||_seenA[q])return false;_seenA[q]=1;return true;}).map(cod=>{const q=_nzA(cod);const p=pilotos.find(x=>[x.codigo,x.id].concat((x.cipus||[]).map(c=>c&&(c.num||c.codigo))).filter(Boolean).some(k=>_nzA(k)===q));return '<tr><td>'+esc(p&&p.nombre?p.nombre:'—')+'</td><td>'+esc(cod)+'</td></tr>';}).join('');
   const dro=(a.dronesAut||[]).map(ser=>{const d=flota.find(x=>(x.serial||'').trim()===ser);return '<tr><td>'+esc(d?dronLabel(d):'—')+'</td><td>'+esc(ser)+'</td><td>'+esc(d&&d.ruas?d.ruas:'—')+'</td></tr>';}).join('');
   cont.innerHTML='<button class="btn sec sm" style="margin-bottom:10px" onclick="renderAut()">← Volver</button>'+
     '<div class="item"><div class="top"><div style="width:100%">'+
@@ -1174,7 +1174,7 @@ function openAutDetail(id){const a=autById(id);if(!a)return;const cont=$('autLis
     (a.tipoVisual?'<div class="meta">Tipo: <b>'+esc(a.tipoVisual)+'</b>'+(a.nocturno?' · Nocturno autorizado':'')+'</div>':'')+
     (a.desc?'<div class="meta">'+esc(a.desc)+'</div>':'')+
     '<div class="btnrow" style="margin-top:8px">'+(btns.join('')||'<span class="hint">Sin PDF ni zona cargados.</span>')+'</div>'+
-    '<h4 class="auth4">Pilotos autorizados ('+((a.pilotosAut||[]).length)+')</h4>'+
+    '<h4 class="auth4">Pilotos autorizados ('+new Set((a.pilotosAut||[]).map(x=>String(x||'').toUpperCase().replace(/[^A-Z0-9]/g,''))).size+')</h4>'+
     (pil?'<table class="auttbl"><thead><tr><th>Nombre</th><th>CIPU</th></tr></thead><tbody>'+pil+'</tbody></table>':'<div class="hint">Sin pilotos asociados. Reimportá el PDF en el maestro y regenerá el seed.</div>')+
     '<h4 class="auth4">Drones autorizados ('+((a.dronesAut||[]).length)+')</h4>'+
     (dro?'<table class="auttbl"><thead><tr><th>Dron</th><th>Serial</th><th>RUAS</th></tr></thead><tbody>'+dro+'</tbody></table>':'<div class="hint">Sin drones asociados. Reimportá el PDF en el maestro y regenerá el seed.</div>')+
@@ -1930,7 +1930,7 @@ function modoPiloto(){return localStorage.getItem('bvd_modoPiloto')==='1';}
 function applyModo(){const on=modoPiloto();['fleetForm','pilotForm'].forEach(id=>{const el=$(id);if(el)el.style.display=on?'none':'';});const c=$('modoPilotoChk');if(c)c.checked=on;}
 function setModoPiloto(on){localStorage.setItem('bvd_modoPiloto',on?'1':'');applyModo();renderFleet();renderPilots();toast(on?'Modo piloto activado (solo consulta)':'Modo maestro (edición habilitada)');}
 function mergeCatalog(local,incoming,key){if(!incoming)return 0;let n=0;incoming.forEach(item=>{let i=local.findIndex(x=>x.id===item.id);if(i<0&&key&&item[key])i=local.findIndex(x=>String(x[key]||'').trim()===String(item[key]||'').trim());if(i<0){local.push(item);n++;}else local[i]=item;});return n;}
-const APP_VER='v159';
+const APP_VER='v160';
 function renderSyncInfo(){const t=Number(localStorage.getItem('bvd_lastSync')||0);const v=localStorage.getItem('bvd_seedVerShown')||localStorage.getItem('bvd_seedVersion')||'';const cf=localStorage.getItem('bvd_catalogoFecha')||'';const p=n=>String(n).padStart(2,'0');
   let ts='',short='';if(t){const d=new Date(t);ts=p(d.getDate())+'-'+p(d.getMonth()+1)+'-'+d.getFullYear()+' '+p(d.getHours())+':'+p(d.getMinutes());short=p(d.getDate())+'-'+p(d.getMonth()+1)+' '+p(d.getHours())+':'+p(d.getMinutes());}
   const hv=$('hdrVer');if(hv)hv.innerHTML='App '+APP_VER+(short?'<br>'+short:'');
