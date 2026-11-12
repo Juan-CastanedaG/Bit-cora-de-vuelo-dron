@@ -1031,7 +1031,7 @@ function zaToggle(name,on){var off=zaOffList();if(off==null)off=(ZA.data?ZA.data
 function _zaInRing(x,y,r){var c=false;for(var i=0,j=r.length-1;i<r.length;j=i++){var xi=r[i][0],yi=r[i][1],xj=r[j][0],yj=r[j][1];if(((yi>y)!==(yj>y))&&(x<(xj-xi)*(y-yi)/((yj-yi)||1e-12)+xi))c=!c;}return c;}
 function _zaInPoly(x,y,rings){if(!rings.length||!_zaInRing(x,y,rings[0]))return false;for(var k=1;k<rings.length;k++)if(_zaInRing(x,y,rings[k]))return false;return true;}
 function zaName(l,f){var p=f.properties||{};var keys=Object.keys(p);var k=keys.find(function(k){return /^(nombre|name|designador|zona|identificador|ident|descripcion|tipo)/i.test(k)&&p[k];});return (k?String(p[k]):'')||l.name||'Zona';}
-function zaHits(lat,lon){var out=[];if(!ZA.data||!ZA.data.layers)return out;ZA.data.layers.forEach(function(l){if(!zaIsOn(l))return;(l.features||[]).forEach(function(f){var g=f.geometry;if(!g||!f._bb)return;if(lon<f._bb[0]||lon>f._bb[2]||lat<f._bb[1]||lat>f._bb[3])return;var hit=false;if(g.type==='Polygon')hit=_zaInPoly(lon,lat,g.coordinates);else if(g.type==='MultiPolygon')hit=g.coordinates.some(function(pl){return _zaInPoly(lon,lat,pl);});if(hit)out.push({capa:l.name,nombre:zaName(l,f)});});});return out;}
+function zaHits(lat,lon){var out=[];if(!ZA.data||!ZA.data.layers||!zaAllOn())return out;ZA.data.layers.forEach(function(l){if(!zaIsOn(l))return;(l.features||[]).forEach(function(f){var g=f.geometry;if(!g||!f._bb)return;if(lon<f._bb[0]||lon>f._bb[2]||lat<f._bb[1]||lat>f._bb[3])return;var hit=false;if(g.type==='Polygon')hit=_zaInPoly(lon,lat,g.coordinates);else if(g.type==='MultiPolygon')hit=g.coordinates.some(function(pl){return _zaInPoly(lon,lat,pl);});if(hit)out.push({capa:l.name,nombre:zaName(l,f)});});});return out;}
 /* estilo según el renderizador del visor (simple, por valores únicos o por rangos) */
 function zaSty(l,f){var s=l.sty||{};var p=f.properties||{};var pick=null;
   if(s.type==='u'){var v=(s.fields||[]).map(function(k){return p[k]==null?'':String(p[k]);}).join(s.delim||',');pick=s.map&&s.map[v];if(!pick&&s.fields&&s.fields.length===1){var vv=p[s.fields[0]];pick=s.map&&s.map[String(vv)];}pick=pick||s.def;}
@@ -1040,19 +1040,24 @@ function zaSty(l,f){var s=l.sty||{};var p=f.properties||{};var pick=null;
   var col=(pick&&(pick.line||pick.fill))||l.color||'#C2352C';var op=l.opacity!=null?l.opacity:1;
   return {color:(pick&&pick.line)||col,weight:(pick&&pick.w)||1.6,opacity:op,fillColor:(pick&&pick.fill)||col,fillOpacity:pick&&pick.fa!=null?pick.fa*op:.14*op,dashArray:pick&&pick.dash?'5 4':null};}
 function zaLegendColor(l){var s=l.sty||{};var d=s.def||s;return (d&&(d.fill||d.line))||l.color||'#C2352C';}
-function zaLayerGroup(){if(ZA.lg)return ZA.lg;if(!ZA.data||typeof L==='undefined')return null;var lg=L.layerGroup();
+function zaAllOn(){try{return localStorage.getItem(ZA.offKey+'_all')!=='0';}catch(e){return true;}}
+function zaLayerGroup(){if(ZA.lg)return ZA.lg;if(!ZA.data||typeof L==='undefined'||!zaAllOn())return null;var lg=L.layerGroup();
   ZA.data.layers.forEach(function(l){if(!zaIsOn(l))return;try{L.geoJSON({type:'FeatureCollection',features:l.features||[]},{style:function(f){return zaSty(l,f);},
     pointToLayer:function(f,ll){var st=zaSty(l,f);return L.circleMarker(ll,{radius:5,color:st.color,weight:2,fillColor:st.fillColor,fillOpacity:.9});},
     onEachFeature:function(f,ly){var p=f.properties||{};var col=zaSty(l,f).fillColor;var rows=Object.keys(p).filter(function(k){return p[k]!=null&&p[k]!==''&&!/^(objectid|fid|shape|globalid)/i.test(k);}).slice(0,6).map(function(k){return '<div style="font-size:11px"><b>'+String(k).replace(/</g,'')+':</b> '+String(p[k]).replace(/</g,'&lt;').slice(0,80)+'</div>';}).join('');
       ly.bindPopup('<div style="min-width:180px"><div style="font-weight:800;color:#1d1d1b;border-left:5px solid '+col+';padding-left:6px">'+String(zaName(l,f)).replace(/</g,'&lt;')+'</div><div style="font-size:11px;color:#64748b;margin:2px 0 4px">Aerocivil · '+String(l.name||'').replace(/</g,'&lt;')+'</div>'+rows+'</div>');}}).addTo(lg);}catch(e){}});
   ZA.lg=lg;return lg;}
-/* control de capas en el mapa (activar / desactivar) */
-function zaControl(map,onChange){if(!ZA.data||typeof L==='undefined'||map._zaCtl)return;var C=L.control({position:'topright'});
-  C.onAdd=function(){var d=L.DomUtil.create('div','leaflet-bar');d.style.cssText='background:#fff;padding:6px 8px;max-width:240px;font:12px sans-serif';L.DomEvent.disableClickPropagation(d);L.DomEvent.disableScrollPropagation(d);
-    var draw=function(){d.innerHTML='<div style="font-weight:800;cursor:pointer" data-t>Zonas Aerocivil \u25BE</div><div data-b style="display:none;max-height:260px;overflow:auto;margin-top:4px">'+ZA.data.layers.map(function(l,i){return '<label style="display:flex;gap:6px;align-items:center;margin:3px 0;cursor:pointer"><input type="checkbox" data-i="'+i+'"'+(zaIsOn(l)?' checked':'')+'><span style="width:12px;height:12px;border-radius:3px;flex:0 0 12px;background:'+zaLegendColor(l)+'"></span><span>'+String(l.name).replace(/</g,'&lt;')+' ('+(l.features||[]).length+')</span></label>';}).join('')+'</div>';
-      var b=d.querySelector('[data-b]');d.querySelector('[data-t]').onclick=function(){b.style.display=b.style.display==='none'?'':'none';};
-      d.querySelectorAll('input[data-i]').forEach(function(cb){cb.onchange=function(){zaToggle(ZA.data.layers[+cb.dataset.i].name,cb.checked);onChange&&onChange();var open=b.style.display!=='none';draw();if(open)d.querySelector('[data-b]').style.display='';};});};
-    draw();return d;};C.addTo(map);map._zaCtl=C;}
+/* control de capas en el mapa: encender/apagar todo el geovisor y cada capa */
+function zaControl(map,onChange){if(typeof L==='undefined'||map._zaCtl)return;var C=L.control({position:'topright'});
+  C.onAdd=function(){var d=L.DomUtil.create('div','leaflet-bar');d.style.cssText='background:#fff;padding:7px 9px;max-width:250px;font:12.5px sans-serif;border-radius:10px';L.DomEvent.disableClickPropagation(d);L.DomEvent.disableScrollPropagation(d);var open=false;
+    var draw=function(){var on=zaAllOn();var has=!!(ZA.data&&ZA.data.layers&&ZA.data.layers.length);
+      d.innerHTML='<div style="display:flex;align-items:center;gap:8px"><b style="flex:1;cursor:pointer" data-t>\u2708\ufe0f Zonas Aerocivil '+(has?(open?'\u25B4':'\u25BE'):'')+'</b><label style="position:relative;display:inline-block;width:38px;height:22px;cursor:pointer;flex:0 0 38px"><input type="checkbox" data-all '+(on?'checked':'')+' style="opacity:0;width:0;height:0"><span style="position:absolute;inset:0;border-radius:22px;background:'+(on?'#007934':'#cbd5e1')+';transition:.2s"></span><span style="position:absolute;top:3px;left:'+(on?'19px':'3px')+';width:16px;height:16px;border-radius:50%;background:#fff;transition:.2s"></span></label></div>'
+       +(!has?'<div style="margin-top:4px;color:#64748b;font-size:11.5px;max-width:220px">A\u00fan no llegan las zonas: el jefe de pilotos debe actualizarlas en el maestro y publicar el seed.</div>':'')
+       +(has&&open?'<div style="max-height:260px;overflow:auto;margin-top:6px;'+(on?'':'opacity:.45;pointer-events:none')+'">'+ZA.data.layers.map(function(l,i){return '<label style="display:flex;gap:6px;align-items:center;margin:4px 0;cursor:pointer"><input type="checkbox" data-i="'+i+'"'+(zaIsOn(l)?' checked':'')+'><span style="width:12px;height:12px;border-radius:3px;flex:0 0 12px;background:'+zaLegendColor(l)+'"></span><span>'+String(l.name).replace(/</g,'&lt;')+' ('+(l.features||[]).length+')</span></label>';}).join('')+'</div>':'');
+      var t=d.querySelector('[data-t]');if(t)t.onclick=function(){open=!open;draw();};
+      var all=d.querySelector('[data-all]');all.onchange=function(){try{localStorage.setItem(ZA.offKey+'_all',all.checked?'1':'0');}catch(e){}ZA.lg=null;onChange&&onChange();draw();};
+      d.querySelectorAll('input[data-i]').forEach(function(cb){cb.onchange=function(){zaToggle(ZA.data.layers[+cb.dataset.i].name,cb.checked);onChange&&onChange();draw();};});};
+    draw();C._redraw=draw;return d;};C.addTo(map);map._zaCtl=C;}
 
 function _pill(c,t){return '<span class="tpill '+c+'">'+t+'</span>';}
 function _trow(a,sub,right){return '<div class="trow"><div>'+a+(sub?'<div class="tmut">'+sub+'</div>':'')+'</div>'+right+'</div>';}
@@ -1964,7 +1969,7 @@ function modoPiloto(){return localStorage.getItem('bvd_modoPiloto')==='1';}
 function applyModo(){const on=modoPiloto();['fleetForm','pilotForm'].forEach(id=>{const el=$(id);if(el)el.style.display=on?'none':'';});const c=$('modoPilotoChk');if(c)c.checked=on;}
 function setModoPiloto(on){localStorage.setItem('bvd_modoPiloto',on?'1':'');applyModo();renderFleet();renderPilots();toast(on?'Modo piloto activado (solo consulta)':'Modo maestro (edición habilitada)');}
 function mergeCatalog(local,incoming,key){if(!incoming)return 0;let n=0;incoming.forEach(item=>{let i=local.findIndex(x=>x.id===item.id);if(i<0&&key&&item[key])i=local.findIndex(x=>String(x[key]||'').trim()===String(item[key]||'').trim());if(i<0){local.push(item);n++;}else local[i]=item;});return n;}
-const APP_VER='v162';
+const APP_VER='v163';
 function renderSyncInfo(){const t=Number(localStorage.getItem('bvd_lastSync')||0);const v=localStorage.getItem('bvd_seedVerShown')||localStorage.getItem('bvd_seedVersion')||'';const cf=localStorage.getItem('bvd_catalogoFecha')||'';const p=n=>String(n).padStart(2,'0');
   let ts='',short='';if(t){const d=new Date(t);ts=p(d.getDate())+'-'+p(d.getMonth()+1)+'-'+d.getFullYear()+' '+p(d.getHours())+':'+p(d.getMinutes());short=p(d.getDate())+'-'+p(d.getMonth()+1)+' '+p(d.getHours())+':'+p(d.getMinutes());}
   const hv=$('hdrVer');if(hv)hv.innerHTML='App '+APP_VER+(short?'<br>'+short:'');
@@ -2082,7 +2087,7 @@ function renderVueloPoints(){if(!map)return;if(vueloLayer)map.removeLayer(vueloL
 function centrarVuelos(){if(!map)return;const b=[];operaciones.forEach(o=>(o.sorties||[]).forEach(s=>{const la=parseFloat(s.lat),lo=parseFloat(s.lon);if(isFinite(la)&&isFinite(lo))b.push([la,lo]);}));if(b.length){try{map.fitBounds(b,{padding:[30,30]});}catch(e){}}else if($('vpInfo'))$('vpInfo').textContent='No hay puntos de vuelo para centrar.';}
 function allPolys(){const out=[];(autorizaciones||[]).forEach(a=>(a.poly||[]).forEach(p=>out.push(p)));return out;}
 function renderZonas(){if(!map)return;zonaLayers.forEach(l=>map.removeLayer(l));zonaLayers=[];const all=[];
-  try{const _zg=zaLayerGroup();if(_zg){_zg.addTo(map);zonaLayers.push(_zg);}zaControl(map,renderZonas);}catch(_e){}
+  try{const _zg=zaLayerGroup();if(_zg){_zg.addTo(map);zonaLayers.push(_zg);}zaControl(map,renderZonas);if(map._zaCtl&&map._zaCtl._redraw)map._zaCtl._redraw();}catch(_e){}
   (autorizaciones||[]).forEach((a,ai)=>{if(autVencida(a))return;const col=AUT_COLORS[ai%AUT_COLORS.length];(a.poly||[]).forEach(poly=>{const pl=L.polygon(poly,{color:col,weight:2,fillColor:col,fillOpacity:.16,interactive:false}).addTo(map);zonaLayers.push(pl);poly.forEach(pt=>all.push(pt));});});
   if(!map._zoneClick){map._zoneClick=true;map.on('click',e=>{const zs=[],seen={};(autorizaciones||[]).forEach((a,ai)=>{if(autVencida(a))return;const hit=(a.poly||[]).some(poly=>pointInPoly([e.latlng.lat,e.latlng.lng],poly));const k=a.id||a.radicado;if(hit&&!seen[k]){seen[k]=1;zs.push({a,col:AUT_COLORS[ai%AUT_COLORS.length]});}});if(!zs.length)return;const html='<div style="max-height:190px;overflow:auto;min-width:160px">'+zs.map(z=>'<div style="border-left:4px solid '+z.col+';padding:2px 0 2px 7px;margin:3px 0"><b>'+esc(z.a.desc||z.a.radicado||'Autorización')+'</b>'+(z.a.radicado?'<br><span style="font-size:11px;color:#64748b">Radicado '+esc(z.a.radicado)+'</span>':'')+'</div>').join('')+'</div>';L.popup({maxWidth:260}).setLatLng(e.latlng).setContent(html).openOn(map);});}
   if(all.length){try{map.fitBounds(all,{padding:[20,20]});}catch(e){}}}
