@@ -2539,6 +2539,23 @@ const _planList0 = planList; planList = async function () { await _planList0.app
   host.querySelectorAll('[data-ld]').forEach((b) => { if (b.parentNode.querySelector('[data-sh]')) return; const s = document.createElement('button'); s.type = 'button'; s.dataset.sh = b.dataset.ld; s.title = 'Compartir'; s.textContent = '📤'; s.onclick = () => planShare(b.dataset.ld); b.parentNode.insertBefore(s, b.nextSibling); }); };
 planList();
 
+
+/* ===================== Zonas UAS Aerocivil (desde la app o el maestro) ===================== */
+const ZP = { data: null, lg: null };
+function _zpInRing(x, y, r) { let c = false; for (let i = 0, j = r.length - 1; i < r.length; j = i++) { const xi = r[i][0], yi = r[i][1], xj = r[j][0], yj = r[j][1]; if (((yi > y) !== (yj > y)) && (x < (xj - xi) * (y - yi) / ((yj - yi) || 1e-12) + xi)) c = !c; } return c; }
+function zpHits(lat, lon) { const out = []; if (!ZP.data) return out; ZP.data.layers.forEach((l) => (l.features || []).forEach((f) => { const g = f.geometry; if (!g) return; const polys = g.type === 'Polygon' ? [g.coordinates] : g.type === 'MultiPolygon' ? g.coordinates : []; if (polys.some((rs) => rs.length && _zpInRing(lon, lat, rs[0]) && !rs.slice(1).some((h) => _zpInRing(lon, lat, h)))) { const p = f.properties || {}; const k = Object.keys(p).find((k) => /^(nombre|name|designador|zona|identificador|descripcion|tipo)/i.test(k) && p[k]); out.push(k ? String(p[k]) : (l.name || 'Zona')); } })); return [...new Set(out)]; }
+function zpOpen(name) { return new Promise((res) => { try { const r = indexedDB.open(name, 1); r.onupgradeneeded = () => { try { r.transaction.abort(); } catch (e) {} res(null); }; r.onsuccess = () => { const db = r.result; if (!db.objectStoreNames.contains('a')) { db.close(); res(null); return; } const q = db.transaction('a').objectStore('a').get('zonas_aero'); q.onsuccess = () => { res(q.result || null); db.close(); }; q.onerror = () => { res(null); db.close(); }; }; r.onerror = () => res(null); } catch (e) { res(null); } }); }
+(async function () {
+  let txt = await zpOpen('bvd_assets'); if (!txt) txt = await zpOpen('bvdm_assets'); if (!txt) return;
+  try { ZP.data = JSON.parse(txt); } catch (e) { return; }
+  const lg = L.layerGroup();
+  const zpSty = (l, f) => { const s = l.sty || {}; const p = f.properties || {}; let k = null; if (s.type === 'u') { k = s.map && (s.map[(s.fields || []).map((x) => p[x] == null ? '' : String(p[x])).join(s.delim || ',')] || s.map[String(p[(s.fields || [])[0]])]); k = k || s.def; } else if (s.type === 'c') { const x = +p[s.field]; (s.breaks || []).some((b) => { if (x <= b.max) { k = b.s; return true; } return false; }); k = k || s.def; } else k = s.def; const col = (k && (k.line || k.fill)) || l.color || '#C2352C'; return { color: (k && k.line) || col, weight: (k && k.w) || 1.5, fillColor: (k && k.fill) || col, fillOpacity: k && k.fa != null ? k.fa : .12, dashArray: k && k.dash ? '5 4' : null }; };
+  ZP.data.layers.forEach((l) => { const col = l.color || '#C2352C'; if (l.visible === false) return; L.geoJSON({ type: 'FeatureCollection', features: l.features || [] }, { style: (f) => zpSty(l, f), pointToLayer: (f, ll) => L.circleMarker(ll, { radius: 5, color: col, weight: 2, fillColor: '#fff', fillOpacity: 1 }), onEachFeature: (f, ly) => { const p = f.properties || {}; const k = Object.keys(p).find((k) => /^(nombre|name|designador|zona|identificador|descripcion|tipo)/i.test(k) && p[k]); ly.bindTooltip((k ? String(p[k]) : l.name) + ' · Aerocivil'); } }).addTo(lg); });
+  ZP.lg = lg; lg.addTo(map);
+  log('Zonas UAS de Aerocivil cargadas (' + ZP.data.layers.reduce((a, l) => a + (l.features || []).length, 0) + ' elementos, ' + (ZP.data.ver || '') + '). Se marcan en el mapa y se revisan al asignar despegues.');
+})();
+const _asignar2 = asignar; asignar = function () { try { const A = S.an; if (A && A.sel && ZP.data) { const hz = zpHits(A.sel.ll[0], A.sel.ll[1]); if (hz.length) log('⚠ El despegue elegido está dentro de una zona de Aerocivil: ' + hz.join(', ') + '. Verificá que la autorización lo permita.', true); const segs = selList(); const bad = segs.filter((si) => { const sg = S.mission.segs[si]; return sg && sg.route.some((pt, k) => k % 3 === 0 && zpHits.apply(null, (function () { const q = S.frame.fromW.forward(pt); return [q[1], q[0]]; })()).length); }); if (bad.length) log('⚠ ' + bad.length + ' tramo(s) del vuelo pasan por zonas de Aerocivil: ' + bad.map((si) => S.mission.segs[si].name).join(', '), true); } } catch (e) {} return _asignar2.apply(this, arguments); };
+
 })();
 </script>
 <script id="mobSheetJs">
