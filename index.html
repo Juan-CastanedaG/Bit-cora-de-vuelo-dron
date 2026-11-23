@@ -707,8 +707,11 @@ function pilotById(id){return pilotos.find(p=>p.id===id)}
 function dronById(id){return flota.find(d=>d.id===id)}
 function autById(id){return autorizaciones.find(a=>a.id===id)}
 function autVencida(a){return !!(a&&a.estado!=='tramite'&&a.fin&&daysTo(a.fin)<0);}
-function dronAutOK(au,d){if(!au||!au.dronesAut||!au.dronesAut.length||!d)return true;const ns=s=>String(s||'').toUpperCase().replace(/[^A-Z0-9]/g,'');const keys=[d.serial,d.id].filter(Boolean).map(ns);return au.dronesAut.some(a=>keys.includes(ns(a)));}
-function pilotAutOK(au,p){if(!au||!au.pilotosAut||!au.pilotosAut.length||!p)return true;const nz=s=>String(s||'').toUpperCase().replace(/[^A-Z0-9]/g,'').replace(/^PLT/,'');const keys=[p.codigo,p.id].concat((p.cipus||[]).map(c=>c&&(c.num||c.codigo))).filter(Boolean).map(nz);return au.pilotosAut.some(a=>keys.includes(nz(a)));}
+function dronAutOK(au,d){if(_autPrueba(au))return true;if(!au||!au.dronesAut||!au.dronesAut.length||!d)return true;const ns=s=>String(s||'').toUpperCase().replace(/[^A-Z0-9]/g,'');const keys=[d.serial,d.id].filter(Boolean).map(ns);return au.dronesAut.some(a=>keys.includes(ns(a)));}
+function _autPrueba(au){if(!au)return false;if(au.prueba===true)return true;if(au.prueba===false)return false;return String(au.idAut||'').replace(/\D/g,'')==='2779966';}
+function _opPrueba(){try{return _autPrueba(autById(($('g_autId')&&$('g_autId').value)||''));}catch(e){return false;}}
+function _recPrueba(o){if(!o)return false;if(o.prueba)return true;var a=o.aut||{},rn=function(s){return String(s||'').replace(/\D/g,'');};var au=autorizaciones.find(function(x){return (a.radicado&&rn(x.radicado)===rn(a.radicado))||(a.id&&rn(x.idAut)===rn(a.id));});return _autPrueba(au);}
+function pilotAutOK(au,p){if(_autPrueba(au))return true;if(!au||!au.pilotosAut||!au.pilotosAut.length||!p)return true;const nz=s=>String(s||'').toUpperCase().replace(/[^A-Z0-9]/g,'').replace(/^PLT/,'');const keys=[p.codigo,p.id].concat((p.cipus||[]).map(c=>c&&(c.num||c.codigo))).filter(Boolean).map(nz);return au.pilotosAut.some(a=>keys.includes(nz(a)));}
 function tipoRank(t){t=(t||'').toUpperCase();return t==='BVLOS'?3:t==='EVLOS'?2:t==='VLOS'?1:0;}
 function opTipoMsgs(au){const m=[];if(!au||!au.tipoVisual)return m;let opr=0,opn='';if(isOp('bvlos')){opr=3;opn='BVLOS';}else if(isOp('evlos')){opr=2;opn='EVLOS';}else if(isOp('vlos')){opr=1;opn='VLOS';}if(opr>tipoRank(au.tipoVisual))m.push('La operación ('+opn+') excede el tipo autorizado ('+au.tipoVisual+')');if(isOp('nocturna')&&au.nocturno===false)m.push('Operación nocturna no autorizada en esta autorización');return m;}
 function dronLabel(d){return d?((d.modelo||'')+(d.dr?' -'+d.dr:'')):''}
@@ -1219,7 +1222,7 @@ function openAutDetail(id){const a=autById(id);if(!a)return;const cont=$('autLis
     ((a.poligonos&&a.poligonos.length)?'<h4 class="auth4">Polígonos autorizados ('+a.poligonos.length+')</h4><table class="auttbl"><thead><tr><th>Nombre</th><th>Altura</th></tr></thead><tbody>'+a.poligonos.map(p=>'<tr><td>'+esc(p.nombre)+'</td><td>'+esc(p.altura)+' m</td></tr>').join('')+'</tbody></table>':'')+
     '</div></div></div>';window.scrollTo(0,0);}
 function fdate(x){return x?fmtDate(x)+(daysTo(x)<0?' <span class="bad">(vencido)</span>':''):'—';}
-function renderPilotoInfo(){const el=$('pilotoInfo');if(!el)return;const p=pilotById($('g_pilotoId').value);if(p&&!pilotHabilAt(p,opFechaOp()))block.push('Piloto inhabilitado en la fecha de la operación (revisá con el administrador)');
+function renderPilotoInfo(){const el=$('pilotoInfo');if(!el)return;const p=pilotById($('g_pilotoId').value);
   if(!p){el.innerHTML='';return;}
   const noct=hasCert(p,'Nocturno'),bv=hasCert(p,'BVLOS');
   const inhab=!pilotHabilAt(p,opFechaOp());
@@ -1409,7 +1412,7 @@ function antesDelCorte(){return opFechaRef()<CORTE;}
 function opFechaOp(){var v=(($('p_inicio')&&$('p_inicio').value)||'').slice(0,10);if(/^\d{4}-\d{2}-\d{2}$/.test(v))return v;var r=opFechaRef();return r;}
 function _hasFechaOp(){var v=(($('p_inicio')&&$('p_inicio').value)||'');if(/\d{4}-\d{2}-\d{2}/.test(v))return true;return ((typeof st!=='undefined'&&st.sorties)||[]).some(function(s){return /\d{4}-\d{2}-\d{2}/.test(String(s.inicio||''));});}
 function _venceAntes(f,fecha){return !!(f&&String(f).slice(0,10)<fecha);}
-function pilotHabilAt(p,fecha){if(!p)return true;fecha=fecha||opFechaOp();var md=pilotMed(p);if(md&&String(md).slice(0,10)<fecha)return false;var H=null;try{H=mapVal(JSON.parse(localStorage.getItem('bvd_habHist')||'{}'),pilotKey(p));}catch(e){}
+function pilotHabilAt(p,fecha){if(!p)return true;if(_opPrueba())return true;fecha=fecha||opFechaOp();var md=pilotMed(p);if(md&&String(md).slice(0,10)<fecha)return false;var H=null;try{H=mapVal(JSON.parse(localStorage.getItem('bvd_habHist')||'{}'),pilotKey(p));}catch(e){}
   if(Array.isArray(H)&&H.length){var est=null;H.slice().sort(function(a,b){return String(a.fecha).localeCompare(String(b.fecha));}).forEach(function(e){if(e&&e.fecha&&e.fecha<=fecha)est=e.estado;});if(est===null)est=H[0].estado;return est!=='inh';}
   var v=mapVal(habilMap(),pilotKey(p));return (v===undefined)||(v!==false);}
 function dronActAt(d,fecha){if(!d)return true;var L=(d.histAct||[]).filter(function(e){return e&&e.fecha;}).sort(function(a,b){return String(a.fecha).localeCompare(String(b.fecha));});if(!L.length)return d.activo!==false;var est=null;L.forEach(function(e){if(e.fecha<=fecha)est=e.estado;});if(est===null)est=L[0].estado;return est!=='ina';}
@@ -1425,9 +1428,10 @@ function verdict(){const box=$('verdictBox'),word=$('vWord'),desc=$('vDesc'),lig
   try{const _sc=sortieChecks();_sc.B.forEach(x=>block.push(x));_sc.W.forEach(x=>warn.push(x));}catch(e){}
   try{if(ZA.data)(st.sorties||[]).forEach(function(s,i){var la=parseFloat(s.lat),lo=parseFloat(s.lon);if(!isFinite(la)||!isFinite(lo)||(!la&&!lo))return;var hz=zaHits(la,lo);if(hz.length)warn.push('Vuelo #'+(i+1)+' dentro de zona Aerocivil: '+hz.map(function(z){return z.nombre;}).filter(function(v,k,a){return a.indexOf(v)===k;}).join(', ')+'. Verific\u00e1 que la autorizaci\u00f3n lo permita.');});}catch(e){}
   if(fin&&fecha>=new Date().toISOString().slice(0,10)&&daysTo(fin)!==null&&daysTo(fin)>=0&&daysTo(fin)<=7)warn.push('La autorización vence en '+daysTo(fin)+' día(s)');
+  if(_opPrueba())warn.push('Autorizaci\u00f3n de PRUEBA: no se aplican bloqueos de pilotos (habilitaci\u00f3n, m\u00e9dico, lista de la autorizaci\u00f3n) y el dron es opcional');
   const noc=isOp('nocturna'),bv=isOp('bvlos');
   const p=pilotById($('g_pilotoId').value);
-  if(p){if(!antes){const _md=pilotMed(p);if(_venceAntes(_md,fecha))block.push('Examen médico del piloto vencido en la fecha de la operación');else if(!pilotHabilAt(p,fecha))block.push('Piloto principal inhabilitado en la fecha de la operación');}}
+  if(p){if(!antes&&!_opPrueba()){const _md=pilotMed(p);if(_venceAntes(_md,fecha))block.push('Examen médico del piloto vencido en la fecha de la operación');else if(!pilotHabilAt(p,fecha))block.push('Piloto principal inhabilitado en la fecha de la operación');}}
   else warn.push('Sin piloto principal seleccionado');
   const d=dronById($('g_dron').value);
   if(d){if(!antes&&!dronActAt(d,fecha))block.push('Dron inactivo en la fecha de la operación');if(!antes&&_venceAntes(d.polizaVence,fecha))block.push('Póliza del dron vencida en la fecha de la operación');
@@ -1532,7 +1536,7 @@ function nextCodigo(base){let n=0;operaciones.forEach(o=>{if(o.codigo&&o.codigo.
 function saveOp(){
   const antes=antesDelCorte();
   if(!antesDelCorte2()&&!$('a_rad').value.trim()){toast('No se puede registrar: debe asociar una autorización de vuelo');return;}
-  if(!antes&&(!st.fotoDron||!st.fotoMeteo)){toast('Faltan las fotos obligatorias: dron/puerto y app de meteorología');nav('nueva');return;}
+  if(!antes&&((!st.fotoDron&&!_opPrueba())||!st.fotoMeteo)){toast(_opPrueba()?'Falta la foto obligatoria de la app de meteorología':'Faltan las fotos obligatorias: dron/puerto y app de meteorología');nav('nueva');return;}
   if(!antes){const _fo=opFechaOp();const _pp=pilotById($('g_pilotoId').value);if(_pp&&!pilotHabilAt(_pp,_fo)){toast('No se puede registrar: el piloto estaba INHABILITADO en la fecha de la operación');return;}
   const _dd=dronById($('g_dron').value);if(_dd&&!dronActAt(_dd,_fo)){toast('No se puede registrar: el dron estaba INACTIVO en la fecha de la operación');return;}
   for(const s of (st.sorties||[])){const _fs=String(s.inicio||'').slice(0,10)||_fo;const _sp=pilotById(s.pilotoId);if(_sp&&!pilotHabilAt(_sp,_fs)){toast('No se puede registrar: hay un piloto de vuelo INHABILITADO en la fecha del vuelo');return;}const _so=pilotById(s.observadorId);if(_so&&!pilotHabilAt(_so,_fs)){toast('No se puede registrar: hay un observador INHABILITADO en la fecha del vuelo');return;}}}
@@ -1562,7 +1566,7 @@ function saveOp(){
     obsPre:$('p_obs').value.trim(),obsPos:$('q_obs').value.trim(),
     sorties:st.sorties.map(s=>({...s,piloto:nm(s.pilotoId),observador:nm(s.observadorId),pilotoCedula:cd(s.pilotoId),observadorCedula:cd(s.observadorId),dur:sortieDur(s)})),
     fotosPre:st.fotosPre.slice(),fotosPos:st.fotosPos.slice(),fotoDron:st.fotoDron||null,fotoMeteo:st.fotoMeteo||null,
-    verdict:v.verdict,block:v.block,pend:v.pend,warn:v.warn,requiereMOR:false,
+    verdict:v.verdict,block:v.block,pend:v.pend,warn:v.warn,requiereMOR:false,prueba:_opPrueba()||undefined,
     operadorPiloto:pp?{cedula:pp.cedula,cipus:pilotCipus(pp),med:pilotMed(pp)}:null};
   if(editingOpId){const i=operaciones.findIndex(x=>x.id===editingOpId);
     if(i>=0){rec.id=editingOpId;rec.ts=operaciones[i].ts;operaciones[i]=rec;}else operaciones.unshift(rec);
@@ -1590,7 +1594,7 @@ function faltantesParaCerrar(o){const f=[];const ss=o.sorties||[];
   if(!o.inicioOp)f.push('Inicio de la operación');
   if(!o.finOp)f.push('Fin de la operación');
   if(!o.pilotoId)f.push('Piloto principal');
-  if(!o.dronId)f.push('Dron');
+  if(!o.dronId&&!_recPrueba(o))f.push('Dron');
   if(!ss.length)f.push('Al menos un vuelo');
   ss.forEach((s,i)=>{if(!s.pilotoId)f.push('Piloto del vuelo #'+(i+1));if(!s.observadorId)f.push('Observador del vuelo #'+(i+1));if(!s.inicio||!s.fin)f.push('Horas del vuelo #'+(i+1));});
   if(o.verdict==='NO-GO')f.push('Resolver los bloqueos (NO-GO)');
@@ -1969,7 +1973,7 @@ function modoPiloto(){return localStorage.getItem('bvd_modoPiloto')==='1';}
 function applyModo(){const on=modoPiloto();['fleetForm','pilotForm'].forEach(id=>{const el=$(id);if(el)el.style.display=on?'none':'';});const c=$('modoPilotoChk');if(c)c.checked=on;}
 function setModoPiloto(on){localStorage.setItem('bvd_modoPiloto',on?'1':'');applyModo();renderFleet();renderPilots();toast(on?'Modo piloto activado (solo consulta)':'Modo maestro (edición habilitada)');}
 function mergeCatalog(local,incoming,key){if(!incoming)return 0;let n=0;incoming.forEach(item=>{let i=local.findIndex(x=>x.id===item.id);if(i<0&&key&&item[key])i=local.findIndex(x=>String(x[key]||'').trim()===String(item[key]||'').trim());if(i<0){local.push(item);n++;}else local[i]=item;});return n;}
-const APP_VER='v165';
+const APP_VER='v166';
 function renderSyncInfo(){const t=Number(localStorage.getItem('bvd_lastSync')||0);const v=localStorage.getItem('bvd_seedVerShown')||localStorage.getItem('bvd_seedVersion')||'';const cf=localStorage.getItem('bvd_catalogoFecha')||'';const p=n=>String(n).padStart(2,'0');
   let ts='',short='';if(t){const d=new Date(t);ts=p(d.getDate())+'-'+p(d.getMonth()+1)+'-'+d.getFullYear()+' '+p(d.getHours())+':'+p(d.getMinutes());short=p(d.getDate())+'-'+p(d.getMonth()+1)+' '+p(d.getHours())+':'+p(d.getMinutes());}
   const hv=$('hdrVer');if(hv)hv.innerHTML='App '+APP_VER+(short?'<br>'+short:'');
